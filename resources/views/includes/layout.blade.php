@@ -12,10 +12,10 @@
     <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
       <a class="text-2xl font-bold text-blue-600" href="/">Joinify</a>
       <nav class="hidden md:flex space-x-6 text-gray-700 font-medium">
-        <a href="#" class="hover:text-blue-600">Home</a>
-        <a href="#" class="hover:text-blue-600">Clubs</a>
-        <a href="#" class="hover:text-blue-600">About</a>
-        <a href="#" class="hover:text-blue-600">Contact</a>
+        <a class="hover:text-blue-600" href="/">Home</a>
+        <a class="hover:text-blue-600" href="/clubs">Clubs</a>
+        <a class="hover:text-blue-600" href="#">About</a>
+        <a class="hover:text-blue-600" href="#">Contact</a>
       </nav>
     </div>
   </header>
