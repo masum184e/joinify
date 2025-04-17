@@ -18,6 +18,10 @@ Route::get('dashboard/create-club', function() {
     return view('dashboard/create-club');
 });
 
+Route::get('dashboard/edit-club/{id}', function() {
+    return view('dashboard/edit-club');
+});
+
 Route::get('dashboard/manage-clubs', function() {
     return view('dashboard/manage-clubs');
 });
