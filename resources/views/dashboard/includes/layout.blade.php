@@ -22,11 +22,11 @@
   <div class="flex h-full w-full">
     {{-- Sidebar --}}
     <aside class="w-1/5 bg-slate-900 text-white p-5 space-y-6">
-      <div class="text-2xl text-teal-500 font-bold">Joinify</div>
+      <div class="text-2xl text-teal-600 font-bold">Joinify</div>
       <nav class="space-y-3">
         <ul class="space-y-2">
-          <li><a class="block py-1 hover:text-teal-500" href="/dashboard">Dashboard</a></li>
-          <li><a class="block py-1 hover:text-teal-500" href="/dashboard/mancrage-clubs">Manage Clubs</a></li>
+          <li><a class="block py-1 hover:text-teal-600" href="/dashboard">Dashboard</a></li>
+          <li><a class="block py-1 hover:text-teal-600" href="/dashboard/manage-clubs">Manage Clubs</a></li>
         </ul>
       </nav>
     </aside>

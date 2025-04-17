@@ -58,13 +58,13 @@
           </thead>
           <tbody>
             <tr class="border-b hover:bg-gray-50">
-              <td class="py-2">Club 1</td>
+              <td class="py-2">Environment Club</td>
               <td class="py-2">$120</td>
               <td class="py-2">530</td>
               <td class="py-2">$63,600</td>
             </tr>
             <tr class="border-b hover:bg-gray-50">
-              <td class="py-2">Club 2</td>
+              <td class="py-2">Science Club</td>
               <td class="py-2">$90</td>
               <td class="py-2">420</td>
               <td class="py-2">$37,800</td>
