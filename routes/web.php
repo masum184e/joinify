@@ -18,19 +18,17 @@ Route::get('/clubs', function() {
     return view('clubs');
 });
 
-Route::get('dashboard', function() {
-    // return view('advisor/dashboard');
-    return view('accountant/dashboard');
+Route::get('/events/{id}', function() {
+    return view('event');
 });
 
-Route::get('dashboard/manage-membership', function() {
-    // return view('advisor/dashboard');
-    return view('accountant/manage-membership');
-});
-
-// Route::get('dashboard/create-club', function() {
-//     return view('advisor/create-club');
+// Route::get('dashboard', function() {
+//     return view('advisor/dashboard');
 // });
+
+Route::get('dashboard/create-club', function() {
+    return view('advisor/create-club');
+});
 
 // Route::get('dashboard/edit-club/{id}', function() {
 //     return view('advisor/edit-club');
@@ -42,4 +40,28 @@ Route::get('dashboard/manage-membership', function() {
 
 Route::get('dashboard/manage-clubs', function() {
     return view('advisor/manage-clubs');
+});
+
+// Route::get('dashboard', function() {
+//     return view('accountant/dashboard');
+// });
+
+// Route::get('dashboard/manage-membership', function() {
+//     return view('accountant/manage-membership');
+// });
+
+Route::get('dashboard/', function() {
+    return view('secretary/dashboard');
+});
+
+Route::get('dashboard/create-event', function() {
+    return view('secretary/create-event');
+});
+
+Route::get('dashboard/edit-event/{id}', function() {
+    return view('secretary/edit-event');
+});
+
+Route::get('dashboard/manage-events', function() {
+    return view('secretary/manage-events');
 });
