@@ -41,7 +41,7 @@
     <tbody class="bg-white divide-y divide-gray-200 text-sm">
       <!-- Example Member Row -->
       <tr>
-            <td class="px-6 py-4">Sarah Johnson</td>
+            <td class="px-6 py-4"><a href="/members/0">Sarah Johnson</a></td>
             <td class="px-6 py-4">sarah@example.com</td>
             <td class="px-6 py-4">Jan 15, 2024</td>
             <td class="px-6 py-4 text-center">

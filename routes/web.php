@@ -26,6 +26,10 @@ Route::get('/join-club', function() {
     return view('join-club');
 });
 
+Route::get('/members/{id}', function() {
+    return view('member');
+});
+
 // Route::get('dashboard', function() {
 //     return view('advisor/dashboard');
 // });
