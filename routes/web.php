@@ -22,6 +22,10 @@ Route::get('/events/{id}', function() {
     return view('event');
 });
 
+Route::get('/join-club', function() {
+    return view('join-club');
+});
+
 // Route::get('dashboard', function() {
 //     return view('advisor/dashboard');
 // });

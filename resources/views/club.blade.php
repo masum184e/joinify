@@ -11,7 +11,7 @@
     A club for students interested in building, programming, and competing with robots.
   </p>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
   <div>
       <h2 class="font-semibold text-lg text-gray-700">Created At</h2>
       <p>January 15, 2023</p>
@@ -19,6 +19,10 @@
     <div>
       <h2 class="font-semibold text-lg text-gray-700">Total Member</h2>
       <p>52,344</p>
+    </div>
+    <div>
+      <h2 class="font-semibold text-lg text-gray-700">Monthly Fee</h2>
+      <p class="text-gray-900 text-xl font-semibold">$20</p>
     </div>
   </div>
   <div class="mb-10">
