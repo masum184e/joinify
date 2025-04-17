@@ -10,8 +10,12 @@ Route::get('/login', function() {
     return view('login');
 });
 
-Route::get('/club/{id}', function() {
+Route::get('/clubs/{id}', function() {
     return view('club');
+});
+
+Route::get('/clubs', function() {
+    return view('clubs');
 });
 
 Route::get('dashboard', function() {
@@ -26,7 +30,7 @@ Route::get('dashboard/edit-club/{id}', function() {
     return view('dashboard/edit-club');
 });
 
-Route::get('dashboard/club/{id}', function() {
+Route::get('dashboard/clubs/{id}', function() {
     return view('dashboard/club');
 });
 

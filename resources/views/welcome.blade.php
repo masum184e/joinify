@@ -8,7 +8,7 @@
     <p class="text-lg text-gray-600 max-w-xl mx-auto mb-6">
       Connect with like-minded students, grow your skills, and make an impact on campus.
     </p>
-    <a href="#" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+    <a href="/clubs" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
       Explore Clubs
     </a>
   </section>

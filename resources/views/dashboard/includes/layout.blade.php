@@ -22,7 +22,7 @@
   <div class="flex h-full w-full">
     {{-- Sidebar --}}
     <aside class="w-1/5 bg-slate-900 text-white p-5 space-y-6">
-      <div class="text-2xl text-teal-600 font-bold">Joinify</div>
+      <a class="text-2xl text-teal-600 font-bold" href="/">Joinify</a>
       <nav class="space-y-3">
         <ul class="space-y-2">
           <li><a class="block py-1 hover:text-teal-600" href="/dashboard">Dashboard</a></li>
