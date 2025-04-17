@@ -50,18 +50,26 @@ Route::get('dashboard/manage-clubs', function() {
 //     return view('accountant/manage-membership');
 // });
 
-Route::get('dashboard/', function() {
-    return view('secretary/dashboard');
-});
+// Route::get('dashboard/', function() {
+//     return view('secretary/dashboard');
+// });
 
-Route::get('dashboard/create-event', function() {
-    return view('secretary/create-event');
-});
+// Route::get('dashboard/create-event', function() {
+//     return view('secretary/create-event');
+// });
 
-Route::get('dashboard/edit-event/{id}', function() {
-    return view('secretary/edit-event');
-});
+// Route::get('dashboard/edit-event/{id}', function() {
+//     return view('secretary/edit-event');
+// });
 
 Route::get('dashboard/manage-events', function() {
     return view('secretary/manage-events');
+});
+
+Route::get('dashboard', function() {
+    return view('president/dashboard');
+});
+
+Route::get('dashboard/manage-membership', function() {
+    return view('accountant/manage-membership');
 });
