@@ -17,7 +17,7 @@
     <tbody class="bg-white divide-y divide-gray-200 text-sm">
       <!-- Example Member Row -->
       <tr>
-        <td class="px-6 py-4 whitespace-nowrap">Environment Club</td>
+        <td class="px-6 py-4 whitespace-nowrap"><a href="/dashboard/club/0">Environment Club</a></td>
         <td class="px-6 py-4 whitespace-nowrap">Alex Johnson</td>
         <td class="px-6 py-4 whitespace-nowrap">40, 532</td>
         <td class="px-6 py-4 whitespace-nowrap">

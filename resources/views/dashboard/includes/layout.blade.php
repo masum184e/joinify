@@ -27,6 +27,8 @@
         <ul class="space-y-2">
           <li><a class="block py-1 hover:text-teal-600" href="/dashboard">Dashboard</a></li>
           <li><a class="block py-1 hover:text-teal-600" href="/dashboard/manage-clubs">Manage Clubs</a></li>
+          <li><a class="block py-1 hover:text-teal-600" href="/dashboard/setting">Setting</a></li>
+          <li><a class="block py-1 hover:text-teal-600" href="/dashboard/log-out">Log Out</a></li>
         </ul>
       </nav>
     </aside>
