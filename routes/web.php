@@ -19,20 +19,26 @@ Route::get('/clubs', function() {
 });
 
 Route::get('dashboard', function() {
-    return view('advisor/dashboard');
+    // return view('advisor/dashboard');
+    return view('accountant/dashboard');
 });
 
-Route::get('dashboard/create-club', function() {
-    return view('advisor/create-club');
+Route::get('dashboard/manage-membership', function() {
+    // return view('advisor/dashboard');
+    return view('accountant/manage-membership');
 });
 
-Route::get('dashboard/edit-club/{id}', function() {
-    return view('advisor/edit-club');
-});
+// Route::get('dashboard/create-club', function() {
+//     return view('advisor/create-club');
+// });
 
-Route::get('dashboard/clubs/{id}', function() {
-    return view('advisor/club');
-});
+// Route::get('dashboard/edit-club/{id}', function() {
+//     return view('advisor/edit-club');
+// });
+
+// Route::get('dashboard/clubs/{id}', function() {
+//     return view('advisor/club');
+// });
 
 Route::get('dashboard/manage-clubs', function() {
     return view('advisor/manage-clubs');
