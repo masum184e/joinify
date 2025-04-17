@@ -1,4 +1,4 @@
-@extends('dashboard.includes.layout')
+@extends('advisor.includes.layout')
 
 @section('title', 'Dashboard')
 

@@ -1,10 +1,10 @@
-@extends('dashboard.includes.layout')
+@extends('advisor.includes.layout')
 
-@section('title', 'Create New Club')
+@section('title', 'Update Club Information')
 
 @section('content')
 <div class="w-full max-w-3xl p-8 pt-0 mb-8 rounded-lg shadow-lg mx-auto">
-<h2 class="text-2xl font-bold mb-6 text-gray-800 text-center">New Club Details</h2>
+<h2 class="text-2xl font-bold mb-6 text-gray-800 text-center">Update Club Details</h2>
     <form class="space-y-6">
 
       <!-- Club Name -->
@@ -67,7 +67,7 @@
       <!-- Submit Button -->
       <div>
         <button type="submit" class="w-full bg-teal-600 text-white font-semibold py-3 rounded-lg hover:bg-teal-700 transition">
-          Send Invitation
+          Update Invitation
         </button>
       </div>
     </form>

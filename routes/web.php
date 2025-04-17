@@ -19,21 +19,21 @@ Route::get('/clubs', function() {
 });
 
 Route::get('dashboard', function() {
-    return view('dashboard/dashboard');
+    return view('advisor/dashboard');
 });
 
 Route::get('dashboard/create-club', function() {
-    return view('dashboard/create-club');
+    return view('advisor/create-club');
 });
 
 Route::get('dashboard/edit-club/{id}', function() {
-    return view('dashboard/edit-club');
+    return view('advisor/edit-club');
 });
 
 Route::get('dashboard/clubs/{id}', function() {
-    return view('dashboard/club');
+    return view('advisor/club');
 });
 
 Route::get('dashboard/manage-clubs', function() {
-    return view('dashboard/manage-clubs');
+    return view('advisor/manage-clubs');
 });
