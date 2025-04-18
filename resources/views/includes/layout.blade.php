@@ -1,37 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>@yield('title')</title>
+  <link rel="icon" href="/logo.png" />
+  <title>@yield('title') | @yield('sub-title')</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-50 text-gray-800">
   <!-- Header -->
   <header class="bg-white shadow-md">
     <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-      <a class="text-2xl font-bold text-blue-600" href="/">Joinify</a>
+      <a href="/" class="flex items-center space-x-2 text-blue-600 hover:text-blue-700">
+        <img src="/logo.png" alt="Joinify Logo" class="h-8 w-8 object-contain">
+        <span class="text-2xl font-bold">Joinify</span>
+      </a>
       <nav class="hidden md:flex space-x-6 text-gray-700 font-medium">
-        <a class="hover:text-blue-600" href="/">Home</a>
-        <a class="hover:text-blue-600" href="/clubs">Clubs</a>
-        <a class="hover:text-blue-600" href="#">About</a>
-        <a class="hover:text-blue-600" href="#">Contact</a>
+        <a href="/" class="{{ request()->is('/') ? 'text-blue-600 font-semibold' : 'hover:text-blue-600' }}">Home</a>
+        <a href="/clubs"
+          class="{{ request()->is('clubs*') ? 'text-blue-600 font-semibold' : 'hover:text-blue-600' }}">Clubs</a>
+        <a href="/about"
+          class="{{ request()->is('about') ? 'text-blue-600 font-semibold' : 'hover:text-blue-600' }}">About</a>
+        <a href="/contact"
+          class="{{ request()->is('contact') ? 'text-blue-600 font-semibold' : 'hover:text-blue-600' }}">Contact</a>
       </nav>
     </div>
   </header>
 
   <main class="container overflow-y-auto h-full scroll-hide">
-        @yield('content')
-      </main>
+    @yield('content')
+  </main>
 
-
-        <!-- Footer -->
+  <!-- Footer -->
   <footer class="bg-white border-t mt-10">
     <div class="max-w-7xl mx-auto px-4 py-5 grid grid-cols-1 md:grid-cols-4 gap-8 text-gray-700 text-sm">
       <!-- Logo & Description -->
       <div>
-        <h2 class="text-xl font-bold text-blue-600 mb-2"><a href="/">Joinify</a></h2>
-        <p>Connecting students to communities, opportunities, and experiences through clubs and organizations.</p>
+        <a href="/" class="flex items-center space-x-2 text-blue-600 hover:text-blue-700">
+          <img src="/logo.png" alt="Joinify Logo" class="h-8 w-8 object-contain">
+          <span class="text-2xl font-bold">Joinify</span>
+        </a>
+        <p class="text-justify">Connecting students to communities, opportunities, and experiences through clubs and
+          organizations.</p>
       </div>
 
       <!-- Quick Links -->
@@ -49,9 +61,9 @@
       <div>
         <h3 class="font-semibold mb-2">Resources</h3>
         <ul class="space-y-1">
-          <li><a  class="hover:text-blue-600" href="#">Student Portal</a></li>
-          <li><a  class="hover:text-blue-600" href="/dashboard">Advisor Login</a></li>
-          <li><a  class="hover:text-blue-600" href="#">Club Guidelines</a></li>
+          <li><a class="hover:text-blue-600" href="#">Student Portal</a></li>
+          <li><a class="hover:text-blue-600" href="/dashboard">Advisor Login</a></li>
+          <li><a class="hover:text-blue-600" href="#">Club Guidelines</a></li>
         </ul>
       </div>
 
@@ -61,7 +73,6 @@
         <p>Email: support@joinify.edu</p>
         <p>Phone: (123) 456-7890</p>
         <div class="flex space-x-3 mt-2">
-          <!-- Social Icons (placeholders, can use Heroicons or SVGs) -->
           <a href="#" class="text-blue-600 hover:underline">Facebook</a>
           <a href="#" class="text-blue-600 hover:underline">Twitter</a>
         </div>
@@ -74,4 +85,5 @@
   </footer>
 
 </body>
+
 </html>
