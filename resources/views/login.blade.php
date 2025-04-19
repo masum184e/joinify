@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Login</title>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>Joinify | Login</title>
+  <link rel="icon" href="/logo.png" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -16,14 +18,15 @@
     <div class="w-2/3 p-10">
       <h2 class="text-3xl font-extrabold text-gray-800 mb-6">🔐 Login to Your Account</h2>
 
-      <form action="/dashboard" method="GET">
-        <input type="email" placeholder="Email"
+      <form id="login-form">
+        <input type="email" placeholder="Email" name="email"
           class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           required />
-        <input type="password" placeholder="Password"
+        <input type="password" placeholder="Password" name="password"
           class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           required />
         <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg">Sign In</button>
+        <div id="login-error" class="text-red-500 mt-4"></div>
       </form>
     </div>
 
@@ -41,6 +44,35 @@
 
   </div>
 
+  <script>
+    document.getElementById("login-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const form = e.target;
+      const formData = new FormData(form);
+      const errorBox = document.getElementById("login-error");
+
+      fetch("/login", {
+        method: "POST",
+        headers: {
+          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+        },
+        body: formData,
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            window.location.href = data.redirect;
+          } else {
+            errorBox.textContent = data.message || "Login failed!";
+          }
+        })
+        .catch(err => {
+          errorBox.textContent = "Something went wrong!";
+          console.error(err);
+        });
+    });
+  </script>
 </body>
 
 </html>

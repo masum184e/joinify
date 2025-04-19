@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn() => view('welcome'));
 Route::get('/login', fn() => view('login'));
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 
 Route::get('/clubs', fn() => view('clubs'));
