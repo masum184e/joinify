@@ -2,82 +2,34 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', fn() => view('welcome'));
+Route::get('/login', fn() => view('login'));
 
-Route::get('/login', function() {
-    return view('login');
-});
 
-Route::get('/clubs/{id}', function() {
-    return view('club');
-});
+Route::get('/clubs', fn() => view('clubs'));
+Route::get('/clubs/{id}', fn() => view('club'));
+Route::get('/clubs/{id}/join', fn() => view('join-club'));
 
-Route::get('/clubs', function() {
-    return view('clubs');
-});
+Route::get('/events/{id}', fn() => view('event'));
 
-Route::get('/events/{id}', function() {
-    return view('event');
-});
+Route::get('/members/{id}', fn() => view('member'));
 
-Route::get('/join-club', function() {
-    return view('join-club');
-});
+Route::get('/dashboard', fn() => view('dashboard.advisor'));
+Route::get('/dashboard/president', fn() => view('dashboard.president'));
+Route::get('/dashboard/secretary', fn() => view('dashboard.secretary'));
+Route::get('/dashboard/accountant', fn() => view('dashboard.accountant'));
 
-Route::get('/members/{id}', function() {
-    return view('member');
-});
+Route::get('/dashboard/clubs/create', fn() => view('dashboard.club-form', ["page" => "create"]));
+Route::get('/dashboard/clubs', fn() => view('dashboard.clubs'));
+Route::get('/dashboard/clubs/{id}', fn() => view('dashboard.club'));
+Route::get('/dashboard/clubs/{id}/edit', fn() => view('dashboard.club-form', ["page" => "edit"]));
 
-// Route::get('dashboard', function() {
-//     return view('advisor/dashboard');
-// });
+Route::get('/dashboard/events/create', fn() => view('dashboard.event-form', ["page" => "create"]));
+Route::get('/dashboard/events', fn() => view('dashboard.events'));
+Route::get('/dashboard/events/{id}', fn() => view('dashboard.event'));
+Route::get('/dashboard/events/{id}/edit', fn() => view('dashboard.event-form', ["page" => "edit"]));
 
-Route::get('dashboard/create-club', function() {
-    return view('advisor/create-club');
-});
+Route::get('/dashboard/members', fn() => view('dashboard.members'));
+Route::get('/dashboard/members/{id}', fn() => view('dashboard.member'));
 
-// Route::get('dashboard/edit-club/{id}', function() {
-//     return view('advisor/edit-club');
-// });
-
-// Route::get('dashboard/clubs/{id}', function() {
-//     return view('advisor/club');
-// });
-
-Route::get('dashboard/manage-clubs', function() {
-    return view('advisor/manage-clubs');
-});
-
-// Route::get('dashboard', function() {
-//     return view('accountant/dashboard');
-// });
-
-// Route::get('dashboard/manage-membership', function() {
-//     return view('accountant/manage-membership');
-// });
-
-// Route::get('dashboard/', function() {
-//     return view('secretary/dashboard');
-// });
-
-// Route::get('dashboard/create-event', function() {
-//     return view('secretary/create-event');
-// });
-
-// Route::get('dashboard/edit-event/{id}', function() {
-//     return view('secretary/edit-event');
-// });
-
-Route::get('dashboard/manage-events', function() {
-    return view('secretary/manage-events');
-});
-
-Route::get('dashboard', function() {
-    return view('president/dashboard');
-});
-
-Route::get('dashboard/manage-membership', function() {
-    return view('accountant/manage-membership');
-});
+Route::get('/dashboard/settings', fn() => view('dashboard.settings'));
