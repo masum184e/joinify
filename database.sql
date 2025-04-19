@@ -21,7 +21,7 @@ CREATE TABLE club_user_roles (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     club_id BIGINT,
     user_id BIGINT,
-    role ENUM('president', 'secretary', 'accountant', 'advisor'),
+    role ENUM('president', 'secretary', 'accountant'),
     verified BOOLEAN DEFAULT FALSE,
     
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
