@@ -20,7 +20,6 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        \Log::info('Request data: ', $request->all());
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|min:6',
