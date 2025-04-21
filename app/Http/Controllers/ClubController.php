@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class ClubController extends Controller
 {
@@ -29,7 +30,7 @@ class ClubController extends Controller
         // Return the club details to the view
         return view('dashboard.club', compact('club'));
     }
-    
+
     public function store(Request $request)
     {
         // Validate incoming request
@@ -115,14 +116,15 @@ class ClubController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Club and roles created successfully.',
-                'club_id' => $club->id
+                'club_id' => $club->id,
+                'redirect' => '/dashboard/clubs'
             ]);
         } catch (\Exception $e) {
             DB::rollback();
 
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while creating the club.'
+                'message' => 'An error occurred.'
             ]);
         }
     }

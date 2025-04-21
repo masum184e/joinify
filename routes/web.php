@@ -12,7 +12,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/logout', [AuthController::class, 'logout']);
 
 // Public routes
-// Route::post('/clubs', [ClubController::class, 'store'])->name('clubs.store');
 Route::get('/clubs', fn() => view('clubs'));
 Route::get('/clubs/{id}', fn() => view('club'));
 Route::get('/clubs/{id}/join', fn() => view('join-club'));
@@ -26,11 +25,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/secretary', fn() => view('dashboard.secretary'));
     Route::get('/dashboard/accountant', fn() => view('dashboard.accountant'));
 
-    Route::resource('/dashboard/clubs', ClubController::class)->only(['index','store', 'update', 'show']);
-    Route::get('/dashboard/clubs/create', fn() => view('dashboard.club-form', ["page" => "create"]));
+    // Route::resource('/dashboard/clubs', ClubController::class)->only(['index','store', 'update', 'show']);
+    Route::get('/dashboard/clubs/create', fn() => view('dashboard.club-form', ["page" => "create"]))->name('clubs.store');
+    Route::post('/dashboard/clubs/create', [ClubController::class, 'store'])->name('clubs.store');
+    Route::get('/dashboard/clubs', [ClubController::class, 'index'])->name('clubs.index');
+    Route::get('/dashboard/clubs/{id}', fn() => view('dashboard.club'));
     Route::get('/dashboard/clubs/{id}/edit', fn() => view('dashboard.club-form', ["page" => "edit"]));
-    // Route::get('/dashboard/clubs', fn() => view('dashboard.clubs'));
-    // Route::get('/dashboard/clubs/{id}', fn() => view('dashboard.club'));
 
     Route::get('/dashboard/events/create', fn() => view('dashboard.event-form', ["page" => "create"]));
     Route::get('/dashboard/events', fn() => view('dashboard.events'));

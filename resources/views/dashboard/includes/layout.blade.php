@@ -35,7 +35,7 @@
 
         <li>
         <a href="dashboard" class="flex items-center space-x-2 transition-all duration-200
-      {{ Request::is('dashboard*') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
+      {{ Request::is('dashboard') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"></path>
           </svg>
@@ -72,7 +72,7 @@
 
         <li>
         <a href="dashboard" class="flex items-center space-x-2 transition-all duration-200
-      {{ Request::is('dashboard*') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
+      {{ Request::is('dashboard') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round"
             d="M11 11V9a4 4 0 014-4h4m0 0v4m0-4L10 14m-6 4h16v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z" />
@@ -173,6 +173,8 @@
       </div>
     </main>
   </div>
+  @stack('scripts')
+
 </body>
 
 </html>

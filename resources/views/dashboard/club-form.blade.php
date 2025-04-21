@@ -22,17 +22,10 @@
   Update Club Details
 @endif
     </h2>
+    <form id="clubForm" class="space-y-6">
+    <!-- @csrf -->
+    <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-    @php
-      $formAction = $page === 'create' ? route('clubs.store') : route('clubs.update', $club->id ?? 0);
-      $formMethod = $page === 'create' ? 'POST' : 'PUT';
-  @endphp
-
-    <form id="clubForm" name="clubForm" action="{{ $formAction }}" method="POST" class="space-y-6">
-    @csrf
-    @if($page !== 'create')
-    @method('PUT')
-  @endif
     <!-- Club Name -->
     <div>
       <label class="block text-sm font-semibold text-gray-700 mb-1">Club Name</label>
@@ -120,55 +113,41 @@
       <span>Save Changes</span>
     @endif
       </button>
+      <div id="club-creation-error" class="text-red-500 mt-4"></div>
+
     </div>
     </form>
   </div>
 @endsection
 
 @push('scripts')
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    $(document).ready(function () {
-    $('#clubForm').on('submit', function (e) {
+    document.getElementById('clubForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      let formData = $(this).serialize();
-      const route = @json($page === 'create' ? route('clubs.store') : route('clubs.update', $club->id ?? 0));
+      const form = e.target;
+      const formData = new FormData(form);
+      const errorBox = document.getElementById("club-creation-error");
 
-      $.ajax({
-      url: route,
-      method: "POST",
-      data: formData,
-      success: function (response) {
-        if (response.success) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: $page === 'create' ? 'Club created successfully.' : 'Club updated successfully.',
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: 'Go to Dashboard'
-        }).then(() => {
-          window.location.href = response.redirect || '/dashboard';
-        });
+      fetch("/dashboard/clubs/create", {
+        method: "POST",
+        headers: {
+          "X-CSRF-TOKEN": form.querySelector('input[name="_token"]').value,
+        },
+        body: formData,
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = data.redirect;
         } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops!',
-          text: response.message || 'Something went wrong.'
-        });
+          errorBox.textContent = data.message || "Club Creation Failed!";
         }
-      },
-      error: function (xhr) {
-        let msg = xhr.responseJSON?.message || 'Something went wrong.';
-        Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: msg
-        });
-      }
+      })
+      .catch(err => {
+        errorBox.textContent = "Something went wrong!";
+        console.error(err);
       });
-    });
     });
   </script>
 @endpush
