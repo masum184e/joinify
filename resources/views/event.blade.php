@@ -10,7 +10,7 @@
     <!-- Title & Subtitle -->
     <div>
       <h1 class="text-4xl font-black text-gray-800 tracking-tight flex items-center gap-3">
-      🎤 Tech Talk 2025
+      {{ $event->title }}
       </h1>
       <p class="text-sm text-gray-500 mt-1 italic">
       Presented by <span class="text-blue-600 font-semibold">Coding Club</span>
@@ -55,7 +55,7 @@
       </div>
       <div>
       <h3 class="text-sm font-semibold text-gray-500 uppercase">Location</h3>
-      <p class="text-lg">Auditorium A, Main Campus</p>
+      <p class="text-lg">{{ $event->location }}</p>
       </div>
     </div>
     </div>

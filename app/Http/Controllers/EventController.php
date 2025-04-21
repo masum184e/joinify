@@ -30,6 +30,15 @@ class EventController extends Controller
         return view('dashboard.event', compact('event'));
     }
 
+    public function public_show($id)
+    {
+        // Fetch a single event with guests
+        $event = Event::with('guests')->findOrFail($id);
+
+        // Return to the single event view
+        return view('event', compact('event'));
+    }
+
     public function store(Request $request)
     {
         // Validate event data

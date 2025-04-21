@@ -14,7 +14,7 @@
             <!-- Title & Subtitle -->
             <div>
                 <h1 class="text-4xl font-black text-gray-800 tracking-tight flex items-center gap-3">
-                    🎤 Tech Talk 2025
+                {{ $event->title }}
                 </h1>
                 <p class="text-sm text-gray-500 mt-1 italic">
                     Presented by <span class="text-blue-600 font-semibold">Coding Club</span>
@@ -43,7 +43,7 @@
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-gray-500 uppercase">Date</h3>
-                    <p class="text-lg">May 15, 2025</p>
+                    <p class="text-lg">{{ \Carbon\Carbon::parse($event->date)->format('M d, Y') }} </p>
                 </div>
             </div>
 
@@ -56,7 +56,7 @@
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-gray-500 uppercase">Time</h3>
-                    <p class="text-lg">10:00 AM - 12:00 PM</p>
+                    <p class="text-lg">{{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('g:i A') }}</p>
                 </div>
             </div>
 
@@ -69,7 +69,7 @@
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-gray-500 uppercase">Location</h3>
-                    <p class="text-lg">Auditorium A, Main Campus</p>
+                    <p class="text-lg">{{ $event->location }}</p>
                 </div>
             </div>
         </div>
@@ -102,9 +102,7 @@
         <div>
             <h2 class="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">📢 Description</h2>
             <p class="text-gray-700 leading-relaxed">
-                Join us for an exciting Tech Talk where we explore the future of AI, software innovation,
-                and the intersection of technology and society. Our guest speakers will share their
-                expertise and insights from academia and industry.
+            {{ $event->description }}
             </p>
         </div>
 

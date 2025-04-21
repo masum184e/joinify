@@ -23,12 +23,29 @@ class ClubController extends Controller
         return view('dashboard.clubs', compact('clubs'));
     }
 
+    public function pubic_index()
+    {
+        // Fetch all clubs with their user roles
+        $clubs = Club::with(['userRoles.user'])->get();
+
+        // Return the clubs to the view (Blade file)
+        return view('clubs', compact('clubs'));
+    }
+
     public function show($id)
     {
         $club = Club::with(['userRoles.user'])->findOrFail($id);
 
         // Return the club details to the view
         return view('dashboard.club', compact('club'));
+    }
+
+    public function public_show($id)
+    {
+        $club = Club::with(['userRoles.user'])->findOrFail($id);
+
+        // Return the club details to the view
+        return view('club', compact('club'));
     }
 
     public function store(Request $request)

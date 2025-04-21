@@ -32,7 +32,7 @@
         <!-- Event Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-            <!-- Event Card -->
+        @foreach($events as $event)
             <div
                 class="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 space-y-3">
                 <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -41,7 +41,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Tech Talk 2025
+                    {{ $event->title }}
                 </h2>
                 <div class="flex items-center text-sm text-gray-600 gap-2">
                     <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" stroke-width="2"
@@ -49,14 +49,14 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2v-5H3v5a2 2 0 002 2z" />
                     </svg>
-                    May 15, 2025
+                    {{ \Carbon\Carbon::parse($event->date)->format('M d, Y') }} 
                 </div>
-                <div class="text-sm text-gray-700">🕙 10:00 AM – 12:00 PM</div>
-                <div class="text-sm text-gray-700">📍 Location: Auditorium A</div>
-                <div class="text-sm text-gray-700">👥 Guests: 3</div>
+                <div class="text-sm text-gray-700">🕙 {{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }} – {{ \Carbon\Carbon::parse($event->end_time)->format('g:i A') }}</div>
+                    <div class="text-sm text-gray-700">📍 Location: {{ $event->location }}</div>
+                    <div class="text-sm text-gray-700">👥 Guests: {{ $event->guests->count() }}</div>
 
                 <div class="flex justify-between items-center pt-4">
-                    <a href="/dashboard/events/1" title="View Details"
+                    <a href="/dashboard/events/{{ $event->id }}" title="View Details"
                         class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 hover:bg-blue-200 transition">
                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0" />
@@ -98,8 +98,7 @@
                 </div>
             </div>
 
-            <!-- Add more cards as needed -->
-
+            @endforeach
         </div>
     </div>
 

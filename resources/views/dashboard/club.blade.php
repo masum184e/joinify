@@ -13,7 +13,7 @@
         <!-- Club Header -->
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
             <h1 class="text-3xl font-extrabold text-gray-800 tracking-tight flex items-center gap-2">
-                🌿 Environment Club
+                {{ $club->name }}
             </h1>
             <a href="/dashboard/clubs/0/edit"
                 class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl shadow-md transition-all duration-300">
@@ -28,7 +28,7 @@
 
         <!-- Description -->
         <p class="text-gray-700 text-base mb-6 leading-relaxed">
-            A club for students interested in building, programming, and competing with robots.
+            {{ $club->description }}
         </p>
 
         <!-- Club Stats -->

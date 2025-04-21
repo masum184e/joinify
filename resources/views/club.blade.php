@@ -6,12 +6,12 @@
   <!-- Public/Student Club Details Page -->
   <div class="max-w-5xl mx-auto p-6 bg-white rounded-2xl shadow-lg mt-10">
     <h1 class="text-3xl font-extrabold text-gray-800 tracking-tight flex items-center gap-2">
-    🌿 Environment Club
+    {{ $club->name }}
     </h1>
 
     <!-- Description -->
     <p class="text-gray-700 text-base mb-6 leading-relaxed">
-    A club for students interested in building, programming, and competing with robots.
+{{ $club->description }}
     </p>
 
 

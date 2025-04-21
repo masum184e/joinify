@@ -47,7 +47,7 @@
 
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4 whitespace-nowrap font-medium text-blue-700">
-                                <a href="/dashboard/clubs/0" class="hover:underline">{{ $club->name }}</a>
+                                <a href="/dashboard/clubs/{{ $club->id }}" class="hover:underline">{{ $club->name }}</a>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 {{ $club->userRoles->where('role', 'president')->first()->user->name }}

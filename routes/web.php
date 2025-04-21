@@ -13,10 +13,10 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/logout', [AuthController::class, 'logout']);
 
 // Public routes
-Route::get('/clubs', fn() => view('clubs'));
-Route::get('/clubs/{id}', fn() => view('club'));
+Route::get('/clubs', [ClubController::class, 'pubic_index'])->name('clubs.pubic_index');
+Route::get('/clubs/{id}', [ClubController::class, 'public_show'])->name('clubs.public_show');
 Route::get('/clubs/{id}/join', fn() => view('join-club'));
-Route::get('/events/{id}', fn() => view('event'));
+Route::get('/events/{id}', [EventController::class, 'public_show'])->name('events.public_show');
 Route::get('/members/{id}', fn() => view('member'));
 
 // Protected routes (require login)
@@ -30,13 +30,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/clubs/create', fn() => view('dashboard.club-form', ["page" => "create"]))->name('clubs.store');
     Route::post('/dashboard/clubs/create', [ClubController::class, 'store'])->name('clubs.store');
     Route::get('/dashboard/clubs', [ClubController::class, 'index'])->name('clubs.index');
-    Route::get('/dashboard/clubs/{id}', fn() => view('dashboard.club'));
+    Route::get('/dashboard/clubs/{id}', [ClubController::class, 'show'])->name('clubs.show');
+    // Route::get('/dashboard/clubs/{id}', fn() => view('dashboard.club'));
     Route::get('/dashboard/clubs/{id}/edit', fn() => view('dashboard.club-form', ["page" => "edit"]));
 
     Route::get('/dashboard/events/create', fn() => view('dashboard.event-form', ["page" => "create"]));
     Route::post('/dashboard/events/create', [EventController::class, 'store'])->name('events.store');
     Route::get('/dashboard/events', [EventController::class, 'index'])->name('events.index');
-    Route::get('/dashboard/events/{id}', fn() => view('dashboard.event'));
+    Route::get('/dashboard/events/{id}', [EventController::class, 'show'])->name('events.show');
     Route::get('/dashboard/events/{id}/edit', fn() => view('dashboard.event-form', ["page" => "edit"]));
 
     Route::get('/dashboard/members', fn() => view('dashboard.members'));
