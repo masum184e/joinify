@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClubController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
@@ -11,6 +12,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/logout', [AuthController::class, 'logout']);
 
 // Public routes
+// Route::post('/clubs', [ClubController::class, 'store'])->name('clubs.store');
+Route::resource('/dashboard/clubs', ClubController::class)->only(['store', 'update']);
 Route::get('/clubs', fn() => view('clubs'));
 Route::get('/clubs/{id}', fn() => view('club'));
 Route::get('/clubs/{id}/join', fn() => view('join-club'));

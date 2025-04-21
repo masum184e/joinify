@@ -6,6 +6,7 @@
 @section('layout-title', 'Club Secretary')
 @section('layout-sub-title', 'Manage your club, track events, and oversee member activities.')
 
+
 @section('content')
   <div
     class="w-full max-w-3xl p-10 bg-gradient-to-br from-white via-blue-50 to-blue-100 rounded-2xl shadow-xl mx-auto mb-8">
@@ -14,8 +15,7 @@
     @if($page === 'create')
     🎉 Create New Club
   @else
-  <svg class="w-6 h-6 text-blue-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg">
+  <svg class="w-6 h-6 text-blue-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
     <path stroke-linecap="round" stroke-linejoin="round"
     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
   </svg>
@@ -23,19 +23,30 @@
 @endif
     </h2>
 
-    <form class="space-y-6">
+    @php
+      $formAction = $page === 'create' ? route('clubs.store') : route('clubs.update', $club->id ?? 0);
+      $formMethod = $page === 'create' ? 'POST' : 'PUT';
+  @endphp
+
+    <form id="clubForm" name="clubForm" action="{{ $formAction }}" method="POST" class="space-y-6">
+    @csrf
+    @if($page !== 'create')
+    @method('PUT')
+  @endif
     <!-- Club Name -->
     <div>
       <label class="block text-sm font-semibold text-gray-700 mb-1">Club Name</label>
-      <input type="text" placeholder="e.g. Photography Club"
-      class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
+      <input type="text" placeholder="e.g. Photography Club" name="name"
+      class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white"
+      required />
     </div>
 
     <!-- Description -->
     <div>
       <label class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
-      <textarea rows="4" placeholder="Describe the club..."
-      class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white"></textarea>
+      <textarea rows="4" placeholder="Describe the club..." name="description"
+      class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white"
+      required></textarea>
     </div>
 
     <!-- President Info -->
@@ -94,6 +105,7 @@
       </div>
       </div>
     </div>
+
     <!-- Submit Button -->
     <div class="pt-6">
       <button type="submit"
@@ -101,11 +113,9 @@
       @if($page === 'create')
       🚀 Send Invitation
     @else
-      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 407.096 407.096" xmlns="http://www.w3.org/2000/svg">
-      <path
-      d="M402.115,84.008L323.088,4.981C319.899,1.792,315.574,0,311.063,0H17.005C7.613,0,0,7.614,0,17.005v373.086c0,9.392,7.613,17.005,17.005,17.005h373.086c9.392,0,17.005-7.613,17.005-17.005V96.032C407.096,91.523,405.305,87.197,402.115,84.008z M300.664,163.567H67.129V38.862h233.535V163.567z" />
-      <path
-      d="M214.051,148.16h43.08c3.131,0,5.668-2.538,5.668-5.669V59.584c0-3.13-2.537-5.668-5.668-5.668h-43.08c-3.131,0-5.668,2.538-5.668,5.668v82.907C208.383,145.622,210.92,148.16,214.051,148.16z" />
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 407.096 407.096">
+      <path d="M402.115,84.008L323.088,4.981..." />
+      <path d="M214.051,148.16h43.08c3.131,0..." />
       </svg>
       <span>Save Changes</span>
     @endif
@@ -114,3 +124,51 @@
     </form>
   </div>
 @endsection
+
+@push('scripts')
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    $(document).ready(function () {
+    $('#clubForm').on('submit', function (e) {
+      e.preventDefault();
+
+      let formData = $(this).serialize();
+      const route = @json($page === 'create' ? route('clubs.store') : route('clubs.update', $club->id ?? 0));
+
+      $.ajax({
+      url: route,
+      method: "POST",
+      data: formData,
+      success: function (response) {
+        if (response.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: $page === 'create' ? 'Club created successfully.' : 'Club updated successfully.',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Go to Dashboard'
+        }).then(() => {
+          window.location.href = response.redirect || '/dashboard';
+        });
+        } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          text: response.message || 'Something went wrong.'
+        });
+        }
+      },
+      error: function (xhr) {
+        let msg = xhr.responseJSON?.message || 'Something went wrong.';
+        Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: msg
+        });
+      }
+      });
+    });
+    });
+  </script>
+@endpush
