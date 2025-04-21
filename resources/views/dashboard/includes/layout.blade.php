@@ -46,7 +46,7 @@
           @if(auth()->user() && auth()->user()->role === 'president')
         <li>
         <a href="dashboard" class="flex items-center space-x-2 transition-all duration-200
-      {{ Request::is('dashboard*') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
+      {{ Request::is('dashboard') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round"
             d="M5.121 17.804A3.001 3.001 0 018 15h8a3 3 0 012.879 2.804l.621 7.451A2 2 0 0117.5 27h-11a2 2 0 01-1.998-1.745l.619-7.451z" />
@@ -59,7 +59,7 @@
           @if(auth()->user() && auth()->user()->role === 'secretary')
         <li>
         <a href="dashboard" class="flex items-center space-x-2 transition-all duration-200
-      {{ Request::is('dashboard*') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
+      {{ Request::is('dashboard') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4V4z" />
           <path stroke-linecap="round" stroke-linejoin="round" d="M8 8h8M8 12h6m-6 4h4" />

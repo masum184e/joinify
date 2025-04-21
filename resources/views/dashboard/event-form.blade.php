@@ -25,19 +25,20 @@
 
 
         <!-- Event Creation Form -->
-        <form class="space-y-6">
+        <form class="space-y-6" id="eventForm">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
             <!-- Event Title -->
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Event Title</label>
-                <input type="text" placeholder="e.g. Tech Talk 2025"
+                <input type="text" placeholder="e.g. Tech Talk 2025" name="title"
                     class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
             </div>
 
             <!-- Description -->
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
-                <textarea rows="4" placeholder="Describe the event..."
+                <textarea rows="4" placeholder="Describe the event..." name="description"
                     class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white"></textarea>
             </div>
 
@@ -45,26 +46,26 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Start Time</label>
-                    <input type="time"
+                    <input type="time" name="start_time"
                         class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">End Time</label>
-                    <input type="time"
+                    <input type="time" name="end_time"
                         class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
                 </div>
             </div>
 
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Event Date</label>
-                <input type="date"
+                <input type="date" name="date"
                     class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
             </div>
 
             <!-- Location -->
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Location</label>
-                <input type="text" placeholder="e.g. Auditorium A, Main Campus"
+                <input type="text" placeholder="e.g. Auditorium A, Main Campus" name="location"
                     class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
             </div>
 
@@ -76,7 +77,7 @@
                     <div class="flex flex-col md:flex-row gap-3">
                         <input type="text" name="guests[0][name]" placeholder="Guest Name"
                             class="flex-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
-                        <input type="text" name="guests[0][designation]" placeholder="Designation"
+                        <input type="text" name="guests[0][email]" placeholder="#mail"
                             class="flex-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
                     </div>
                 </div>
@@ -105,6 +106,7 @@
                         <span>Save Changes</span>
                     @endif
                 </button>
+                <div id="event-creation-error" class="text-red-500 mt-4"></div>
 
             </div>
         </form>
@@ -123,14 +125,42 @@
             newGuest.classList.add('flex', 'gap-2');
 
             newGuest.innerHTML = `
-                  <input type="text" name="guests[${guestIndex}][name]" placeholder="Guest Name"
-                         class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <input type="text" name="guests[${guestIndex}][designation]" placeholder="Designation"
-                         class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                `;
+                      <input type="text" name="guests[${guestIndex}][name]" placeholder="Guest Name"
+                             class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <input type="text" name="guests[${guestIndex}][email]" placeholder="Email"
+                             class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    `;
 
             guestList.appendChild(newGuest);
             guestIndex++;
         });
+
+        document.getElementById("eventForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            const errorBox = document.getElementById("event-creation-error");
+
+            fetch("/dashboard/events/create", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value,
+                },
+                body: formData,
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+          window.location.href = data.redirect;
+        } else {
+          errorBox.textContent = data.message || "Club Creation Failed!";
+        }
+                })
+                .catch(err => {
+                    errorBox.textContent = "Something went wrong!";
+                    console.error(err);
+                });
+        });
+
     </script>
 @endpush

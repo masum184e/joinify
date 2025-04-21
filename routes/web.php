@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ClubController;
+use App\Http\Controllers\EventController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
@@ -33,7 +34,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/clubs/{id}/edit', fn() => view('dashboard.club-form', ["page" => "edit"]));
 
     Route::get('/dashboard/events/create', fn() => view('dashboard.event-form', ["page" => "create"]));
-    Route::get('/dashboard/events', fn() => view('dashboard.events'));
+    Route::post('/dashboard/events/create', [EventController::class, 'store'])->name('events.store');
+    Route::get('/dashboard/events', [EventController::class, 'index'])->name('events.index');
     Route::get('/dashboard/events/{id}', fn() => view('dashboard.event'));
     Route::get('/dashboard/events/{id}/edit', fn() => view('dashboard.event-form', ["page" => "edit"]));
 
