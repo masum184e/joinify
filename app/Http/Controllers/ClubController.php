@@ -13,6 +13,23 @@ use Illuminate\Support\Facades\Validator;
 
 class ClubController extends Controller
 {
+    public function index()
+    {
+        // Fetch all clubs with their user roles
+        $clubs = Club::with(['userRoles.user'])->get();
+
+        // Return the clubs to the view (Blade file)
+        return view('dashboard.clubs', compact('clubs'));
+    }
+
+    public function show($id)
+    {
+        $club = Club::with(['userRoles.user'])->findOrFail($id);
+
+        // Return the club details to the view
+        return view('dashboard.club', compact('club'));
+    }
+    
     public function store(Request $request)
     {
         // Validate incoming request
