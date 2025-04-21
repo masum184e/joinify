@@ -35,6 +35,10 @@ class User extends Authenticatable
     ];
 
     // 🔁 Relationships
+    public function clubRoles()
+    {
+        return $this->hasMany(ClubUserRole::class);
+    }
     // public function member()
     // {
     //     return $this->hasOne(Member::class);
