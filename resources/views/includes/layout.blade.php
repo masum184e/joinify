@@ -83,7 +83,7 @@
       © 2025 Joinify. All rights reserved.
     </div>
   </footer>
-
+  @stack('scripts')
 </body>
 
 </html>

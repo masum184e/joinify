@@ -12,33 +12,35 @@
       📝 Membership Form
     </h2>
 
-    <form class="space-y-6">
+    <form class="space-y-6" id="joinForm" action="{{ url('/pay') }}" method="POST">
+
+      <input type="hidden" value="{{ csrf_token() }}" name="_token" />
 
       <!-- Full Name -->
       <div>
-      <label for="full-name" class="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
-      <input type="text" id="full-name" placeholder="John Doe"
+      <label for="name" class="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
+      <input type="text" id="name" placeholder="John Doe" name="name"
         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
       </div>
 
       <!-- Email Address -->
       <div>
       <label for="email" class="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
-      <input type="email" id="email" placeholder="john.doe@example.com"
+      <input type="email" id="email" placeholder="john.doe@example.com" name="email"
         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
       </div>
 
       <!-- Student ID -->
       <div>
       <label for="student-id" class="block text-sm font-semibold text-gray-700 mb-1">Student ID</label>
-      <input type="text" id="student-id" placeholder="S1234567"
+      <input type="text" id="student-id" placeholder="S1234567" name="student_id"
         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
       </div>
 
       <!-- Department -->
       <div>
       <label for="department" class="block text-sm font-semibold text-gray-700 mb-1">Department</label>
-      <select id="department"
+      <select id="department" name="department"
         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm bg-white text-gray-700">
         <option value="">Select your Department...</option>
         <option value="computer_science">Computer Science</option>
@@ -52,7 +54,7 @@
       <!-- Reason for Joining -->
       <div>
       <label for="reason" class="block text-sm font-semibold text-gray-700 mb-1">Why do you want to join?</label>
-      <textarea id="reason" rows="4" placeholder="Tell us why you're interested in this club..."
+      <textarea id="reason" rows="4" placeholder="Tell us why you're interested in this club..." name="reason"
         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"></textarea>
       </div>
 
@@ -62,10 +64,11 @@
         class="w-full bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold px-6 py-3 rounded-xl shadow-lg transition duration-300 ease-in-out">
         Make Payment
       </button>
+      <div id="join-error" class="text-red-500 mt-4"></div>
+
       </div>
     </form>
     </div>
   </div>
-
 
 @endsection
