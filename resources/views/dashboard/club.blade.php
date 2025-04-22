@@ -36,13 +36,14 @@
             <!-- Created At -->
             <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-4 rounded-xl shadow-sm">
                 <h2 class="font-semibold text-gray-600 text-sm uppercase mb-1">Created At</h2>
-                <p class="text-lg font-bold text-gray-800">January 15, 2023</p>
+                <p class="text-lg font-bold text-gray-800">{{ \Carbon\Carbon::parse($club->created_at)->format('M d, Y') }}
+                </p>
             </div>
 
             <!-- Total Members -->
             <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl shadow-sm">
                 <h2 class="font-semibold text-blue-700 text-sm uppercase mb-1">Total Members</h2>
-                <p class="text-xl font-extrabold text-blue-900">52,344</p>
+                <p class="text-xl font-extrabold text-blue-900">{{ $club->userRoles->count() }}</p>
             </div>
 
             <!-- Revenue -->
@@ -79,8 +80,8 @@
                             </svg>
                         </div>
                     </div>
-                    <p class="text-gray-900 font-semibold">Alice Johnson</p>
-                    <p class="text-sm text-gray-700">alice@example.com</p>
+                    <p class="text-gray-900 font-semibold">{{ $club->president?->user?->name }}</p>
+                    <p class="text-sm text-gray-700">{{ $club->president?->user?->email }}</p>
                 </div>
 
                 <!-- Secretary -->
@@ -95,8 +96,8 @@
                             </svg>
                         </div>
                     </div>
-                    <p class="text-gray-900 font-semibold">Bob Lee</p>
-                    <p class="text-sm text-gray-700">bob@example.com</p>
+                    <p class="text-gray-900 font-semibold">{{ $club->secretary?->user?->name }}</p>
+                    <p class="text-sm text-gray-700">{{ $club->secretary?->user?->email }}</p>
                 </div>
 
                 <!-- Accountant -->
@@ -111,8 +112,8 @@
                             </svg>
                         </div>
                     </div>
-                    <p class="text-gray-900 font-semibold">Carlos Nguyen</p>
-                    <p class="text-sm text-gray-700">carlos@example.com</p>
+                    <p class="text-gray-900 font-semibold">{{ $club->accountant?->user?->name }}</p>
+                    <p class="text-sm text-gray-700">{{ $club->accountant?->user?->email }}</p>
                 </div>
 
             </div>

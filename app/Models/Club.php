@@ -18,4 +18,20 @@ class Club extends Model
     {
         return $this->hasMany(ClubUserRole::class);
     }
+
+    public function president()
+    {
+        return $this->hasOne(ClubUserRole::class)->where('role', 'president')->with('user');
+    }
+
+    public function secretary()
+    {
+        return $this->hasOne(ClubUserRole::class)->where('role', 'secretary')->with('user');
+    }
+
+    public function accountant()
+    {
+        return $this->hasOne(ClubUserRole::class)->where('role', 'accountant')->with('user');
+    }
+
 }

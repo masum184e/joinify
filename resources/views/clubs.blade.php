@@ -37,42 +37,39 @@
       class="bg-gradient-to-br from-white via-gray-50 to-blue-50 rounded-xl shadow-lg hover:shadow-xl transition p-6 flex flex-col justify-between">
       <div>
       <!-- Club Title -->
-      <h2 class="text-xl font-semibold mb-1 flex items-center gap-2">
-      {{ $club->name }}
-      </h2>
+      <h2 class="text-xl font-semibold mb-1 flex items-center gap-2">{{ $club->name }}</h2>
 
       <!-- Description -->
-      <p class="text-gray-700 text-sm mb-4 text-justify">
-        Build, program, and compete with robots across the nation.
-      </p>
+      <p class="text-gray-700 text-sm mb-4 text-justify">{{ $club->description }}</p>
+
       </div>
 
       <!-- Meta Info -->
       <div class="flex items-center justify-between text-sm text-gray-600 mt-auto pt-3 border-t border-gray-200">
       <!-- Member Count -->
       <div class="flex items-center gap-2">
-        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M17 20C17 18.3431 14.7614 17 12 17C9.23858 17 7 18.3431 7 20M21 17C21 15.77 19.77 14.71 18 14.25M3 17C3 15.77 4.23 14.71 6 14.25M18 10.24C18.61 9.69 19 8.89 19 8C19 6.34 17.66 5 16 5C15.23 5 14.53 5.29 14 5.76M6 10.24C5.39 9.69 5 8.89 5 8C5 6.34 6.34 5 8 5C8.77 5 9.47 5.29 10 5.76M12 14C10.34 14 9 12.66 9 11C9 9.34 10.34 8 12 8C13.66 8 15 9.34 15 11C15 12.66 13.66 14 12 14Z" />
-        </svg>
-        <span class="font-medium">{{ $club->userRoles->count() }} Members</span>
+      <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M17 20C17 18.3431 14.7614 17 12 17C9.23858 17 7 18.3431 7 20M21 17C21 15.77 19.77 14.71 18 14.25M3 17C3 15.77 4.23 14.71 6 14.25M18 10.24C18.61 9.69 19 8.89 19 8C19 6.34 17.66 5 16 5C15.23 5 14.53 5.29 14 5.76M6 10.24C5.39 9.69 5 8.89 5 8C5 6.34 6.34 5 8 5C8.77 5 9.47 5.29 10 5.76M12 14C10.34 14 9 12.66 9 11C9 9.34 10.34 8 12 8C13.66 8 15 9.34 15 11C15 12.66 13.66 14 12 14Z" />
+      </svg>
+      <span class="font-medium">{{ $club->userRoles->count() }} Members</span>
       </div>
 
       <!-- Created Date -->
-      <span class="text-xs text-gray-500">From Jan 12, 2023</span>
+      <span class="text-xs text-gray-500">From {{ \Carbon\Carbon::parse($club->created_at)->format('M d, Y') }}</span>
       </div>
 
       <!-- View Button -->
       <div class="mt-4">
       <a href="/clubs/{{ $club->id }}"
-        class="block bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition text-center">
-        View Club
+      class="block bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition text-center">
+      View Club
       </a>
       </div>
     </div>
 
 
-    @endforeach
+  @endforeach
 
 
     </div>

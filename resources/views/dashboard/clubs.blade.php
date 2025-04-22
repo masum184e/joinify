@@ -50,7 +50,7 @@
                                 <a href="/dashboard/clubs/{{ $club->id }}" class="hover:underline">{{ $club->name }}</a>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                {{ $club->userRoles->where('role', 'president')->first()->user->name }}
+                                {{ $club->president?->user?->name }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $club->userRoles->count() }}</td>
                             <td class="px-6 py-4 whitespace-nowrap space-x-1">

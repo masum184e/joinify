@@ -4,7 +4,7 @@
 
 @section('content')
   <div class="max-w-4xl mx-auto px-4 py-5">
-    <h1 class="text-3xl font-extrabold text-blue-700 mb-6">✨ Become a member of Robotics club</h1>
+    <h1 class="text-3xl font-extrabold text-blue-700 mb-6">✨ Become a member of {{ $club->name }}</h1>
 
     <!-- Join Club Form -->
     <div class="bg-gradient-to-br from-white via-blue-50 to-blue-100 rounded-2xl shadow-xl p-8">
