@@ -65,7 +65,9 @@ class ClubController extends Controller
             ->with([
                 'president.user:id,name,email',
                 'secretary.user:id,name,email',
-                'accountant.user:id,name,email'
+                'accountant.user:id,name,email',
+                'memberships.member.user:id,name,email',
+                'memberships.payment:id,membership_id,payment_status,created_at'
             ])
             ->findOrFail($id);
 

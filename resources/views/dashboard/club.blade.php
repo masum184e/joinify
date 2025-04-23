@@ -150,58 +150,22 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-100 text-sm text-gray-700">
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 font-medium text-blue-700 whitespace-nowrap">
-                                <a href="/members/1" class="hover:underline">Alice Johnson</a>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">alice@example.com</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Jan 12, 2023</td>
-                            <td class="px-6 py-4 text-center">
-                                <span
-                                    class="inline-block bg-blue-100 text-blue-700 px-3 py-1 text-xs font-semibold rounded-full shadow-sm">
-                                    Active
-                                </span>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 font-medium text-blue-700 whitespace-nowrap">
-                                <a href="/members/2" class="hover:underline">Bob Lee</a>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">bob@example.com</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Feb 20, 2023</td>
-                            <td class="px-6 py-4 text-center">
-                                <span
-                                    class="inline-block bg-gray-100 text-gray-600 px-3 py-1 text-xs font-semibold rounded-full shadow-sm">
-                                    Expired
-                                </span>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 font-medium text-blue-700 whitespace-nowrap">
-                                <a href="/members/3" class="hover:underline">Carlos Nguyen</a>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">carlos@example.com</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Feb 21, 2023</td>
-                            <td class="px-6 py-4 text-center">
-                                <span
-                                    class="inline-block bg-blue-100 text-blue-700 px-3 py-1 text-xs font-semibold rounded-full shadow-sm">
-                                    Active
-                                </span>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 font-medium text-blue-700 whitespace-nowrap">
-                                <a href="/members/4" class="hover:underline">Emma Watson</a>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">emma@example.com</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Mar 05, 2023</td>
-                            <td class="px-6 py-4 text-center">
-                                <span
-                                    class="inline-block bg-blue-100 text-blue-700 px-3 py-1 text-xs font-semibold rounded-full shadow-sm">
-                                    Active
-                                </span>
-                            </td>
-                        </tr>
+                        @foreach ($club->memberships as $membership)
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-6 py-4 font-medium text-blue-700 whitespace-nowrap">
+                                    <a href="/members/{{ $membership->id }}" class="hover:underline">{{ $membership->member->user->name }}</a>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $membership->member->user->email }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($membership->payment->created_at)->format('M d, Y') }}</td>
+                                <td class="px-6 py-4 text-center">
+                                    <span
+                                        class="inline-block bg-blue-100 text-blue-700 px-3 py-1 text-xs font-semibold rounded-full shadow-sm">
+                                        {{ ucfirst($payment->payment_status ?? 'Pending') }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @endforeach
+
                     </tbody>
                 </table>
             </div>
