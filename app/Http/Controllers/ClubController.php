@@ -170,7 +170,7 @@ class ClubController extends Controller
 
             DB::commit();
 
-            return redirect('/clubs')->with('success', 'Club created successfully.');
+            return redirect('/dashboard/clubs')->with('success', 'Club created successfully.');
         } catch (\Exception $e) {
 
             DB::rollBack();
