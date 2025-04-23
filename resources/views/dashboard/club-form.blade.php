@@ -22,7 +22,13 @@
   Update Club Details
 @endif
     </h2>
-    <form id="clubForm" class="space-y-6">
+    <form id="clubForm" method="POST"
+    action="{{ $page === 'create' ? '/dashboard/clubs' : '/dashboard/clubs/' . $club->id }}" class="space-y-6">
+    @csrf
+    @if($page === 'edit')
+    @method('PUT')
+  @endif
+
     <!-- @csrf -->
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
@@ -119,35 +125,3 @@
     </form>
   </div>
 @endsection
-
-@push('scripts')
-  <script>
-    document.getElementById('clubForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const form = e.target;
-      const formData = new FormData(form);
-      const errorBox = document.getElementById("club-creation-error");
-
-      fetch("/dashboard/clubs/create", {
-        method: "POST",
-        headers: {
-          "X-CSRF-TOKEN": form.querySelector('input[name="_token"]').value,
-        },
-        body: formData,
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          window.location.href = data.redirect;
-        } else {
-          errorBox.textContent = data.message || "Club Creation Failed!";
-        }
-      })
-      .catch(err => {
-        errorBox.textContent = "Something went wrong!";
-        console.error(err);
-      });
-    });
-  </script>
-@endpush

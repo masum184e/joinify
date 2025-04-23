@@ -46,6 +46,7 @@ Route::get('/logout', [AuthController::class, 'logout']);
 //     Route::get('/dashboard/settings', fn() => view('dashboard.settings'));
 // });
 
+// Route::get('/dashboard/clubs/create', fn() => view('dashboard.club-form', ["page" => "create"]));
 
 Route::prefix('clubs')->group(function () {
     Route::get('/', [ClubController::class, 'publicIndex']);
@@ -57,10 +58,10 @@ Route::prefix('clubs')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::prefix('/dashboard/clubs')->group(function () {
         Route::get('/', [ClubController::class, 'index']);
+        Route::get('/create', fn() => view('dashboard.club-form', ["page" => "create"]));
         Route::get('/{club}', [ClubController::class, 'show']);
-        //         Route::get('/create', [ClubController::class, 'create']);
-//         Route::post('/', [ClubController::class, 'store']);
-//         Route::get('/{club}/edit', [ClubController::class, 'edit']);
+        Route::post('/', [ClubController::class, 'store']);
+        //         Route::get('/{club}/edit', [ClubController::class, 'edit']);
 //         Route::put('/{club}', [ClubController::class, 'update']);
     });
 });
