@@ -119,7 +119,17 @@
       <span>Save Changes</span>
     @endif
       </button>
-      <div id="club-creation-error" class="text-red-500 mt-4"></div>
+      @if(session('error'))
+      <div class="text-red-500 text-sm">
+      {{ session('error') }}
+      </div>
+    @endif
+
+      @if(session('success'))
+      <div class="text-green-500 text-sm">
+      {{ session('success') }}
+      </div>
+    @endif
 
     </div>
     </form>
