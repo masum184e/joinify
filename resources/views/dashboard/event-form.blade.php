@@ -25,7 +25,13 @@
 
 
         <!-- Event Creation Form -->
-        <form class="space-y-6" id="eventForm">
+        <form id="clubForm" method="POST"
+            action="{{ $page === 'create' ? '/dashboard/clubs/' . $clubId . '/events' : '/dashboard/clubs/' . $clubId . '/events/' . $event->id }}"
+            class="space-y-6">
+            @csrf
+            @if($page === 'edit')
+                @method('PUT')
+            @endif
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
             <!-- Event Title -->
@@ -33,6 +39,9 @@
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Event Title</label>
                 <input type="text" placeholder="e.g. Tech Talk 2025" name="title"
                     class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
+                @error('title')
+                    <div class="text-red-500 text-sm">{{ $message }}</div>
+                @enderror
             </div>
 
             <!-- Description -->
@@ -40,6 +49,9 @@
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
                 <textarea rows="4" placeholder="Describe the event..." name="description"
                     class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white"></textarea>
+                @error('description')
+                    <div class="text-red-500 text-sm">{{ $message }}</div>
+                @enderror
             </div>
 
             <!-- Date & Time -->
@@ -48,11 +60,17 @@
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Start Time</label>
                     <input type="time" name="start_time"
                         class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
+                    @error('start_time')
+                        <div class="text-red-500 text-sm">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">End Time</label>
                     <input type="time" name="end_time"
                         class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
+                    @error('end_time')
+                        <div class="text-red-500 text-sm">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 
@@ -60,6 +78,9 @@
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Event Date</label>
                 <input type="date" name="date"
                     class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
+                @error('date')
+                    <div class="text-red-500 text-sm">{{ $message }}</div>
+                @enderror
             </div>
 
             <!-- Location -->
@@ -67,6 +88,9 @@
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Location</label>
                 <input type="text" placeholder="e.g. Auditorium A, Main Campus" name="location"
                     class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
+                @error('location')
+                    <div class="text-red-500 text-sm">{{ $message }}</div>
+                @enderror
             </div>
 
             <!-- Guest List -->
@@ -87,6 +111,9 @@
                     class="mt-4 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-100 hover:bg-blue-200 rounded-lg transition duration-200">
                     + Add Another Guest
                 </button>
+                @error('guests')
+                        <div class="text-red-500 text-sm">{{ $message }}</div>
+                    @enderror
             </div>
 
             <!-- Submit Button -->
@@ -106,7 +133,18 @@
                         <span>Save Changes</span>
                     @endif
                 </button>
-                <div id="event-creation-error" class="text-red-500 mt-4"></div>
+
+                @if(session('error'))
+                    <div class="text-red-500 text-sm">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                @if(session('success'))
+                    <div class="text-green-500 text-sm">
+                        {{ session('success') }}
+                    </div>
+                @endif
 
             </div>
         </form>
@@ -125,42 +163,14 @@
             newGuest.classList.add('flex', 'gap-2');
 
             newGuest.innerHTML = `
-                      <input type="text" name="guests[${guestIndex}][name]" placeholder="Guest Name"
-                             class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                      <input type="text" name="guests[${guestIndex}][email]" placeholder="Email"
-                             class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    `;
+                                              <input type="text" name="guests[${guestIndex}][name]" placeholder="Guest Name"
+                                                     class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                              <input type="text" name="guests[${guestIndex}][email]" placeholder="Email"
+                                                     class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            `;
 
             guestList.appendChild(newGuest);
             guestIndex++;
         });
-
-        document.getElementById("eventForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const form = e.target;
-            const formData = new FormData(form);
-            const errorBox = document.getElementById("event-creation-error");
-
-            fetch("/dashboard/events/create", {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value,
-                },
-                body: formData,
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-          window.location.href = data.redirect;
-        } else {
-          errorBox.textContent = data.message || "Club Creation Failed!";
-        }
-                })
-                .catch(err => {
-                    errorBox.textContent = "Something went wrong!";
-                    console.error(err);
-                });
-        });
-
     </script>
 @endpush

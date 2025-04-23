@@ -12,59 +12,54 @@ use Illuminate\Support\Facades\Log;
 
 class EventController extends Controller
 {
-    public function index()
+    public function index($id)
     {
-        // Fetch all events with their guests
-        $events = Event::with('guests')->get();
+        $clubId = $id;
+        $events = Event::select('id', 'title', 'start_time', 'end_time', 'date', 'location')
+            ->where('club_id', $clubId)
+            ->with('guests')
+            ->get();
 
-        // Return to the dashboard view
-        return view('dashboard.events', compact('events'));
+        return view('dashboard.events', compact('events', 'clubId'));
     }
 
-    public function show($id)
+    public function create($id)
     {
-        // Fetch a single event with guests
-        $event = Event::with('guests')->findOrFail($id);
-
-        // Return to the single event view
-        return view('dashboard.event', compact('event'));
-    }
-
-    public function public_show($id)
-    {
-        // Fetch a single event with guests
-        $event = Event::with('guests')->findOrFail($id);
-
-        // Return to the single event view
-        return view('event', compact('event'));
+        $page = 'create';
+        $clubId = $id;
+        return view('dashboard.event-form', compact('page', 'clubId'));
     }
 
     public function store(Request $request)
     {
-        // Validate event data
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:2000',
-            'start_time' => 'required',
-            'end_time' => 'required',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i',
             'date' => 'required|date',
             'location' => 'required|string|max:255',
             'guests' => 'array',
-            'guests.*.name' => 'required_with:guests.*.email|string|max:255',
-            'guests.*.email' => 'nullable|string|max:255',
+            'guests.*.name' => 'required|string|max:255',
+            'guests.*.email' => 'nullable|email|max:255',
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validator->errors()->first()
-            ]);
+
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
         DB::beginTransaction();
 
         try {
-            // Create the event
+
+            $clubRole = auth()->user()->clubRoles()->first();
+            if (!$clubRole) {
+                return redirect()->back()->with('error', 'You are not associated with any club.');
+            }
+
             $event = Event::create([
                 'title' => $request->title,
                 'description' => $request->description,
@@ -72,10 +67,10 @@ class EventController extends Controller
                 'end_time' => $request->end_time,
                 'date' => $request->date,
                 'location' => $request->location,
-                'club_id' =>auth()->user()->clubRoles()->first()?->club_id
+                'club_id' => $clubRole->club_id
+
             ]);
 
-            // Create guest entries
             if ($request->has('guests')) {
                 foreach ($request->guests as $guest) {
                     Guest::create([
@@ -88,11 +83,8 @@ class EventController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Event created successfully.',
-                'redirect' => '/dashboard/events'
-            ]);
+            return redirect('/dashboard/clubs/' . $clubRole->club_id . '/events')->with('success', 'Event created successfully.');
+
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -100,10 +92,9 @@ class EventController extends Controller
                 'trace' => $e->getTraceAsString(),
                 'request_data' => $request->all(),
             ]);
-            return response()->json([
-                'success' => false,
-                'message' => 'Error while creating event.'
-            ]);
+            return redirect()->back()
+                ->with('error', 'An error occurred')
+                ->withInput();
         }
     }
 }

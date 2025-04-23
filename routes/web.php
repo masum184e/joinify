@@ -55,15 +55,32 @@ Route::prefix('clubs')->group(function () {
     Route::get('/{club}/join', [ClubController::class, 'joinClub']);
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::prefix('/dashboard/clubs')->group(function () {
-        Route::get('/', [ClubController::class, 'index']);
-        Route::get('/create', [ClubController::class, 'create']);
-        Route::get('/{club}', [ClubController::class, 'show']);
-        Route::delete('/{club}', [ClubController::class, 'destroy']);
-        Route::post('/', [ClubController::class, 'store']);
-        Route::get('/{club}/edit', [ClubController::class, 'edit']);
-        Route::put('/{club}', [ClubController::class, 'update']);
+// Route::middleware(['auth'])->group(function () {
+//     Route::prefix('/dashboard/clubs')->group(function () {
+//         Route::get('/', [ClubController::class, 'index']);
+//         Route::get('/create', [ClubController::class, 'create']);
+//         Route::get('/{club}', [ClubController::class, 'show']);
+//         Route::delete('/{club}', [ClubController::class, 'destroy']);
+//         Route::post('/', [ClubController::class, 'store']);
+//         Route::get('/{club}/edit', [ClubController::class, 'edit']);
+//         Route::put('/{club}', [ClubController::class, 'update']);
+//     });
+// });
+Route::prefix('dashboard')->middleware(['auth'])->group(function () {
+    Route::resource('clubs', ClubController::class);
+    // Route::resource('clubs/{club}/events', EventController::class);
+
+    // Route::get('clubs/{club}/events/create', [EventController::class, 'create']);
+    // Route::get('clubs/{club}/events/', [EventController::class, 'index']);
+
+    Route::prefix('/clubs/{club}/events')->group(function () {
+        Route::get('/', [EventController::class, 'index']);
+        Route::get('/create', [EventController::class, 'create']);
+        // Route::get('/{club}', [EventController::class, 'show']);
+        // Route::delete('/{club}', [EventController::class, 'destroy']);
+        Route::post('/', [EventController::class, 'store']);
+        // Route::get('/{club}/edit', [EventController::class, 'edit']);
+        // Route::put('/{club}', [EventController::class, 'update']);
     });
 });
 
