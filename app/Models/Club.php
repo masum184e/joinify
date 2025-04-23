@@ -34,4 +34,9 @@ class Club extends Model
         return $this->hasOne(ClubUserRole::class)->where('role', 'accountant')->with('user');
     }
 
+    public function events()
+{
+    return $this->hasMany(Event::class);
+}
+
 }
