@@ -77,7 +77,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right space-x-3">
                                 <!-- Edit Icon -->
-                                <a href="/dashboard/clubs/1/edit"
+                                <a href="/dashboard/clubs/{{ $club->id }}/edit"
                                     class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-indigo-100 hover:bg-indigo-200 transition"
                                     title="Edit Club">
                                     <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2"
@@ -88,14 +88,20 @@
                                 </a>
 
                                 <!-- Remove Icon -->
-                                <button title="Remove Club"
-                                    class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-red-100 hover:bg-red-200 transition">
-                                    <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m-4 0h14" />
-                                    </svg>
-                                </button>
+                                <form method="POST" action="{{ url('/dashboard/clubs/' . $club->id) }}" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" title="Remove Club"
+                                        onclick="return confirm('Are you sure you want to delete this club?')"
+                                        class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-red-100 hover:bg-red-200 transition">
+                                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m-4 0h14" />
+                                        </svg>
+                                    </button>
+                                </form>
+
                             </td>
 
                         </tr>

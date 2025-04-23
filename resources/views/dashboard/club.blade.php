@@ -15,7 +15,7 @@
             <h1 class="text-3xl font-extrabold text-gray-800 tracking-tight flex items-center gap-2">
                 {{ $club->name }}
             </h1>
-            <a href="/dashboard/clubs/0/edit"
+            <a href="/dashboard/clubs/{{ $club->id }}/edit"
                 class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl shadow-md transition-all duration-300">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"

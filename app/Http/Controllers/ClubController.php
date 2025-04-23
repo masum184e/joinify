@@ -72,6 +72,26 @@ class ClubController extends Controller
         return view('dashboard.club', compact('club'));
     }
 
+    public function create()
+    {
+        return view('dashboard.club-form', compact('page'));
+    }
+
+    public function edit($id)
+    {
+        $club = Club::findOrFail($id);
+        $page = 'edit';
+        return view('dashboard.club-form', compact('page', 'club'));
+    }
+
+    public function destroy($id)
+    {
+        $club = Club::findOrFail($id);
+        $club->delete();
+
+        return redirect('/dashboard/clubs')->with('success', 'Club deleted successfully.');
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
