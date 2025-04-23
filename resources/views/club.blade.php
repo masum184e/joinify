@@ -96,7 +96,7 @@
     </div>
 
     <div class="mt-6">
-    <a href="/clubs/0/join"
+    <a href="/clubs/{{ $club->id }}/join"
       class="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-bold px-5 py-3 rounded-xl shadow-lg transition-all duration-300 w-full text-center">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />

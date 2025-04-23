@@ -12,7 +12,8 @@
       📝 Membership Form
     </h2>
 
-    <form class="space-y-6" id="joinForm" action="{{ url('/pay') }}" method="POST">
+    <form class="space-y-6" id="joinForm" action="/pay/{{ $club->id }}" method="POST">
+
 
       <input type="hidden" value="{{ csrf_token() }}" name="_token" />
 
@@ -21,6 +22,9 @@
       <label for="name" class="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
       <input type="text" id="name" placeholder="John Doe" name="name"
         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
+      @error('name')
+      <div class="text-red-500 text-sm">{{ $message }}</div>
+    @enderror
       </div>
 
       <!-- Email Address -->
@@ -28,6 +32,9 @@
       <label for="email" class="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
       <input type="email" id="email" placeholder="john.doe@example.com" name="email"
         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
+      @error('email')
+      <div class="text-red-500 text-sm">{{ $message }}</div>
+    @enderror
       </div>
 
       <!-- Student ID -->
@@ -35,6 +42,9 @@
       <label for="student-id" class="block text-sm font-semibold text-gray-700 mb-1">Student ID</label>
       <input type="text" id="student-id" placeholder="S1234567" name="student_id"
         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
+      @error('student_id')
+      <div class="text-red-500 text-sm">{{ $message }}</div>
+    @enderror
       </div>
 
       <!-- Department -->
@@ -49,6 +59,9 @@
         <option value="arts">Arts</option>
         <option value="biology">Biology</option>
       </select>
+      @error('department')
+      <div class="text-red-500 text-sm">{{ $message }}</div>
+    @enderror
       </div>
 
       <!-- Reason for Joining -->
@@ -56,6 +69,9 @@
       <label for="reason" class="block text-sm font-semibold text-gray-700 mb-1">Why do you want to join?</label>
       <textarea id="reason" rows="4" placeholder="Tell us why you're interested in this club..." name="reason"
         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"></textarea>
+      @error('reason')
+      <div class="text-red-500 text-sm">{{ $message }}</div>
+    @enderror
       </div>
 
       <!-- Submit Button -->
@@ -64,7 +80,18 @@
         class="w-full bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold px-6 py-3 rounded-xl shadow-lg transition duration-300 ease-in-out">
         Make Payment
       </button>
-      <div id="join-error" class="text-red-500 mt-4"></div>
+
+      @if(session('error'))
+      <div class="text-red-500 text-sm">
+      {{ session('error') }}
+      </div>
+    @endif
+
+      @if(session('success'))
+      <div class="text-green-500 text-sm">
+      {{ session('success') }}
+      </div>
+    @endif
 
       </div>
     </form>

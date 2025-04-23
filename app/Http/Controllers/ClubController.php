@@ -43,7 +43,7 @@ class ClubController extends Controller
     }
     public function joinClub($id)
     {
-        $club = Club::select('name')->findOrFail($id);
+        $club = Club::select('id', 'name')->findOrFail($id);
         return view('join-club', compact('club'));
     }
 
