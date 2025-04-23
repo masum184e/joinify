@@ -76,7 +76,7 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
     Route::prefix('/clubs/{club}/events')->group(function () {
         Route::get('/', [EventController::class, 'index']);
         Route::get('/create', [EventController::class, 'create']);
-        // Route::get('/{club}', [EventController::class, 'show']);
+        Route::get('/{event}', [EventController::class, 'show']);
         // Route::delete('/{club}', [EventController::class, 'destroy']);
         Route::post('/', [EventController::class, 'store']);
         // Route::get('/{club}/edit', [EventController::class, 'edit']);

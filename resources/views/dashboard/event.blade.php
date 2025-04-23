@@ -14,15 +14,15 @@
             <!-- Title & Subtitle -->
             <div>
                 <h1 class="text-4xl font-black text-gray-800 tracking-tight flex items-center gap-3">
-                {{ $event->title }}
+                    {{ $event->title }}
                 </h1>
                 <p class="text-sm text-gray-500 mt-1 italic">
-                    Presented by <span class="text-blue-600 font-semibold">Coding Club</span>
+                    Presented by <span class="text-blue-600 font-semibold"> {{ $event->club->name }}</span>
                 </p>
             </div>
 
             <!-- Edit Button -->
-            <a href="/dashboard/events/0/edit"
+            <a href="/dashboard/clubs/{{  $event->club->id }}events/{{ $event->id }}/edit"
                 class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold px-6 py-2.5 rounded-xl shadow-lg transition-all duration-300">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -56,7 +56,9 @@
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-gray-500 uppercase">Time</h3>
-                    <p class="text-lg">{{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('g:i A') }}</p>
+                    <p class="text-lg">{{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }} -
+                        {{ \Carbon\Carbon::parse($event->end_time)->format('g:i A') }}
+                    </p>
                 </div>
             </div>
 
@@ -76,24 +78,13 @@
 
         <!-- Guests -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-
-            <!-- Guest Card 1 -->
-            <div class="bg-gradient-to-br from-purple-100 to-purple-200 p-6 rounded-2xl shadow-md">
-                <h3 class="text-lg font-bold text-purple-800 mb-1">Dr. Jane Smith</h3>
-                <p class="text-sm text-purple-700">Keynote Speaker</p>
-            </div>
-
-            <!-- Guest Card 2 -->
-            <div class="bg-gradient-to-br from-teal-100 to-teal-200 p-6 rounded-2xl shadow-md">
-                <h3 class="text-lg font-bold text-teal-800 mb-1">Prof. Alan Turing</h3>
-                <p class="text-sm text-teal-700">Guest Lecturer</p>
-            </div>
-
-            <!-- Guest Card 3 -->
-            <div class="bg-gradient-to-br from-pink-100 to-pink-200 p-6 rounded-2xl shadow-md">
-                <h3 class="text-lg font-bold text-pink-800 mb-1">Sarah Lee</h3>
-                <p class="text-sm text-pink-700">Alumni</p>
-            </div>
+            @foreach($event->guests as $guest)
+                <!-- Guest Card 1 -->
+                <div class="bg-gradient-to-br from-purple-100 to-purple-200 p-6 rounded-2xl shadow-md">
+                    <h3 class="text-lg font-bold text-purple-800 mb-1">{{ $guest->name }}</h3>
+                    <p class="text-sm text-purple-700">{{ $guest->email }}</p>
+                </div>
+            @endforeach
 
         </div>
 
@@ -102,7 +93,7 @@
         <div>
             <h2 class="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">📢 Description</h2>
             <p class="text-gray-700 leading-relaxed">
-            {{ $event->description }}
+                {{ $event->description }}
             </p>
         </div>
 

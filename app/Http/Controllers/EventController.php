@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Models\Guest;
+use App\Models\EventGuest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +22,12 @@ class EventController extends Controller
             ->get();
 
         return view('dashboard.events', compact('events', 'clubId'));
+    }
+
+    public function show($clubId, $eventId)
+    {
+        $event = Event::with(['guests', 'club'])->findOrFail($eventId);
+        return view('dashboard.event', compact('event'));
     }
 
     public function create($id)
@@ -72,11 +79,15 @@ class EventController extends Controller
             ]);
 
             if ($request->has('guests')) {
-                foreach ($request->guests as $guest) {
-                    Guest::create([
+                foreach ($request->guests as $guestData) {
+                    $guest = Guest::firstOrCreate(
+                        ['email' => $guestData['email']],
+                        ['name' => $guestData['name']]
+                    );
+
+                    EventGuest::create([
                         'event_id' => $event->id,
-                        'name' => $guest['name'],
-                        'email' => $guest['email'] ?? null,
+                        'guest_id' => $guest->id,
                     ]);
                 }
             }
