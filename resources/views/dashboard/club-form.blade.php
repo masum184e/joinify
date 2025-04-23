@@ -35,7 +35,7 @@
     <!-- Club Name -->
     <div>
       <label class="block text-sm font-semibold text-gray-700 mb-1">Club Name</label>
-      <input type="text" placeholder="e.g. Photography Club" name="name"
+      <input type="text" placeholder="e.g. Photography Club" name="name" value="{{ $club->name ?? '' }}" 
       class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white"
       required />
     </div>
@@ -43,9 +43,9 @@
     <!-- Description -->
     <div>
       <label class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
-      <textarea rows="4" placeholder="Describe the club..." name="description"
+      <textarea rows="4" placeholder="Describe the club..." name="description" 
       class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white"
-      required></textarea>
+      required>{{ $club->description ?? '' }}</textarea>
     </div>
 
     <!-- President Info -->
@@ -54,13 +54,13 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-        <input type="text" name="presidentName"
+        <input type="text" name="presidentName" value="{{ $club->president?->user?->name ?? '' }}"
         class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
         placeholder="e.g., Alex Johnson" required>
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-        <input type="email" name="presidentEmail"
+        <input type="email" name="presidentEmail" value="{{ $club->president?->user?->email ?? '' }}"
         class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
         placeholder="e.g., alex@example.com" required>
       </div>
@@ -73,13 +73,13 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-        <input type="text" name="accountantName"
+        <input type="text" name="accountantName" value="{{ $club->accountant?->user?->name ?? '' }}"
         class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
         placeholder="e.g., Maria Lopez" required>
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-        <input type="email" name="accountantEmail"
+        <input type="email" name="accountantEmail" value="{{ $club->accountant?->user?->email ?? '' }}"
         class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
         placeholder="e.g., maria@example.com" required>
       </div>
@@ -92,13 +92,13 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-        <input type="text" name="programSecretaryName"
+        <input type="text" name="programSecretaryName" value="{{ $club->secretary?->user?->name ?? '' }}"
         class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
         placeholder="e.g., Chris Evans" required>
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-        <input type="email" name="programSecretaryEmail"
+        <input type="email" name="programSecretaryEmail" value="{{ $club->secretary?->user?->email ?? '' }}"
         class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
         placeholder="e.g., chris@example.com" required>
       </div>

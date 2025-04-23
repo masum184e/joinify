@@ -186,41 +186,35 @@ class ClubController extends Controller
 
     public function update(Request $request, $id)
     {
-        //     $validator = Validator::make($request->all(), [
-        //         'name' => 'required|string|max:255',
-        //         'description' => 'nullable|string|max:1000',
-        //         'presidentName' => 'required|string|max:255',
-        //         'presidentEmail' => 'required|email|max:255',
-        //         'accountantName' => 'required|string|max:255',
-        //         'accountantEmail' => 'required|email|max:255',
-        //         'programSecretaryName' => 'required|string|max:255',
-        //         'programSecretaryEmail' => 'required|email|max:255',
-        //     ]);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'presidentName' => 'required|string|max:255',
+            'presidentEmail' => 'required|email|max:255',
+            'accountantName' => 'required|string|max:255',
+            'accountantEmail' => 'required|email|max:255',
+            'programSecretaryName' => 'required|string|max:255',
+            'programSecretaryEmail' => 'required|email|max:255',
+        ]);
 
-        //     if ($validator->fails()) {
-        //         return response()->json([
-        //             'success' => false,
-        //             'message' => $validator->errors()->first()
-        //         ]);
-        //     }
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
-        //     // Example update logic
-        //     // $club = Club::findOrFail($id);
-        //     // $club->update([
-        //     //     'name' => $request->name,
-        //     //     'description' => $request->description,
-        //     //     'president_name' => $request->presidentName,
-        //     //     'president_email' => $request->presidentEmail,
-        //     //     'accountant_name' => $request->accountantName,
-        //     //     'accountant_email' => $request->accountantEmail,
-        //     //     'secretary_name' => $request->programSecretaryName,
-        //     //     'secretary_email' => $request->programSecretaryEmail,
-        //     // ]);
+        $club = Club::findOrFail($id);
+        $club->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'president_name' => $request->presidentName,
+            'president_email' => $request->presidentEmail,
+            'accountant_name' => $request->accountantName,
+            'accountant_email' => $request->accountantEmail,
+            'secretary_name' => $request->programSecretaryName,
+            'secretary_email' => $request->programSecretaryEmail,
+        ]);
 
-        //     return response()->json([
-        //         'success' => true,
-        //         'message' => 'Club updated successfully!',
-        //         'redirect' => '/dashboard/clubs/' . $id
-        //     ]);
+        return redirect("/dashboard/clubs/{$club->id}")->with('success', 'Club updated successfully!');
     }
 }
