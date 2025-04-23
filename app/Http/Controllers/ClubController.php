@@ -74,6 +74,7 @@ class ClubController extends Controller
 
     public function create()
     {
+        $page = 'create';
         return view('dashboard.club-form', compact('page'));
     }
 
