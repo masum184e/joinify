@@ -22,7 +22,7 @@
             </div>
 
             <!-- Edit Button -->
-            <a href="/dashboard/clubs/{{  $event->club->id }}events/{{ $event->id }}/edit"
+            <a href="/dashboard/clubs/{{  $event->club->id }}/events/{{ $event->id }}/edit"
                 class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold px-6 py-2.5 rounded-xl shadow-lg transition-all duration-300">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -76,16 +76,21 @@
             </div>
         </div>
 
-        <!-- Guests -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-            @foreach($event->guests as $guest)
-                <!-- Guest Card 1 -->
-                <div class="bg-gradient-to-br from-purple-100 to-purple-200 p-6 rounded-2xl shadow-md">
-                    <h3 class="text-lg font-bold text-purple-800 mb-1">{{ $guest->name }}</h3>
-                    <p class="text-sm text-purple-700">{{ $guest->email }}</p>
-                </div>
-            @endforeach
 
+        <div>
+            <h2 class="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">💡 Guests</h2>
+
+            <!-- Guests -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                @foreach($event->guests as $guest)
+                    <!-- Guest Card 1 -->
+                    <div class="bg-gradient-to-br from-purple-100 to-purple-200 p-6 rounded-2xl shadow-md">
+                        <h3 class="text-lg font-bold text-purple-800 mb-1">{{ $guest->guest->name }}</h3>
+                        <p class="text-sm text-purple-700">{{ $guest->guest->email }}</p>
+                    </div>
+                @endforeach
+
+            </div>
         </div>
 
 

@@ -54,6 +54,11 @@ Route::prefix('clubs')->group(function () {
     Route::get('/{club}/join', [ClubController::class, 'joinClub']);
 });
 
+Route::prefix('clubs/{club}/events/')->group(function () {
+    Route::get('/', [EventController::class, 'publicIndex']);
+    Route::get('/{event}', [EventController::class, 'publicShow']);
+});
+
 // Route::middleware(['auth'])->group(function () {
 //     Route::prefix('/dashboard/clubs')->group(function () {
 //         Route::get('/', [ClubController::class, 'index']);
@@ -76,13 +81,12 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
         Route::get('/', [EventController::class, 'index']);
         Route::get('/create', [EventController::class, 'create']);
         Route::get('/{event}', [EventController::class, 'show']);
-        // Route::delete('/{club}', [EventController::class, 'destroy']);
+        Route::delete('/{event}', [EventController::class, 'destroy']);
         Route::post('/', [EventController::class, 'store']);
-        // Route::get('/{club}/edit', [EventController::class, 'edit']);
-        // Route::put('/{club}', [EventController::class, 'update']);
+        Route::get('/{event}/edit', [EventController::class, 'edit']);
+        Route::put('/{event}', [EventController::class, 'update']);
     });
 });
-
 
 // SSLCOMMERZ Start
 // Route::get('/example1', [SslCommerzPaymentController::class, 'exampleEasyCheckout']);

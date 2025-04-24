@@ -37,7 +37,7 @@
             <!-- Event Title -->
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Event Title</label>
-                <input type="text" placeholder="e.g. Tech Talk 2025" name="title"
+                <input type="text" placeholder="e.g. Tech Talk 2025" name="title" value="{{ $event->title ?? '' }}"
                     class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
                 @error('title')
                     <div class="text-red-500 text-sm">{{ $message }}</div>
@@ -48,7 +48,7 @@
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
                 <textarea rows="4" placeholder="Describe the event..." name="description"
-                    class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white"></textarea>
+                    class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white">{{ $event->description ?? '' }}</textarea>
                 @error('description')
                     <div class="text-red-500 text-sm">{{ $message }}</div>
                 @enderror
@@ -58,7 +58,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Start Time</label>
-                    <input type="time" name="start_time"
+                    <input type="time" name="start_time" value="{{ $event->start_time ?? '' }}"
                         class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
                     @error('start_time')
                         <div class="text-red-500 text-sm">{{ $message }}</div>
@@ -66,7 +66,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">End Time</label>
-                    <input type="time" name="end_time"
+                    <input type="time" name="end_time" value="{{ $event->end_time ?? '' }}"
                         class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
                     @error('end_time')
                         <div class="text-red-500 text-sm">{{ $message }}</div>
@@ -76,7 +76,7 @@
 
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Event Date</label>
-                <input type="date" name="date"
+                <input type="date" name="date" value="{{ $event->date ?? '' }}"
                     class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
                 @error('date')
                     <div class="text-red-500 text-sm">{{ $message }}</div>
@@ -87,6 +87,7 @@
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Location</label>
                 <input type="text" placeholder="e.g. Auditorium A, Main Campus" name="location"
+                    value="{{ $event->location ?? '' }}"
                     class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
                 @error('location')
                     <div class="text-red-500 text-sm">{{ $message }}</div>
@@ -97,13 +98,31 @@
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Guests</label>
                 <div id="guest-list" class="space-y-4">
-                    <!-- Guest Row -->
-                    <div class="flex flex-col md:flex-row gap-3">
-                        <input type="text" name="guests[0][name]" placeholder="Guest Name"
-                            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
-                        <input type="text" name="guests[0][email]" placeholder="#mail"
-                            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
-                    </div>
+                    @php
+                        $guests = $event->guests ?? old('guests', [['name' => '', 'email' => '']]);
+                    @endphp
+
+                    @foreach($guests as $index => $guest)
+                        <div class="flex flex-col md:flex-row gap-3">
+                            <div class="flex-1">
+                                <input type="text" name="guests[{{ $index }}][name]" placeholder="Guest Name"
+                                    value="{{ $guest->guest['name'] ?? '' }}"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
+                                @if ($errors->has("guests.$index.name"))
+                                    <div class="text-red-500 text-sm mt-1">{{ $errors->first("guests.$index.name") }}</div>
+                                @endif
+                            </div>
+                            <div class="flex-1">
+                                <input type="text" name="guests[{{ $index }}][email]" placeholder="Email"
+                                    value="{{ $guest->guest['email'] ?? '' }}"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
+                                @if ($errors->has("guests.$index.email"))
+                                    <div class="text-red-500 text-sm mt-1">{{ $errors->first("guests.$index.email") }}</div>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+
                 </div>
 
                 <!-- Add Guest Button -->
@@ -112,8 +131,8 @@
                     + Add Another Guest
                 </button>
                 @error('guests')
-                        <div class="text-red-500 text-sm">{{ $message }}</div>
-                    @enderror
+                    <div class="text-red-500 text-sm">{{ $message }}</div>
+                @enderror
             </div>
 
             <!-- Submit Button -->
@@ -155,22 +174,29 @@
 
 @push('scripts')
     <script>
-        let guestIndex = 1;
-        document.getElementById('add-guest').addEventListener('click', function () {
-            const guestList = document.getElementById('guest-list');
+        document.addEventListener('DOMContentLoaded', function () {
+            let guestIndex = document.querySelectorAll('#guest-list > div').length;
 
-            const newGuest = document.createElement('div');
-            newGuest.classList.add('flex', 'gap-2');
+            document.getElementById('add-guest').addEventListener('click', function () {
+                const guestList = document.getElementById('guest-list');
 
-            newGuest.innerHTML = `
-                                              <input type="text" name="guests[${guestIndex}][name]" placeholder="Guest Name"
-                                                     class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                              <input type="text" name="guests[${guestIndex}][email]" placeholder="Email"
-                                                     class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                            `;
+                const newGuest = document.createElement('div');
+                newGuest.classList.add('flex', 'flex-col', 'md:flex-row', 'gap-3');
 
-            guestList.appendChild(newGuest);
-            guestIndex++;
+                newGuest.innerHTML = `
+                                    <div class="flex-1">
+                                        <input type="text" name="guests[${guestIndex}][name]" placeholder="Guest Name"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
+                                    </div>
+                                    <div class="flex-1">
+                                        <input type="text" name="guests[${guestIndex}][email]" placeholder="Email"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
+                                    </div>
+                                `;
+
+                guestList.appendChild(newGuest);
+                guestIndex++;
+            });
         });
     </script>
 @endpush
