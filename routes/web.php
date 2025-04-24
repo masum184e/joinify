@@ -51,7 +51,6 @@ Route::get('/logout', [AuthController::class, 'logout']);
 Route::prefix('clubs')->group(function () {
     Route::get('/', [ClubController::class, 'publicIndex']);
     Route::get('/{club}', [ClubController::class, 'publicShow']);
-    Route::get('/{club}', [ClubController::class, 'publicShow']);
     Route::get('/{club}/join', [ClubController::class, 'joinClub']);
 });
 

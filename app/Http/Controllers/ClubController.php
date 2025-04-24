@@ -17,7 +17,6 @@ class ClubController extends Controller
 {
     public function publicIndex()
     {
-        // $clubs = Club::with(['userRoles.user'])->get();
         $clubs = Club::withCount('userRoles')
             ->select('id', 'name', 'description', 'created_at')
             ->get()
@@ -29,9 +28,8 @@ class ClubController extends Controller
     }
     public function publicShow($id)
     {
-        // $club = Club::with(['userRoles.user'])->findOrFail($id);
-        $club = Club::select('id', 'name', 'description', 'created_at')
-            ->withCount(['userRoles'])
+        $club = Club::withCount(['userRoles'])
+            ->select('id', 'name', 'description', 'created_at')
             ->with([
                 'president.user:id,name,email',
                 'secretary.user:id,name,email',
@@ -49,6 +47,11 @@ class ClubController extends Controller
 
     public function index()
     {
+        $user = auth()->user();
+        if (!$user->globalRole || $user->globalRole->role !== 'advisor') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $clubs = Club::withCount('userRoles')
             ->withCount(['userRoles'])
             ->with([
@@ -60,6 +63,11 @@ class ClubController extends Controller
 
     public function show($id)
     {
+        $user = auth()->user();
+        if (!$user->globalRole || $user->globalRole->role !== 'advisor') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $club = Club::select('id', 'name', 'description', 'created_at')
             ->withCount(['userRoles'])
             ->with([
@@ -76,12 +84,22 @@ class ClubController extends Controller
 
     public function create()
     {
+        $user = auth()->user();
+        if (!$user->globalRole || $user->globalRole->role !== 'advisor') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $page = 'create';
         return view('dashboard.club-form', compact('page'));
     }
 
     public function edit($id)
     {
+        $user = auth()->user();
+        if (!$user->globalRole || $user->globalRole->role !== 'advisor') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $club = Club::findOrFail($id);
         $page = 'edit';
         return view('dashboard.club-form', compact('page', 'club'));
@@ -89,6 +107,11 @@ class ClubController extends Controller
 
     public function destroy($id)
     {
+        $user = auth()->user();
+        if (!$user->globalRole || $user->globalRole->role !== 'advisor') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $club = Club::findOrFail($id);
         $club->delete();
 
@@ -97,6 +120,11 @@ class ClubController extends Controller
 
     public function store(Request $request)
     {
+        $user = auth()->user();
+        if (!$user->globalRole || $user->globalRole->role !== 'advisor') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
@@ -189,6 +217,11 @@ class ClubController extends Controller
 
     public function update(Request $request, $id)
     {
+        $user = auth()->user();
+        if (!$user->globalRole || $user->globalRole->role !== 'advisor') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',

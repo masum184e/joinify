@@ -33,7 +33,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(ClubUserRole::class);
     }
-
+    public function globalRole()
+    {
+        return $this->hasOne(GlobalUserRole::class);
+    }
+    
     // public function memberships()
     // {
     //     return $this->hasMany(Membership::class);
@@ -51,10 +55,6 @@ class User extends Authenticatable
     // {
     //     return $this->belongsTo(Club::class);
     // }
-    public function clubUserRoles()
-    {
-        return $this->hasMany(ClubUserRole::class);
-    }
     // public function clubMemberships()
     // {
     //     return $this->hasMany(Membership::class);

@@ -73,7 +73,7 @@
         </div>
       </div>
       <p class="text-gray-900 font-semibold">{{ $club->secretary?->user?->name }}</p>
-      <p class="text-sm text-gray-700">{{ $club->secretary?->user?->name }}</p>
+      <p class="text-sm text-gray-700">{{ $club->secretary?->user?->email }}</p>
       </div>
 
       <!-- Accountant -->
@@ -89,7 +89,7 @@
         </div>
       </div>
       <p class="text-gray-900 font-semibold">{{ $club->accountant?->user?->name }}</p>
-      <p class="text-sm text-gray-700">{{ $club->accountant?->user?->name }}</p>
+      <p class="text-sm text-gray-700">{{ $club->accountant?->user?->email }}</p>
       </div>
 
     </div>

@@ -31,7 +31,7 @@
 
       <nav>
         <ul class="space-y-4 text-sm font-medium">
-          @if(auth()->user() && auth()->user()->role === 'advisor')
+          @if(auth()->user()->globalRole && auth()->user()->globalRole->role === 'advisor')
 
         <li>
         <a href="dashboard" class="flex items-center space-x-2 transition-all duration-200
@@ -108,7 +108,8 @@
           </a>
           </li>
       @endif
-          @if(auth()->user() && auth()->user()->role === 'advisor')
+          @if(auth()->user()->globalRole && auth()->user()->globalRole->role === 'advisor')
+
           <li>
           <a href="/dashboard/clubs"
             class="flex items-center space-x-2 transition-all duration-200
