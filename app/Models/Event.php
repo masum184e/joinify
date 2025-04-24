@@ -10,7 +10,13 @@ class Event extends Model
     use HasFactory;
 
     protected $fillable = [
-        'club_id', 'title', 'description', 'date', 'start_time', 'end_time', 'location',
+        'club_id',
+        'title',
+        'description',
+        'date',
+        'start_time',
+        'end_time',
+        'location',
     ];
 
     public function club()
@@ -18,8 +24,12 @@ class Event extends Model
         return $this->belongsTo(Club::class);
     }
 
+    // public function guests()
+    // {
+    //     return $this->belongsToMany(Guest::class, 'event_guests');
+    // }
     public function guests()
     {
-        return $this->belongsToMany(Guest::class, 'event_guests');
+        return $this->hasMany(EventGuest::class);
     }
 }

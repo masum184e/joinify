@@ -14,7 +14,7 @@ return new class extends Migration
         //
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('membership_id')->constrained()->onDelete('cascade');
+            $table->foreignId('membership_id')->constrained('memberships')->onDelete('cascade');
             $table->enum('payment_status', ['pending', 'paid', 'failed'])->default('pending');
             $table->timestamp('paid_at')->nullable();
             $table->decimal('amount', 10, 2);

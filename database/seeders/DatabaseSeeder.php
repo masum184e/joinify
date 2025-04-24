@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\GlobalUserRole;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -16,13 +17,18 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
+        $user = User::factory()->create([
             'name' => 'Masum Billah',
             'email' => 'masum184e@gmail.com',
-            'role' => 'advisor',
-            'password' => Hash::make('masum184e@gmail.com'), // 🔐 Use a secure password
+            'password' => Hash::make('masum184e@gmail.com'),
             'created_at' => now(),
-            'profile_picture' => null, // or use a default path if you want
+            'profile_picture' => null,
+        ]);
+
+        GlobalUserRole::create([
+            'user_id' => $user->id,
+            'role' => 'advisor',
+            'created_at' => now(),
         ]);
     }
 }

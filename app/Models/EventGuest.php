@@ -12,8 +12,6 @@ class EventGuest extends Model
 
     protected $table = 'event_guests';
 
-    public $timestamps = false;
-
     protected $fillable = [
         'event_id',
         'guest_id',

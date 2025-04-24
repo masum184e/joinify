@@ -15,10 +15,8 @@ return new class extends Migration {
             $table->string('name', 100);
             $table->string('email', 150)->unique();
             $table->string('password', 255);
-            $table->enum('role', ['member', 'advisor', 'president', 'secretary', 'accountant']);
             $table->string('profile_picture', 255)->nullable();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->timestamps();
             $table->rememberToken();
         });
     }

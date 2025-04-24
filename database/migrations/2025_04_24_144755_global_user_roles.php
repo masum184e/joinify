@@ -11,13 +11,11 @@ return new class extends Migration {
     public function up(): void
     {
         //
-        Schema::create('memberships', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('member_id')->constrained('members')->onDelete('cascade');
-            $table->foreignId('club_id')->constrained('clubs')->onDelete('cascade');
+        Schema::create('global_user_roles', function (Blueprint $table) {
+            $table->id(); // BIGINT AUTO_INCREMENT PRIMARY KEY
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->unique();
+            $table->enum('role', ['advisor']);
             $table->timestamps();
-
-            $table->unique(['member_id', 'club_id']);
         });
     }
 
@@ -27,6 +25,6 @@ return new class extends Migration {
     public function down(): void
     {
         //
-        Schema::dropIfExists('memberships');
+        Schema::dropIfExists('global_user_roles');
     }
 };

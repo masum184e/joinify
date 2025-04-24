@@ -9,12 +9,14 @@ class Guest extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
-
     protected $fillable = ['name', 'email'];
 
+    // public function events()
+    // {
+    //     return $this->belongsToMany(Event::class, 'event_guests');
+    // }
     public function events()
     {
-        return $this->belongsToMany(Event::class, 'event_guests');
+        return $this->hasMany(EventGuest::class);
     }
 }

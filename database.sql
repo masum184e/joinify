@@ -3,11 +3,20 @@ CREATE TABLE users (
     name VARCHAR(100),
     email VARCHAR(150) UNIQUE,
     password VARCHAR(255),
-    role ENUM('member', 'advisor', 'president', 'secretary', 'accountant'),
     profile_picture VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+CREATE TABLE user_global_roles (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT UNIQUE,
+    role ENUM('advisor'),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 
 CREATE TABLE clubs (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,

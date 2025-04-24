@@ -18,7 +18,6 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'role',
         'password',
         'profile_picture',
     ];
@@ -29,33 +28,44 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    // 🧠 Cast data types
-    protected $casts = [
-        // 'email_verified_at' => 'datetime',
-    ];
-
     // 🔁 Relationships
     public function clubRoles()
     {
         return $this->hasMany(ClubUserRole::class);
     }
-    // public function member()
+
+    // public function memberships()
     // {
-    //     return $this->hasOne(Member::class);
+    //     return $this->hasMany(Membership::class);
     // }
 
-    // public function clubsAsPresident()
+    // public function users()
     // {
-    //     return $this->hasMany(Club::class, 'president_id');
+    //     return $this->hasMany(User::class);
+    // }
+    public function member()
+    {
+        return $this->hasOne(Member::class);
+    }
+    // public function club()
+    // {
+    //     return $this->belongsTo(Club::class);
+    // }
+    public function clubUserRoles()
+    {
+        return $this->hasMany(ClubUserRole::class);
+    }
+    // public function clubMemberships()
+    // {
+    //     return $this->hasMany(Membership::class);
+    // }
+    // public function clubMembership()
+    // {
+    //     return $this->hasMany(Membership::class);
+    // }
+    // public function clubUser()
+    // {
+    //     return $this->hasMany(Membership::class);
     // }
 
-    // public function clubsAsSecretary()
-    // {
-    //     return $this->hasMany(Club::class, 'secretary_id');
-    // }
-
-    // public function clubsAsAccountant()
-    // {
-    //     return $this->hasMany(Club::class, 'accountant_id');
-    // }
 }
