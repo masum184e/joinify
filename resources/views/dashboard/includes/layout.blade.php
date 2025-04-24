@@ -33,94 +33,95 @@
         <ul class="space-y-4 text-sm font-medium">
           @if(auth()->user()->globalRole && auth()->user()->globalRole->role === 'advisor')
 
-        <li>
-        <a href="dashboard" class="flex items-center space-x-2 transition-all duration-200
-      {{ Request::is('dashboard') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"></path>
-          </svg>
-          <span>Advisor</span>
-        </a>
-        </li>
-      @endif
-          @if(auth()->user() && auth()->user()->role === 'president')
-        <li>
-        <a href="dashboard" class="flex items-center space-x-2 transition-all duration-200
-      {{ Request::is('dashboard') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M5.121 17.804A3.001 3.001 0 018 15h8a3 3 0 012.879 2.804l.621 7.451A2 2 0 0117.5 27h-11a2 2 0 01-1.998-1.745l.619-7.451z" />
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 12a4 4 0 100-8 4 4 0 000 8z" />
-          </svg>
-          <span>President</span>
-        </a>
-        </li>
-      @endif
-          @if(auth()->user() && auth()->user()->role === 'secretary')
-        <li>
-        <a href="dashboard" class="flex items-center space-x-2 transition-all duration-200
-      {{ Request::is('dashboard') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4V4z" />
-          <path stroke-linecap="round" stroke-linejoin="round" d="M8 8h8M8 12h6m-6 4h4" />
-          </svg>
-          <span>Secretary</span>
-        </a>
-        </li>
-      @endif
-          @if(auth()->user() && auth()->user()->role === 'accountant')
-
-        <li>
-        <a href="dashboard" class="flex items-center space-x-2 transition-all duration-200
-      {{ Request::is('dashboard') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M11 11V9a4 4 0 014-4h4m0 0v4m0-4L10 14m-6 4h16v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z" />
-          </svg>
-          <span>Accountant</span>
-        </a>
-        </li>
-      @endif
-
-          @if(auth()->user() && auth()->user()->role === 'secretary')
           <li>
-          <a href="/dashboard/events"
-            class="flex items-center space-x-2 transition-all duration-200
-        {{ Request::is('dashboard/events*') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
+          <a href="dashboard" class="flex items-center space-x-2 transition-all duration-200
+        {{ Request::is('dashboard') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"></path>
             </svg>
-            <span>Events</span>
+            <span>Advisor</span>
           </a>
           </li>
       @endif
-          @if(auth()->user() && auth()->user()->role === 'accountant')
+          @if(auth()->user() && auth()->user()->clubRoles->contains('role', 'president'))
           <li>
-          <a href="/dashboard/members"
-            class="flex items-center space-x-2 transition-all duration-200
-        {{ Request::is('dashboard/members*') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
+          <a href="dashboard" class="flex items-center space-x-2 transition-all duration-200
+        {{ Request::is('dashboard') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round"
-              d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87M16 7a4 4 0 110 8 4 4 0 010-8zM8 7a4 4 0 100 8 4 4 0 000-8z" />
+              d="M5.121 17.804A3.001 3.001 0 018 15h8a3 3 0 012.879 2.804l.621 7.451A2 2 0 0117.5 27h-11a2 2 0 01-1.998-1.745l.619-7.451z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 12a4 4 0 100-8 4 4 0 000 8z" />
             </svg>
-            <span>Membership</span>
+            <span>President</span>
           </a>
           </li>
+      @endif
+          @if(auth()->user() && auth()->user()->clubRoles->contains('role', 'secretary'))
+          <li>
+          <a href="dashboard" class="flex items-center space-x-2 transition-all duration-200
+        {{ Request::is('dashboard') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4V4z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 8h8M8 12h6m-6 4h4" />
+            </svg>
+            <span>Secretary</span>
+          </a>
+          </li>
+      @endif
+          @if(auth()->user() && auth()->user()->clubRoles->contains('role', 'accountant'))
+
+          <li>
+          <a href="dashboard" class="flex items-center space-x-2 transition-all duration-200
+        {{ Request::is('dashboard') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M11 11V9a4 4 0 014-4h4m0 0v4m0-4L10 14m-6 4h16v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z" />
+            </svg>
+            <span>Accountant</span>
+          </a>
+          </li>
+      @endif
+
+          @if(auth()->user() && auth()->user()->clubRoles->contains('role', 'secretary'))
+        <li>
+        <a href="/dashboard/events"
+          class="flex items-center space-x-2 transition-all duration-200
+      {{ Request::is('dashboard/events*') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          <span>Events</span>
+        </a>
+        </li>
+      @endif
+          @if(auth()->user() && auth()->user()->clubRoles->contains('role', 'accountant'))
+
+        <li>
+        <a href="/dashboard/members"
+          class="flex items-center space-x-2 transition-all duration-200
+      {{ Request::is('dashboard/members*') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87M16 7a4 4 0 110 8 4 4 0 010-8zM8 7a4 4 0 100 8 4 4 0 000-8z" />
+          </svg>
+          <span>Membership</span>
+        </a>
+        </li>
       @endif
           @if(auth()->user()->globalRole && auth()->user()->globalRole->role === 'advisor')
 
-          <li>
-          <a href="/dashboard/clubs"
-            class="flex items-center space-x-2 transition-all duration-200
-        {{ Request::is('dashboard/clubs*') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M8 7V3m8 4V3m-9 9h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <span>Clubs</span>
-          </a>
-          </li>
+        <li>
+        <a href="/dashboard/clubs"
+          class="flex items-center space-x-2 transition-all duration-200
+      {{ Request::is('dashboard/clubs*') ? 'text-blue-400 font-semibold pointer-events-none' : 'hover:text-blue-300' }}">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M8 7V3m8 4V3m-9 9h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span>Clubs</span>
+        </a>
+        </li>
       @endif
 
           <li>
