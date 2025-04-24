@@ -26,7 +26,7 @@ class ClubController extends Controller
             });
         return view('clubs', compact('clubs'));
     }
-    public function publicShow($id)
+    public function publicShow($clubId)
     {
         $club = Club::withCount(['userRoles'])
             ->select('id', 'name', 'description', 'created_at')
@@ -35,13 +35,13 @@ class ClubController extends Controller
                 'secretary.user:id,name,email',
                 'accountant.user:id,name,email'
             ])
-            ->findOrFail($id);
+            ->findOrFail($clubId);
 
         return view('club', compact('club'));
     }
-    public function joinClub($id)
+    public function joinClub($clubId)
     {
-        $club = Club::select('id', 'name')->findOrFail($id);
+        $club = Club::select('id', 'name')->findOrFail($clubId);
         return view('join-club', compact('club'));
     }
 
@@ -61,7 +61,7 @@ class ClubController extends Controller
         return view('dashboard.clubs', compact('clubs'));
     }
 
-    public function show($id)
+    public function show($clubId)
     {
         $user = auth()->user();
         if (!$user->globalRole || $user->globalRole->role !== 'advisor') {
@@ -77,7 +77,7 @@ class ClubController extends Controller
                 'memberships.member.user:id,name,email',
                 'memberships.payment:id,membership_id,payment_status,created_at'
             ])
-            ->findOrFail($id);
+            ->findOrFail($clubId);
 
         return view('dashboard.club', compact('club'));
     }
@@ -93,26 +93,26 @@ class ClubController extends Controller
         return view('dashboard.club-form', compact('page'));
     }
 
-    public function edit($id)
+    public function edit($clubId)
     {
         $user = auth()->user();
         if (!$user->globalRole || $user->globalRole->role !== 'advisor') {
             abort(403, 'Unauthorized action.');
         }
 
-        $club = Club::findOrFail($id);
+        $club = Club::findOrFail($clubId);
         $page = 'edit';
         return view('dashboard.club-form', compact('page', 'club'));
     }
 
-    public function destroy($id)
+    public function destroy($clubId)
     {
         $user = auth()->user();
         if (!$user->globalRole || $user->globalRole->role !== 'advisor') {
             abort(403, 'Unauthorized action.');
         }
 
-        $club = Club::findOrFail($id);
+        $club = Club::findOrFail($clubId);
         $club->delete();
 
         return redirect('/dashboard/clubs')->with('success', 'Club deleted successfully.');
@@ -215,7 +215,7 @@ class ClubController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $clubId)
     {
         $user = auth()->user();
         if (!$user->globalRole || $user->globalRole->role !== 'advisor') {
@@ -238,19 +238,30 @@ class ClubController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
+        DB::beginTransaction();
+        try {
+            $club = Club::findOrFail($clubId);
+            $club->update([
+                'name' => $request->name,
+                'description' => $request->description,
+                'president_name' => $request->presidentName,
+                'president_email' => $request->presidentEmail,
+                'accountant_name' => $request->accountantName,
+                'accountant_email' => $request->accountantEmail,
+                'secretary_name' => $request->programSecretaryName,
+                'secretary_email' => $request->programSecretaryEmail,
+            ]);
 
-        $club = Club::findOrFail($id);
-        $club->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'president_name' => $request->presidentName,
-            'president_email' => $request->presidentEmail,
-            'accountant_name' => $request->accountantName,
-            'accountant_email' => $request->accountantEmail,
-            'secretary_name' => $request->programSecretaryName,
-            'secretary_email' => $request->programSecretaryEmail,
-        ]);
-
-        return redirect("/dashboard/clubs/{$club->id}")->with('success', 'Club updated successfully!');
+            return redirect("/dashboard/clubs/{$club->id}")->with('success', 'Club updated successfully!');
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('Club update failed: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $request->all(),
+            ]);
+            return redirect()->back()
+                ->with('error', 'An error occurred')
+                ->withInput();
+        }
     }
 }
