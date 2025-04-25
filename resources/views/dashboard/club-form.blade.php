@@ -103,60 +103,58 @@
       </div>
       </div>
     </div>
-  </div>
 
-  <!-- Program Secretary Info -->
-  <div>
-    <h3 class="text-lg font-semibold text-gray-800 mb-2">Program Secretary</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Program Secretary Info -->
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-      <input type="text" name="programSecretaryName" value="{{ $club->secretary?->user?->name ?? '' }}"
-      class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
-      placeholder="e.g., Chris Evans" required>
-      @error('programSecretaryName')
+      <h3 class="text-lg font-semibold text-gray-800 mb-2">Program Secretary</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+        <input type="text" name="programSecretaryName" value="{{ $club->secretary?->user?->name ?? '' }}"
+        class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
+        placeholder="e.g., Chris Evans" required>
+        @error('programSecretaryName')
       <div class="text-red-500 text-sm">{{ $message }}</div>
     @enderror
-    </div>
-    <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-      <input type="email" name="programSecretaryEmail" value="{{ $club->secretary?->user?->email ?? '' }}"
-      class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
-      placeholder="e.g., chris@example.com" required>
-      @error('programSecretaryEmail')
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input type="email" name="programSecretaryEmail" value="{{ $club->secretary?->user?->email ?? '' }}"
+        class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
+        placeholder="e.g., chris@example.com" required>
+        @error('programSecretaryEmail')
       <div class="text-red-500 text-sm">{{ $message }}</div>
     @enderror
+      </div>
+      </div>
     </div>
-    </div>
-  </div>
+    <!-- Submit Button -->
+    <div class="pt-6">
+      <button type="submit"
+      class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold px-6 py-3 rounded-xl shadow-lg transform hover:scale-[1.02] transition duration-300 ease-in-out flex items-center justify-center gap-2">
+      @if($page === 'create')
+      🚀 Send Invitation
+    @else
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 407.096 407.096">
+      <path d="M402.115,84.008L323.088,4.981..." />
+      <path d="M214.051,148.16h43.08c3.131,0..." />
+      </svg>
+      <span>Save Changes</span>
+    @endif
+      </button>
+      @if(session('error'))
+      <div class="text-red-500 text-sm">
+      {{ session('error') }}
+      </div>
+    @endif
 
-  <!-- Submit Button -->
-  <div class="pt-6">
-    <button type="submit"
-    class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold px-6 py-3 rounded-xl shadow-lg transform hover:scale-[1.02] transition duration-300 ease-in-out flex items-center justify-center gap-2">
-    @if($page === 'create')
-    🚀 Send Invitation
-  @else
-  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 407.096 407.096">
-    <path d="M402.115,84.008L323.088,4.981..." />
-    <path d="M214.051,148.16h43.08c3.131,0..." />
-  </svg>
-  <span>Save Changes</span>
-@endif
-    </button>
-    @if(session('error'))
-    <div class="text-red-500 text-sm">
-    {{ session('error') }}
-    </div>
-  @endif
+      @if(session('success'))
+      <div class="text-green-500 text-sm">
+      {{ session('success') }}
+      </div>
+    @endif
 
-    @if(session('success'))
-    <div class="text-green-500 text-sm">
-    {{ session('success') }}
     </div>
-  @endif
-
-  </div>
-  </form>
+    </form>
   </div>
 @endsection
