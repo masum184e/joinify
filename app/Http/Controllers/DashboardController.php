@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Club;
+use App\Models\Member;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -41,6 +43,19 @@ class DashboardController extends Controller
 
     public function advisor()
     {
-        return view('dashboard.advisor');
+        $clubCount = Club::count();
+        $memberCount = Member::count();
+
+        $popularClubs = Club::withCount('memberships')
+            ->orderBy('memberships_count', 'desc')
+            ->take(3)
+            ->get();
+
+        $clubs = Club::withCount('memberships')->get();
+        $clubLabels = $clubs->pluck('name')->toArray();
+        $clubMemberCount = $clubs->pluck('memberships_count')->toArray();
+        $clubsMemberCount = array_combine($clubLabels, $clubMemberCount);
+    
+        return view('dashboard.advisor', compact('clubCount', 'memberCount', 'popularClubs', 'clubsMemberCount'));
     }
 }
