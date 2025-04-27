@@ -16,7 +16,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-sm font-medium text-blue-700 uppercase">Total Events</h2>
-                        <p class="text-3xl font-extrabold text-blue-900 mt-1">12</p>
+                        <p class="text-3xl font-extrabold text-blue-900 mt-1">{{ $totalEvents }}</p>
                     </div>
                     <div class="bg-blue-500 text-white rounded-full p-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -33,7 +33,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-sm font-medium text-green-700 uppercase">Upcoming Events</h2>
-                        <p class="text-3xl font-extrabold text-green-900 mt-1">3</p>
+                        <p class="text-3xl font-extrabold text-green-900 mt-1">{{ $upcomingEvents }}</p>
                     </div>
                     <div class="bg-green-500 text-white rounded-full p-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -50,7 +50,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-sm font-medium text-purple-700 uppercase">Total Guests</h2>
-                        <p class="text-3xl font-extrabold text-purple-900 mt-1">25</p>
+                        <p class="text-3xl font-extrabold text-purple-900 mt-1">{{ $totalGuests }}</p>
                     </div>
                     <div class="bg-purple-500 text-white rounded-full p-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -81,30 +81,32 @@
             </div>
             <ul class="divide-y divide-gray-100">
                 <!-- Event 1 -->
-                <li class="px-6 py-4 hover:bg-gray-50 transition">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-start gap-3">
-                            <div class="bg-green-100 text-green-600 p-2 rounded-full">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M16 7a4 4 0 01-8 0m8 0V3a1 1 0 00-1-1h-6a1 1 0 00-1 1v4m8 0H8m8 0a4 4 0 010 8m0 0v4m0-4H8" />
+                @foreach ($recentEvents as $event)
+                    <li class="px-6 py-4 hover:bg-gray-50 transition">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-start gap-3">
+                                <div class="bg-green-100 text-green-600 p-2 rounded-full">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M16 7a4 4 0 01-8 0m8 0V3a1 1 0 00-1-1h-6a1 1 0 00-1 1v4m8 0H8m8 0a4 4 0 010 8m0 0v4m0-4H8" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">{{ $event->title }}</h3>
+                                    <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($event->date)->format('M d, Y') }}
+                                    </p>
+                                </div>
+                            </div>
+                            <a href="/dashboard/clubs/{{ $clubId }}/events/0"
+                                class="text-blue-600 text-sm font-medium hover:underline flex items-center gap-1">
+                                View
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                                 </svg>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold text-gray-800">AI Workshop</h3>
-                                <p class="text-sm text-gray-500">June 10, 2025</p>
-                            </div>
+                            </a>
                         </div>
-                        <a href="/dashboard/events/0"
-                            class="text-blue-600 text-sm font-medium hover:underline flex items-center gap-1">
-                            View
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </a>
-                    </div>
-                </li>
-
+                    </li>
+                @endforeach
                 <!-- Add more event items as needed -->
             </ul>
         </div>

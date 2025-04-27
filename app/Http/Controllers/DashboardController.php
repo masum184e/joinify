@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Club;
 use App\Models\Member;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -33,7 +35,31 @@ class DashboardController extends Controller
 
     public function secretary()
     {
-        return view('dashboard.secretary');
+        $secretaryRole = auth()
+            ->user()
+            ->clubRoles()
+            ->where('role', 'secretary')
+            ->first();
+        $clubId = $secretaryRole->club_id;
+
+        $club = Club::with('events.guests')->find($clubId);
+
+        if (!$club) {
+            abort(404, 'Club not found');
+        }
+
+        $totalEvents = $club->events->count();
+
+        $today = Carbon::today();
+        $upcomingEvents = $club->events->where('date', '>=', $today)->count();
+
+        $totalGuests = $club->events->flatMap(function ($event) {
+            return $event->guests;
+        })->pluck('guest_id')->unique()->count();
+
+        $recentEvents = $club->events->sortByDesc('date')->take(5);
+
+        return view('dashboard.secretary', compact('totalEvents', 'upcomingEvents', 'totalGuests', 'recentEvents', 'clubId'));
     }
 
     public function accountant()
@@ -55,7 +81,7 @@ class DashboardController extends Controller
         $clubLabels = $clubs->pluck('name')->toArray();
         $clubMemberCount = $clubs->pluck('memberships_count')->toArray();
         $clubsMemberCount = array_combine($clubLabels, $clubMemberCount);
-    
+
         return view('dashboard.advisor', compact('clubCount', 'memberCount', 'popularClubs', 'clubsMemberCount'));
     }
 }
