@@ -41,9 +41,14 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
 
 Route::post('/pay/{club}', [SslCommerzPaymentController::class, 'index']);
 
-Route::post('/success', [SslCommerzPaymentController::class, 'success']);
-Route::post('/fail', [SslCommerzPaymentController::class, 'fail']);
-Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel']);
+// Route::post('/success', [SslCommerzPaymentController::class, 'success']);
+// Route::post('/fail', [SslCommerzPaymentController::class, 'fail']);
+// Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel']);
+
+Route::post('/success', [SslCommerzPaymentController::class, 'success'])->name('payment.success');
+Route::post('/fail', [SslCommerzPaymentController::class, 'fail'])->name('payment.fail');
+Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel'])->name('payment.cancel');
+
 
 // Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
 //SSLCOMMERZ END
