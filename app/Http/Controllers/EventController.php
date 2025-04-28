@@ -31,9 +31,11 @@ class EventController extends Controller
 
     public function index($clubId)
     {
-        $isSecretary = auth()->user()->clubRoles()->where('role', 'secretary')->exists();
+        $isSecretaryOrPresident = auth()->user()->clubRoles()
+            ->whereIn('role', ['secretary', 'president'])
+            ->exists();
 
-        if (!$isSecretary) {
+        if (!$isSecretaryOrPresident) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -47,9 +49,11 @@ class EventController extends Controller
 
     public function show($clubId, $eventId)
     {
-        $isSecretary = auth()->user()->clubRoles()->where('role', 'secretary')->exists();
+        $isSecretaryOrPresident = auth()->user()->clubRoles()
+            ->whereIn('role', ['secretary', 'president'])
+            ->exists();
 
-        if (!$isSecretary) {
+        if (!$isSecretaryOrPresident) {
             abort(403, 'Unauthorized action.');
         }
 

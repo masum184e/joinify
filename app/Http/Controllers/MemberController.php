@@ -11,9 +11,12 @@ class MemberController extends Controller
     //
     public function index($clubId)
     {
-        $isAccountant = auth()->user()->clubRoles()->where('role', 'accountant')->exists();
 
-        if (!$isAccountant) {
+        $isAccountantOrPresident = auth()->user()->clubRoles()
+            ->whereIn('role', ['accountant', 'president'])
+            ->exists();
+
+        if (!$isAccountantOrPresident) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -26,9 +29,11 @@ class MemberController extends Controller
 
     public function show($clubId, $memberId)
     {
-        $isAccountant = auth()->user()->clubRoles()->where('role', 'accountant')->exists();
+        $isAccountantOrPresident = auth()->user()->clubRoles()
+            ->whereIn('role', ['accountant', 'president'])
+            ->exists();
 
-        if (!$isAccountant) {
+        if (!$isAccountantOrPresident) {
             abort(403, 'Unauthorized action.');
         }
 
