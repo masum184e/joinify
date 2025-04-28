@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\SslCommerzPaymentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -36,6 +37,10 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index']);
     Route::resource('clubs', ClubController::class);
     Route::resource('/clubs/{club}/events', EventController::class);
+
+    Route::get('/clubs/{club}/members', [MemberController::class, 'index']);
+    Route::get('/clubs/{club}/members/{member}', [MemberController::class, 'show']);
+
     Route::get('/settings', fn() => view('dashboard.settings'));
 });
 

@@ -33,21 +33,33 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-100 text-sm text-gray-700">
-                    <!-- Example Member Row -->
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="px-6 py-4 font-medium text-blue-700 whitespace-nowrap">
-                            <a href="/dashboard/members/0" class="hover:underline">Sarah Johnson</a>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">sarah@example.com</td>
-                        <td class="px-6 py-4 whitespace-nowrap">Jan 15, 2024</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <span
-                                class="inline-block bg-blue-100 text-blue-700 px-3 py-1 text-xs font-semibold rounded-full shadow-sm">
-                                $50
-                            </span>
-                        </td>
+                    @foreach($members as $member)
+                                    <tr class="hover:bg-gray-50 transition">
+                                        <td class="px-6 py-4 font-medium text-blue-700 whitespace-nowrap">
+                                            <a href="{{ url('/dashboard/clubs/' . $clubId . '/members/' . $member->id) }}"
+                                                class="hover:underline">
+                                                {{ $member->user->name }}
+                                            </a>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            {{ $member->user->email }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            {{ $member->created_at->format('M d, Y') }}
+                                        </td>
+                                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                                            @php
+                                                // Assuming each member has one membership and one payment
+                                                $paymentAmount = optional($member->memberships->first()->payment ?? null)->amount ?? 0;
+                                            @endphp
+                                            <span
+                                                class="inline-block bg-blue-100 text-blue-700 px-3 py-1 text-xs font-semibold rounded-full shadow-sm">
+                                                ${{ number_format($paymentAmount, 2) }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                    @endforeach
 
-                    </tr>
 
                     <!-- Add more member rows as needed -->
                 </tbody>
