@@ -22,14 +22,17 @@
             </div>
 
             <!-- Edit Button -->
-            <a href="/dashboard/clubs/{{  $event->club->id }}/events/{{ $event->id }}/edit"
-                class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold px-6 py-2.5 rounded-xl shadow-lg transition-all duration-300">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M11 5h10M11 9h7M11 13h4M4 6h.01M4 10h.01M4 14h.01M4 18h.01" />
-                </svg>
-                Edit Event
-            </a>
+            @if(auth()->user() && auth()->user()->clubRoles->contains('role', 'secretary'))
+
+                <a href="/dashboard/clubs/{{  $event->club->id }}/events/{{ $event->id }}/edit"
+                    class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold px-6 py-2.5 rounded-xl shadow-lg transition-all duration-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M11 5h10M11 9h7M11 13h4M4 6h.01M4 10h.01M4 14h.01M4 18h.01" />
+                    </svg>
+                    Edit Event
+                </a>
+            @endif
         </div>
 
         <!-- Event Meta Info -->

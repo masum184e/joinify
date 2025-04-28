@@ -132,6 +132,11 @@ class EventController extends Controller
             if (!$clubRole) {
                 return redirect()->back()->with('error', 'You are not associated with any club.');
             }
+            // fetch it from isSecretary
+            // $clubRole = auth()->user()->clubRoles()->first();
+            // if (!$clubRole) {
+            //     return redirect()->back()->with('error', 'You are not associated with any club.');
+            // }
 
             $event = Event::create([
                 'title' => $request->title,

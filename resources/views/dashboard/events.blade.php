@@ -12,10 +12,12 @@
         <div class="flex flex-col md:flex-row md:items-center md:justify-between pb-4 gap-4 pt-2">
 
             <!-- Create Event Button -->
-            <a href="/dashboard/clubs/{{ $clubId }}/events/create"
-                class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg shadow hover:bg-blue-700 transition duration-300">
-                Create New Event
-            </a>
+            @if(auth()->user() && auth()->user()->clubRoles->contains('role', 'secretary'))
+                <a href="/dashboard/clubs/{{ $clubId }}/events/create"
+                    class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg shadow hover:bg-blue-700 transition duration-300">
+                    Create New Event
+                </a>
+            @endif
 
             <!-- Search Box -->
             <div class="relative w-full md:w-64">
@@ -52,7 +54,8 @@
                         {{ \Carbon\Carbon::parse($event->date)->format('M d, Y') }}
                     </div>
                     <div class="text-sm text-gray-700">🕙 {{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }} –
-                        {{ \Carbon\Carbon::parse($event->end_time)->format('g:i A') }}</div>
+                        {{ \Carbon\Carbon::parse($event->end_time)->format('g:i A') }}
+                    </div>
                     <div class="text-sm text-gray-700">📍 Location: {{ $event->location }}</div>
                     <div class="text-sm text-gray-700">👥 Guests: {{ $event->guests->count() }}</div>
 
@@ -76,31 +79,34 @@
                             </svg>
                         </a>
                         <div class="flex gap-3">
-                            <a href="/dashboard/clubs/{{ $clubId }}/events/{{ $event->id }}/edit"
-                                class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-indigo-100 hover:bg-indigo-200 transition"
-                                title="Edit Club">
-                                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M15.232 5.232l3.536 3.536M9 11l-1 4 4-1 7.071-7.071a2 2 0 00-2.828-2.828L9 11z" />
-                                </svg>
-                            </a>
+                            @if(auth()->user() && auth()->user()->clubRoles->contains('role', 'secretary'))
 
-                            <!-- Remove Icon -->
-                            <form method="POST" action="{{ url('/dashboard/clubs/' . $clubId.'/events/'.$event->id) }}" class="inline">
+                                <a href="/dashboard/clubs/{{ $clubId }}/events/{{ $event->id }}/edit"
+                                    class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-indigo-100 hover:bg-indigo-200 transition"
+                                    title="Edit Club">
+                                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.232 5.232l3.536 3.536M9 11l-1 4 4-1 7.071-7.071a2 2 0 00-2.828-2.828L9 11z" />
+                                    </svg>
+                                </a>
+
+                                <!-- Remove Icon -->
+                                <form method="POST" action="{{ url('/dashboard/clubs/' . $clubId . '/events/' . $event->id) }}"
+                                    class="inline">
                                     @csrf
                                     @method('DELETE')
-                            <button title="Remove Club" type="submit"
-                            onclick="return confirm('Are you sure you want to delete this event?')"
-
-                                class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-red-100 hover:bg-red-200 transition">
-                                <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m-4 0h14" />
-                                </svg>
-                            </button>
-                            </form>
+                                    <button title="Remove Club" type="submit"
+                                        onclick="return confirm('Are you sure you want to delete this event?')"
+                                        class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-red-100 hover:bg-red-200 transition">
+                                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m-4 0h14" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            @endif
                         </div>
                     </div>
                 </div>
