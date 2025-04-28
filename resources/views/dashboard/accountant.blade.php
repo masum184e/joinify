@@ -16,7 +16,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-sm font-medium text-blue-700 uppercase">Total Budget</h2>
-                        <p class="text-3xl font-extrabold text-blue-900 mt-1">$1,200</p>
+                        <p class="text-3xl font-extrabold text-blue-900 mt-1">{{ $totalRevenue }}</p>
                     </div>
                     <div class="bg-blue-500 text-white rounded-full p-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -34,7 +34,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-sm font-medium text-red-700 uppercase">Expenses</h2>
-                        <p class="text-3xl font-extrabold text-red-900 mt-1">$840</p>
+                        <p class="text-3xl font-extrabold text-red-900 mt-1">{{ $totalExpenses }}</p>
                     </div>
                     <div class="bg-red-500 text-white rounded-full p-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -50,7 +50,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-sm font-medium text-green-700 uppercase">Remaining</h2>
-                        <p class="text-3xl font-extrabold text-green-900 mt-1">$360</p>
+                        <p class="text-3xl font-extrabold text-green-900 mt-1">{{ $remainingBalance }}</p>
                     </div>
                     <div class="bg-green-500 text-white rounded-full p-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -68,7 +68,7 @@
             </h3>
             <div
                 class="bg-white h-48 rounded-lg flex items-center justify-center text-gray-400 border-2 border-dashed border-green-100">
-                [Insert Bar Chart]
+                <canvas id="revenueChart"></canvas>
             </div>
         </div>
 
@@ -87,33 +87,18 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-5 py-3">Apr 10, 2025</td>
-                            <td class="px-5 py-3">🎉 Event Decoration</td>
-                            <td class="px-5 py-3">
-                                <span
-                                    class="inline-block px-2 py-1 rounded-full bg-red-100 text-red-600 text-xs font-medium">Expense</span>
-                            </td>
-                            <td class="px-5 py-3 text-right font-semibold text-red-600">- $150.00</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-5 py-3">Apr 08, 2025</td>
-                            <td class="px-5 py-3">✏️ Stationery</td>
-                            <td class="px-5 py-3">
-                                <span
-                                    class="inline-block px-2 py-1 rounded-full bg-red-100 text-red-600 text-xs font-medium">Expense</span>
-                            </td>
-                            <td class="px-5 py-3 text-right font-semibold text-red-600">- $40.00</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-5 py-3">Apr 06, 2025</td>
-                            <td class="px-5 py-3">💰 Sponsorship Income</td>
-                            <td class="px-5 py-3">
-                                <span
-                                    class="inline-block px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-medium">Income</span>
-                            </td>
-                            <td class="px-5 py-3 text-right font-semibold text-green-600">+ $200.00</td>
-                        </tr>
+                        @foreach ($recentTransactions as $transaction)
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-5 py-3"> {{ \Carbon\Carbon::parse($transaction->paid_at)->format('M d, Y') }}</td>
+                                <td class="px-5 py-3"> {{ $transaction->membership->member->user->name ?? 'Unknown' }}</td>
+                                <td class="px-5 py-3">
+                                    <span
+                                        class="inline-block px-2 py-1 rounded-full bg-red-100 text-green-600 text-xs font-medium">Income</span>
+                                </td>
+                                <td class="px-5 py-3 text-right font-semibold text-red-600">
+                                    ${{ number_format($transaction->amount, 2) }}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -121,3 +106,34 @@
 
     </div>
 @endsection
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+
+        const revenueChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @json(array_keys($revenueOverview)),
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: @json(array_values($revenueOverview)),
+                    fill: true,
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+@endpush

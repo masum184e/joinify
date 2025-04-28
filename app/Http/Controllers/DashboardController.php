@@ -92,7 +92,7 @@ class DashboardController extends Controller
             ->merge($recentEvents)
             ->merge($recentMembers)
             ->sortByDesc('date')
-            ->take(15);
+            ->take(5);
 
 
         return view('dashboard.president', compact('totalEvents', 'upcomingEventsList', 'totalGuests', 'clubId', 'upcomingEvents', 'totalMembers', 'activities'));
@@ -129,7 +129,75 @@ class DashboardController extends Controller
 
     public function accountant()
     {
-        return view('dashboard.accountant');
+        $accountantRole = auth()
+            ->user()
+            ->clubRoles()
+            ->where('role', 'accountant')
+            ->first();
+        $clubId = $accountantRole->club_id;
+        //         public function up()
+        // {
+        //     Schema::create('expenses', function (Blueprint $table) {
+        //         $table->id();
+        //         $table->foreignId('club_id')->constrained()->onDelete('cascade');
+        //         $table->string('title');
+        //         $table->decimal('amount', 10, 2);
+        //         $table->date('expense_date');
+        //         $table->timestamps();
+        //     });
+        // }
+
+        $totalRevenue = Payment::whereHas('membership', function ($query) use ($clubId) {
+            $query->where('club_id', $clubId);
+        })->where('payment_status', 'paid')
+            ->sum('amount');
+
+        //   $totalExpenses = Expense::where('club_id', $clubId)->sum('amount');
+        $totalExpenses = 00;
+
+        // Remaining balance
+        $remainingBalance = $totalRevenue - $totalExpenses;
+
+
+        $recentTransactions = Payment::whereHas('membership', function ($query) use ($clubId) {
+            $query->where('club_id', $clubId);
+        })
+            ->where('payment_status', 'paid')
+            ->orderBy('paid_at', 'desc')
+            ->take(5)
+            ->with(['membership.member.user'])
+            ->get();
+
+        $payments = Payment::whereHas('membership', function ($query) use ($clubId) {
+            $query->where('club_id', $clubId);
+        })
+            ->where('payment_status', 'paid')
+            ->where('paid_at', '>=', now()->subMonths(12))
+            ->get();
+
+        \Log::info('Payments:', $payments->toArray());
+
+        $monthlyRevenue = collect([]);
+
+        // Initialize all 12 months with 0
+        for ($i = 11; $i >= 0; $i--) {
+            $month = Carbon::now()->subMonths($i)->format('Y-m');
+            $monthlyRevenue[$month] = 0;
+        }
+
+        // Sum revenue per month
+        foreach ($payments as $payment) {
+            $month = Carbon::parse($payment->paid_at)->format('Y-m');
+            if (isset($monthlyRevenue[$month])) {
+                $monthlyRevenue[$month] += $payment->amount;
+            }
+        }
+
+        \Log::info('Monthly Revenue:', $monthlyRevenue->toArray());
+
+        // $revenueOverview = array_combine($monthlyRevenue->keys()->toArray(), $monthlyRevenue->values()->toArray());
+        $revenueOverview = $monthlyRevenue->toArray();
+        return view('dashboard.accountant', compact('totalRevenue', 'totalExpenses', 'remainingBalance', 'recentTransactions', 'revenueOverview', 'clubId'));
     }
 
     public function advisor()
