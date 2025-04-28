@@ -47,9 +47,9 @@
       <div class="flex items-center justify-between">
       <div>
         <p class="text-sm text-gray-500">Revenue</p>
-        <p class="text-2xl font-bold text-red-500">- $5,610</p>
+        <p class="text-2xl font-bold text-green-500">{{ number_format($totalRevenue, 2) }}</p>
       </div>
-      <div class="text-red-500 bg-red-100 p-2 rounded-full">
+      <div class="text-green-500 bg-green-100 p-2 rounded-full">
         <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
         </svg>
@@ -61,10 +61,10 @@
     <div class="bg-white p-5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
       <div class="flex items-center justify-between">
       <div>
-        <p class="text-sm text-gray-500">Earnings</p>
-        <p class="text-2xl font-bold text-pink-500">$7,524</p>
+        <p class="text-sm text-gray-500">Expense</p>
+        <p class="text-2xl font-bold text-red-500">${{ number_format($totalExpenses, 2) }}</p>
       </div>
-      <div class="text-pink-500 bg-pink-100 p-2 rounded-full">
+      <div class="text-red-500 bg-pink-100 p-2 rounded-full">
         <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3" />
         </svg>
@@ -76,8 +76,8 @@
     <div class="bg-white p-5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
       <div class="flex items-center justify-between">
       <div>
-        <p class="text-sm text-gray-500">Growth</p>
-        <p class="text-2xl font-bold text-green-500">+ 35.52%</p>
+        <p class="text-sm text-gray-500">Net Balance</p>
+        <p class="text-2xl font-bold text-green-500">${{ number_format($netBalance, 2) }}</p>
       </div>
       <div class="text-green-500 bg-green-100 p-2 rounded-full">
         <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -97,7 +97,7 @@
       <h3 class="text-xl font-bold text-blue-800 flex items-center gap-2 mb-4">
       👥 Total Members
       </h3>
-      <div class="bg-white p-4 rounded-lg border border-blue-100">
+      <div class="bg-white h-48 p-4 rounded-lg border border-blue-100">
       <canvas id="clubChart" class="w-full h-48"></canvas>
       </div>
 
@@ -111,7 +111,7 @@
       </h3>
       <div
       class="bg-white h-48 rounded-lg flex items-center justify-center text-gray-400 border-2 border-dashed border-green-100">
-      <canvas id="pieChart" class="w-full h-64 mt-6"></canvas>
+      <canvas id="revenuePieChart" class="w-full h-48"></canvas>
       </div>
     </div>
     </div>
@@ -179,8 +179,8 @@
   <script>
 
     // Bar Chart
-    const ctx = document.getElementById('clubChart').getContext('2d');
-    const clubChart = new Chart(ctx, {
+    const clubCtx = document.getElementById('clubChart').getContext('2d');
+    const clubChart = new Chart(clubCtx, {
     type: 'bar',
     data: {
       labels: @json(array_keys($clubsMemberCount)),
@@ -193,12 +193,39 @@
       }]
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
       scales: {
       y: {
         beginAtZero: true,
         precision: 0
       }
       }
+    }
+    });
+
+    // Pie Chart
+    const pieCtx = document.getElementById('revenuePieChart').getContext('2d');
+    const revenuePieChart = new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+      labels: @json(array_keys($clubRevenue)),
+      datasets: [{
+      data: @json(array_values($clubRevenue)),
+      backgroundColor: [
+        '#4F46E5', '#22C55E', '#EC4899', '#F59E0B', '#3B82F6', '#10B981', '#F43F5E'
+      ],
+      borderWidth: 1,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+      legend: {
+        position: 'bottom',
+      },
+      },
     }
     });
 

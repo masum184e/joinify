@@ -175,8 +175,6 @@ class DashboardController extends Controller
             ->where('paid_at', '>=', now()->subMonths(12))
             ->get();
 
-        \Log::info('Payments:', $payments->toArray());
-
         $monthlyRevenue = collect([]);
 
         // Initialize all 12 months with 0
@@ -193,7 +191,6 @@ class DashboardController extends Controller
             }
         }
 
-        \Log::info('Monthly Revenue:', $monthlyRevenue->toArray());
 
         // $revenueOverview = array_combine($monthlyRevenue->keys()->toArray(), $monthlyRevenue->values()->toArray());
         $revenueOverview = $monthlyRevenue->toArray();
@@ -215,6 +212,31 @@ class DashboardController extends Controller
         $clubMemberCount = $clubs->pluck('memberships_count')->toArray();
         $clubsMemberCount = array_combine($clubLabels, $clubMemberCount);
 
-        return view('dashboard.advisor', compact('clubCount', 'memberCount', 'popularClubs', 'clubsMemberCount'));
+        $clubsWithRevenue = Club::with([
+            'memberships.payment' => function ($query) {
+                $query->where('payment_status', 'paid');
+            }
+        ])->get();
+
+        $clubRevenue = [];
+
+        foreach ($clubsWithRevenue as $club) {
+            $totalRevenue = 0;
+
+            foreach ($club->memberships as $membership) {
+                if ($membership->payment) {
+                    $totalRevenue += $membership->payment->amount;
+                }
+            }
+
+            $clubRevenue[$club->name] = $totalRevenue;
+        }
+
+        $totalRevenue = Payment::where('payment_status', 'paid')->sum('amount');
+        // $totalExpenses = Expense::sum('amount');
+        $totalExpenses = 00;
+        $netBalance = $totalRevenue - $totalExpenses;
+
+        return view('dashboard.advisor', compact('clubCount', 'memberCount', 'popularClubs', 'clubsMemberCount', 'clubRevenue', 'totalRevenue', 'totalExpenses', 'netBalance'));
     }
 }
