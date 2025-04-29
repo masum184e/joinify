@@ -32,7 +32,7 @@
     <!-- Revenue -->
     <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl shadow-sm">
       <h2 class="font-semibold text-green-700 text-sm uppercase mb-1">Monthly Fee</h2>
-      <p class="text-xl font-extrabold text-green-900">$123,126</p>
+      <p class="text-xl font-extrabold text-green-900">${{ $club->fee }}</p>
     </div>
 
     </div>

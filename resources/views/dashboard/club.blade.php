@@ -49,15 +49,22 @@
             <!-- Revenue -->
             <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl shadow-sm">
                 <h2 class="font-semibold text-green-700 text-sm uppercase mb-1">Revenue</h2>
-                <p class="text-xl font-extrabold text-green-900">$123,126</p>
+                <p class="text-xl font-extrabold text-green-900">${{ $clubRevenue }}</p>
             </div>
 
             <!-- Status -->
             <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 p-4 rounded-xl shadow-sm">
                 <h2 class="font-semibold text-emerald-700 text-sm uppercase mb-1">Status</h2>
-                <span class="inline-block px-3 py-1 rounded-full bg-green-200 text-green-800 font-semibold text-sm">
-                    Active
-                </span>
+                @if ($club->president?->verified == 1 && $club->secretary?->verified == 1 && $club->accountant?->verified == 1)
+                    <span class="inline-block px-3 py-1 rounded-full bg-green-200 text-green-800 font-semibold text-sm">
+                        Active
+                    </span>
+                @else
+                    <span class="inline-block px-3 py-1 rounded-full bg-red-200 text-red-800 font-semibold text-sm">
+                        Inactive
+                    </span>
+                @endif
+
             </div>
         </div>
 
@@ -80,7 +87,7 @@
                             </svg>
                         </div>
                     </div>
-                    <p class="text-gray-900 font-semibold">{{ $club->president?->user?->name }}</p>
+                    <p class="text-gray-900 font-semibold">{{ $club->president?->user?->name }} </p>
                     <p class="text-sm text-gray-700">{{ $club->president?->user?->email }}</p>
                 </div>
 
@@ -153,15 +160,26 @@
                         @foreach ($club->memberships as $membership)
                             <tr class="hover:bg-gray-50 transition">
                                 <td class="px-6 py-4 font-medium text-blue-700 whitespace-nowrap">
-                                    <a href="/members/{{ $membership->id }}" class="hover:underline">{{ $membership->member->user->name }}</a>
+                                    <a href="/members/{{ $membership->id }}"
+                                        class="hover:underline">{{ $membership->member->user->name }}</a>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $membership->member->user->email }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($membership->payment->created_at)->format('M d, Y') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {{ \Carbon\Carbon::parse($membership->payment->created_at)->format('M d, Y') }}
+                                </td>
                                 <td class="px-6 py-4 text-center">
+                                    @if ($membership->payment->payment_status == 'paid')
                                     <span
-                                        class="inline-block bg-blue-100 text-blue-700 px-3 py-1 text-xs font-semibold rounded-full shadow-sm">
-                                        {{ ucfirst($payment->payment_status ?? 'Pending') }}
-                                    </span>
+                                        class="inline-block bg-green-100 text-green-700 px-3 py-1 text-xs font-semibold rounded-full shadow-sm">
+                                       Paid
+                                    </span>                                    
+                                    @else
+                                    <span
+                                        class="inline-block bg-red-100 text-red-700 px-3 py-1 text-xs font-semibold rounded-full shadow-sm">
+                                       Pending
+                                    </span>                                    
+                                    @endif
+
                                 </td>
                             </tr>
                         @endforeach

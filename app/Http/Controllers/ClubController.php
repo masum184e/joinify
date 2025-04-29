@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Member;
+use App\Models\Payment;
 use App\Models\User;
 use App\Models\Club;
 use App\Models\ClubUserRole;
@@ -21,6 +22,11 @@ class ClubController extends Controller
         $clubs = Club::withCount('userRoles', 'memberships')
             ->select('id', 'name', 'description', 'created_at')
             ->get()
+            ->filter(function ($club) {
+                return $club->president?->verified == 1 &&
+                    $club->secretary?->verified == 1 &&
+                    $club->accountant?->verified == 1;
+            })
             ->map(function ($club) {
                 $club->description = Str::limit($club->description, 60);
                 return $club;
@@ -30,7 +36,7 @@ class ClubController extends Controller
     public function publicShow($clubId)
     {
         $club = Club::withCount(['userRoles', 'memberships'])
-            ->select('id', 'name', 'description', 'created_at')
+            ->select('id', 'name', 'description', 'fee', 'created_at')
             ->with([
                 'president.user:id,name,email',
                 'secretary.user:id,name,email',
@@ -38,11 +44,28 @@ class ClubController extends Controller
             ])
             ->findOrFail($clubId);
 
+        if (
+            $club->president?->verified != 1 ||
+            $club->secretary?->verified != 1 ||
+            $club->accountant?->verified != 1
+        ) {
+            abort(404);
+        }
+
         return view('club', compact('club'));
     }
     public function joinClub($clubId)
     {
         $club = Club::select('id', 'name')->findOrFail($clubId);
+
+        if (
+            $club->president?->verified != 1 ||
+            $club->secretary?->verified != 1 ||
+            $club->accountant?->verified != 1
+        ) {
+            abort(404);
+        }
+
         return view('join-club', compact('club'));
     }
 
@@ -69,7 +92,7 @@ class ClubController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $club = Club::select('id', 'name', 'description', 'created_at')
+        $club = Club::select('id', 'name', 'description', 'fee', 'created_at')
             ->withCount(['userRoles', 'memberships'])
             ->with([
                 'president.user:id,name,email',
@@ -80,7 +103,12 @@ class ClubController extends Controller
             ])
             ->findOrFail($clubId);
 
-        return view('dashboard.club', compact('club'));
+        $clubRevenue = Payment::whereHas('membership', function ($query) use ($clubId) {
+            $query->where('club_id', $clubId);
+        })->where('payment_status', 'paid')
+            ->sum('amount');
+
+        return view('dashboard.club', compact('club', 'clubRevenue'));
     }
 
     public function create()
