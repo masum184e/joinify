@@ -203,9 +203,25 @@ class DashboardController extends Controller
         $memberCount = Member::count();
 
         $popularClubs = Club::withCount('memberships')
+            ->with([
+                'memberships.payment' => function ($query) {
+                    $query->where('payment_status', 'paid');
+                }
+            ])
             ->orderBy('memberships_count', 'desc')
             ->take(3)
             ->get();
+
+        // Calculate revenue for each popular club
+        foreach ($popularClubs as $club) {
+            $revenue = 0;
+            foreach ($club->memberships as $membership) {
+                if ($membership->payment) {
+                    $revenue += $membership->payment->amount;
+                }
+            }
+            $club->revenue = $revenue;
+        }
 
         $clubs = Club::withCount('memberships')->get();
         $clubLabels = $clubs->pluck('name')->toArray();
@@ -232,11 +248,17 @@ class DashboardController extends Controller
             $clubRevenue[$club->name] = $totalRevenue;
         }
 
+        // Clubs for general chart
+        $clubs = Club::withCount('memberships')->get();
+        $clubLabels = $clubs->pluck('name')->toArray();
+        $clubMemberCount = $clubs->pluck('memberships_count')->toArray();
+        $clubsMemberCount = array_combine($clubLabels, $clubMemberCount);
+
+        // Total revenue and expenses
         $totalRevenue = Payment::where('payment_status', 'paid')->sum('amount');
-        // $totalExpenses = Expense::sum('amount');
-        $totalExpenses = 00;
+        $totalExpenses = 0;
         $netBalance = $totalRevenue - $totalExpenses;
 
-        return view('dashboard.advisor', compact('clubCount', 'memberCount', 'popularClubs', 'clubsMemberCount', 'clubRevenue', 'totalRevenue', 'totalExpenses', 'netBalance'));
+        return view('dashboard.advisor', compact('clubCount', 'memberCount', 'popularClubs', 'clubsMemberCount', 'totalRevenue', 'totalExpenses', 'netBalance', 'clubRevenue'));
     }
 }

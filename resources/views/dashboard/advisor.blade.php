@@ -8,8 +8,6 @@
 
 @section('content')
   <div class="space-y-6 mb-8">
-    <!-- Cards -->
-    <!-- Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
 
     <!-- Clubs -->
@@ -17,11 +15,11 @@
       <div class="flex items-center justify-between">
       <div>
         <p class="text-sm text-gray-500">Clubs</p>
-        <p class="text-2xl font-bold text-green-600">{{ $clubCount }}</p>
+        <p class="text-2xl font-bold text-indigo-600">{{ $clubCount }}</p>
       </div>
-      <div class="text-green-500 bg-green-100 p-2 rounded-full">
-        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h18M3 17h18" />
+      <div class="text-indigo-500 bg-indigo-100 p-2 rounded-full">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17l4 4 4-4m0-5l-4-4-4 4" />
         </svg>
       </div>
       </div>
@@ -32,11 +30,12 @@
       <div class="flex items-center justify-between">
       <div>
         <p class="text-sm text-gray-500">Members</p>
-        <p class="text-2xl font-bold text-green-600">{{ $memberCount }}</p>
+        <p class="text-2xl font-bold text-blue-600">{{ $memberCount }}</p>
       </div>
-      <div class="text-green-500 bg-green-100 p-2 rounded-full">
-        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5V4H2v16h5m5-3l3 3m0 0l-3 3m3-3H9" />
+      <div class="text-blue-500 bg-blue-100 p-2 rounded-full">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M17 20h5V4H2v16h5m5-3l3 3m0 0l-3 3m3-3H9" />
         </svg>
       </div>
       </div>
@@ -47,47 +46,49 @@
       <div class="flex items-center justify-between">
       <div>
         <p class="text-sm text-gray-500">Revenue</p>
-        <p class="text-2xl font-bold text-green-500">{{ number_format($totalRevenue, 2) }}</p>
+        <p class="text-2xl font-bold text-green-600">${{ number_format($totalRevenue, 2) }}</p>
       </div>
       <div class="text-green-500 bg-green-100 p-2 rounded-full">
-        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 8c0-2.21 2.69-4 6-4s6 1.79 6 4-2.69 4-6 4-6-1.79-6-4zm0 4c0 2.21-2.69 4-6 4s-6-1.79-6-4 2.69-4 6-4 6 1.79 6 4z" />
         </svg>
       </div>
       </div>
     </div>
 
-    <!-- Earnings -->
+    <!-- Expense -->
     <div class="bg-white p-5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
       <div class="flex items-center justify-between">
       <div>
         <p class="text-sm text-gray-500">Expense</p>
-        <p class="text-2xl font-bold text-red-500">${{ number_format($totalExpenses, 2) }}</p>
+        <p class="text-2xl font-bold text-red-600">${{ number_format($totalExpenses, 2) }}</p>
       </div>
-      <div class="text-red-500 bg-pink-100 p-2 rounded-full">
-        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3" />
+      <div class="text-red-500 bg-red-100 p-2 rounded-full">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v8m0-8l-3 3m3-3l3 3" />
         </svg>
       </div>
       </div>
     </div>
 
-    <!-- Growth -->
+    <!-- Net Balance -->
     <div class="bg-white p-5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
       <div class="flex items-center justify-between">
       <div>
         <p class="text-sm text-gray-500">Net Balance</p>
-        <p class="text-2xl font-bold text-green-500">${{ number_format($netBalance, 2) }}</p>
+        <p class="text-2xl font-bold text-purple-600">${{ number_format($netBalance, 2) }}</p>
       </div>
-      <div class="text-green-500 bg-green-100 p-2 rounded-full">
-        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5 12l5 5L20 7" />
+      <div class="text-purple-500 bg-purple-100 p-2 rounded-full">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
         </svg>
       </div>
       </div>
     </div>
 
     </div>
+
     <!-- Chart & Pie -->
     <!-- Dashboard Metrics Section -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -142,7 +143,8 @@
         <path stroke-linecap="round" stroke-linejoin="round"
         d="M12 2v20m0-12c-1.333 0-4 .667-4 2s2.667 2 4 2 4-.667 4-2-2.667-2-4-2z" />
       </svg>
-      <div class="text-base font-semibold text-gray-700">$120</div>
+      <div class="text-base font-semibold text-gray-700">${{ $club->fee }}</div>
+      <div class="text-xs text-gray-400 mt-1">Fees</div>
       </div>
       <!-- Members -->
       <div class="flex flex-col items-center">
@@ -152,6 +154,7 @@
         d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m10-1a4 4 0 10-7.9 0M12 14a4 4 0 100-8 4 4 0 000 8z" />
       </svg>
       <div class="text-base font-semibold text-gray-700">{{ $club->memberships_count }}</div>
+      <div class="text-xs text-gray-400 mt-1">Members</div>
       </div>
       <!-- Revenue -->
       <div class="flex flex-col items-center">
@@ -161,7 +164,8 @@
         d="M12 8c-1.333 0-4 .667-4 2s2.667 2 4 2 4-.667 4-2-2.667-2-4-2z" />
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v20" />
       </svg>
-      <div class="text-base font-semibold text-green-600">$63.6k</div>
+      <div class="text-base font-semibold text-green-600">${{ $club->revenue }}</div>
+      <div class="text-xs text-gray-400 mt-1">Revenue</div>
       </div>
       </div>
       </div>
