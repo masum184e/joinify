@@ -52,7 +52,7 @@
       <path stroke-linecap="round" stroke-linejoin="round"
         d="M17 20C17 18.3431 14.7614 17 12 17C9.23858 17 7 18.3431 7 20M21 17C21 15.77 19.77 14.71 18 14.25M3 17C3 15.77 4.23 14.71 6 14.25M18 10.24C18.61 9.69 19 8.89 19 8C19 6.34 17.66 5 16 5C15.23 5 14.53 5.29 14 5.76M6 10.24C5.39 9.69 5 8.89 5 8C5 6.34 6.34 5 8 5C8.77 5 9.47 5.29 10 5.76M12 14C10.34 14 9 12.66 9 11C9 9.34 10.34 8 12 8C13.66 8 15 9.34 15 11C15 12.66 13.66 14 12 14Z" />
       </svg>
-      <span class="font-medium">{{ $club->userRoles->count() }} Members</span>
+      <span class="font-medium">{{ $club->memberships->count() }} Members</span>
       </div>
 
       <!-- Created Date -->

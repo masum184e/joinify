@@ -26,7 +26,7 @@
     <!-- Total Members -->
     <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl shadow-sm">
       <h2 class="font-semibold text-blue-700 text-sm uppercase mb-1">Total Members</h2>
-      <p class="text-xl font-extrabold text-blue-900">{{ $club->userRoles->count() }}</p>
+      <p class="text-xl font-extrabold text-blue-900">{{ $club->memberships->count() }}</p>
     </div>
 
     <!-- Revenue -->

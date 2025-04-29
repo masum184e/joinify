@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Member;
 use App\Models\User;
 use App\Models\Club;
 use App\Models\ClubUserRole;
@@ -17,7 +18,7 @@ class ClubController extends Controller
 {
     public function publicIndex()
     {
-        $clubs = Club::withCount('userRoles')
+        $clubs = Club::withCount('userRoles', 'memberships')
             ->select('id', 'name', 'description', 'created_at')
             ->get()
             ->map(function ($club) {
@@ -28,7 +29,7 @@ class ClubController extends Controller
     }
     public function publicShow($clubId)
     {
-        $club = Club::withCount(['userRoles'])
+        $club = Club::withCount(['userRoles', 'memberships'])
             ->select('id', 'name', 'description', 'created_at')
             ->with([
                 'president.user:id,name,email',
@@ -53,7 +54,7 @@ class ClubController extends Controller
         }
 
         $clubs = Club::withCount('userRoles')
-            ->withCount(['userRoles'])
+            ->withCount(['userRoles', 'memberships'])
             ->with([
                 'president.user:id,name,email',
             ])
@@ -69,7 +70,7 @@ class ClubController extends Controller
         }
 
         $club = Club::select('id', 'name', 'description', 'created_at')
-            ->withCount(['userRoles'])
+            ->withCount(['userRoles', 'memberships'])
             ->with([
                 'president.user:id,name,email',
                 'secretary.user:id,name,email',

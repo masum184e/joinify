@@ -52,7 +52,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 {{ $club->president?->user?->name }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $club->userRoles->count() }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $club->memberships->count() }}</td>
                             <td class="px-6 py-4 whitespace-nowrap space-x-1">
                                 @foreach($club->userRoles as $role)
                                     <span class="badge">
