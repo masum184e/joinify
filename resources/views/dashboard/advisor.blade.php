@@ -46,7 +46,7 @@
       <div class="flex items-center justify-between">
       <div>
         <p class="text-sm text-gray-500">Revenue</p>
-        <p class="text-2xl font-bold text-green-600">${{ number_format($totalRevenue, 2) }}</p>
+        <p class="text-2xl font-bold text-green-600">৳{{ number_format($totalRevenue, 2) }}</p>
       </div>
       <div class="text-green-500 bg-green-100 p-2 rounded-full">
         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,7 +62,7 @@
       <div class="flex items-center justify-between">
       <div>
         <p class="text-sm text-gray-500">Expense</p>
-        <p class="text-2xl font-bold text-red-600">${{ number_format($totalExpenses, 2) }}</p>
+        <p class="text-2xl font-bold text-red-600">৳{{ number_format($totalExpenses, 2) }}</p>
       </div>
       <div class="text-red-500 bg-red-100 p-2 rounded-full">
         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,7 +77,7 @@
       <div class="flex items-center justify-between">
       <div>
         <p class="text-sm text-gray-500">Net Balance</p>
-        <p class="text-2xl font-bold text-purple-600">${{ number_format($netBalance, 2) }}</p>
+        <p class="text-2xl font-bold text-purple-600">৳{{ number_format($netBalance, 2) }}</p>
       </div>
       <div class="text-purple-500 bg-purple-100 p-2 rounded-full">
         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,7 +143,7 @@
         <path stroke-linecap="round" stroke-linejoin="round"
         d="M12 2v20m0-12c-1.333 0-4 .667-4 2s2.667 2 4 2 4-.667 4-2-2.667-2-4-2z" />
       </svg>
-      <div class="text-base font-semibold text-gray-700">${{ $club->fee }}</div>
+      <div class="text-base font-semibold text-gray-700">৳{{ $club->fee }}</div>
       <div class="text-xs text-gray-400 mt-1">Fees</div>
       </div>
       <!-- Members -->
@@ -164,7 +164,7 @@
         d="M12 8c-1.333 0-4 .667-4 2s2.667 2 4 2 4-.667 4-2-2.667-2-4-2z" />
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v20" />
       </svg>
-      <div class="text-base font-semibold text-green-600">${{ $club->revenue }}</div>
+      <div class="text-base font-semibold text-green-600">৳{{ $club->revenue }}</div>
       <div class="text-xs text-gray-400 mt-1">Revenue</div>
       </div>
       </div>

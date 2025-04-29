@@ -96,7 +96,7 @@
                                         class="inline-block px-2 py-1 rounded-full bg-red-100 text-green-600 text-xs font-medium">Income</span>
                                 </td>
                                 <td class="px-5 py-3 text-right font-semibold text-red-600">
-                                    ${{ number_format($transaction->amount, 2) }}</td>
+                                ৳{{ number_format($transaction->amount, 2) }}</td>
                             </tr>
                         @endforeach
                     </tbody>

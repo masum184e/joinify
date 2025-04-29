@@ -49,7 +49,7 @@
             <!-- Revenue -->
             <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl shadow-sm">
                 <h2 class="font-semibold text-green-700 text-sm uppercase mb-1">Revenue</h2>
-                <p class="text-xl font-extrabold text-green-900">${{ $clubRevenue }}</p>
+                <p class="text-xl font-extrabold text-green-900">৳{{ $clubRevenue }}</p>
             </div>
 
             <!-- Status -->

@@ -54,7 +54,7 @@
                                             @endphp
                                             <span
                                                 class="inline-block bg-blue-100 text-blue-700 px-3 py-1 text-xs font-semibold rounded-full shadow-sm">
-                                                ${{ number_format($paymentAmount, 2) }}
+                                                ৳{{ number_format($paymentAmount, 2) }}
                                             </span>
                                         </td>
                                     </tr>
