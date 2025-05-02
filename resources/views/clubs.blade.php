@@ -1,78 +1,116 @@
 @extends('includes.layout')
 
 @section('title', 'Joinify')
-@section('sub-title', 'All Clubs')
+@section('sub-title', 'Browse Clubs')
 
 @section('content')
 
   <!-- Page Header -->
-  <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-    <!-- Left: Title & Description -->
-    <div>
-    <h1 class="text-3xl font-bold text-blue-600">All Clubs</h1>
-    <p class="text-gray-600 mt-1">Browse all active clubs on campus</p>
-    </div>
-
-    <!-- Right: Search Bar -->
-    <!-- Search Box -->
-    <div class="relative">
-    <input type="text" id="clubSearch" placeholder="Search clubs..."
-      class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-600 focus:outline-none" />
-    <svg class="w-5 h-5 absolute left-3 top-2.5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor"
-      viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-      d="M21 21l-4.35-4.35M10 18a8 8 0 100-16 8 8 0 000 16z"></path>
-    </svg>
-    </div>
-  </div>
-
-
-  <!-- Club Grid -->
-  <div class="max-w-7xl mx-auto px-4">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-
-    @foreach($clubs as $club)
-
-    <div
-      class="bg-gradient-to-br from-white via-gray-50 to-blue-50 rounded-xl shadow-lg hover:shadow-xl transition p-6 flex flex-col justify-between">
+  <section class="pt-32 pb-10 bg-gradient-to-b from-primary-50 to-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
       <div>
-      <!-- Club Title -->
-      <h2 class="text-xl font-semibold mb-1 flex items-center gap-2">{{ $club->name }}</h2>
-
-      <!-- Description -->
-      <p class="text-gray-700 text-sm mb-4 text-justify">{{ $club->description }}</p>
-
+      <h1 class="text-4xl font-bold text-gray-900 font-poppins">Discover Campus Clubs</h1>
+      <p class="text-xl text-gray-600 mt-2">Find your community and pursue your passions</p>
       </div>
 
-      <!-- Meta Info -->
-      <div class="flex items-center justify-between text-sm text-gray-600 mt-auto pt-3 border-t border-gray-200">
-      <!-- Member Count -->
-      <div class="flex items-center gap-2">
-      <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round"
-        d="M17 20C17 18.3431 14.7614 17 12 17C9.23858 17 7 18.3431 7 20M21 17C21 15.77 19.77 14.71 18 14.25M3 17C3 15.77 4.23 14.71 6 14.25M18 10.24C18.61 9.69 19 8.89 19 8C19 6.34 17.66 5 16 5C15.23 5 14.53 5.29 14 5.76M6 10.24C5.39 9.69 5 8.89 5 8C5 6.34 6.34 5 8 5C8.77 5 9.47 5.29 10 5.76M12 14C10.34 14 9 12.66 9 11C9 9.34 10.34 8 12 8C13.66 8 15 9.34 15 11C15 12.66 13.66 14 12 14Z" />
-      </svg>
-      <span class="font-medium">{{ $club->memberships->count() }} Members</span>
+      <div class="relative max-w-md w-full">
+      <input type="text" placeholder="Search clubs..."
+        class="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all" />
+      <i class="ri-search-line absolute left-4 top-3.5 text-gray-400 text-xl"></i>
       </div>
+    </div>
 
-      <!-- Created Date -->
-      <span class="text-xs text-gray-500">From {{ \Carbon\Carbon::parse($club->created_at)->format('M d, Y') }}</span>
+    <!-- Filter Tags -->
+    <div class="flex flex-wrap gap-2 mt-6">
+      <button class="bg-primary-600 text-white px-4 py-2 rounded-full text-sm font-medium">All Clubs</button>
+      <button
+      class="bg-white text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-full text-sm font-medium border border-gray-200">Academic</button>
+      <button
+      class="bg-white text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-full text-sm font-medium border border-gray-200">Arts</button>
+      <button
+      class="bg-white text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-full text-sm font-medium border border-gray-200">Cultural</button>
+      <button
+      class="bg-white text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-full text-sm font-medium border border-gray-200">Sports</button>
+      <button
+      class="bg-white text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-full text-sm font-medium border border-gray-200">Technology</button>
+      <button
+      class="bg-white text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-full text-sm font-medium border border-gray-200">Social</button>
+    </div>
+    </div>
+  </section>
+
+  <!-- Clubs Grid -->
+  <section class="py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <!-- Club Card 1 -->
+      @foreach($clubs as $club)
+      <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden card-hover">
+      <div class="h-40 bg-gradient-to-r from-primary-500 to-primary-700 relative">
+      <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=800&q=80"
+      alt="{{ $club->name }}" class="w-full h-full object-cover mix-blend-overlay" />
+      <div
+      class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-primary-600 font-bold px-3 py-1 rounded-full text-sm">
+      {{ $club->memberships->count() }} Members
       </div>
-
-      <!-- View Button -->
-      <div class="mt-4">
+      </div>
+      <div class="p-6">
+      <div class="flex items-center mb-3">
+      <div class="p-2 bg-primary-100 rounded-full">
+        <i class="ri-camera-line text-lg text-primary-600"></i>
+      </div>
+      <h3 class="text-lg font-bold ml-3 text-gray-900">
+        {{ $club->name }}
+      </h3>
+      </div>
+      <p class="text-gray-600 mb-4 text-sm line-clamp-2">
+      Explore the art of photography through workshops, photo walks, and exhibitions. Perfect for beginners and
+      experts alike.
+      </p>
+      <div class="flex justify-between items-center">
+      <div class="flex -space-x-2">
+        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Member"
+        class="w-7 h-7 rounded-full border-2 border-white" />
+        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Member"
+        class="w-7 h-7 rounded-full border-2 border-white" />
+        <img src="https://randomuser.me/api/portraits/women/48.jpg" alt="Member"
+        class="w-7 h-7 rounded-full border-2 border-white" />
+      </div>
       <a href="/clubs/{{ $club->id }}"
-      class="block bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition text-center">
-      View Club
+        class="bg-primary-50 hover:bg-primary-100 text-primary-600 font-medium px-4 py-2 rounded-lg text-sm transition-colors">
+        View Club
       </a>
       </div>
-    </div>
-
-
-  @endforeach
-
+      </div>
+      </div>
+    @endforeach
 
     </div>
-  </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-center mt-12">
+      <nav class="flex items-center space-x-2">
+      <a href="#"
+        class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">
+        <i class="ri-arrow-left-s-line"></i>
+      </a>
+      <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary-600 text-white">1</a>
+      <a href="#"
+        class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50">2</a>
+      <a href="#"
+        class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50">3</a>
+      <span class="text-gray-500">...</span>
+      <a href="#"
+        class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50">8</a>
+      <a href="#"
+        class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">
+        <i class="ri-arrow-right-s-line"></i>
+      </a>
+      </nav>
+    </div>
+    </div>
+  </section>
+
 
 @endsection
