@@ -21,9 +21,14 @@ Route::prefix('clubs')->group(function () {
     Route::get('/{club}/join', [ClubController::class, 'joinClub']);
 });
 
-Route::prefix('clubs/{club}/events/')->group(function () {
+Route::prefix('events')->group(callback: function () {
     Route::get('/', [EventController::class, 'publicIndex']);
-    Route::get('/{event}', [EventController::class, 'publicShow']);
+    Route::get('/{club}', [EventController::class, 'publicShow']);
+});
+
+Route::prefix('clubs/{club}/events/')->group(function () {
+    Route::get('/', [EventController::class, 'publicIndexForClub']);
+    Route::get('/{event}', [EventController::class, 'publicShowForClub']);
 });
 
 Route::prefix('dashboard')->middleware(['auth'])->group(function () {

@@ -165,7 +165,7 @@
         </div>
 
         <div class="mt-6 text-center">
-        <a href="#" class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
+        <a href="/clubs/{{ $club->id }}/events" class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
           View All Events
           <i class="ri-arrow-right-line ml-1"></i>
         </a>

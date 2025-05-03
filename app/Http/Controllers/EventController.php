@@ -13,19 +13,36 @@ use Illuminate\Support\Facades\Log;
 
 class EventController extends Controller
 {
-    public function publicIndex($clubId)
+    public function publicIndex()
     {
         $events = Event::select('id', 'title', 'start_time', 'end_time', 'date', 'location')
-            ->where('club_id', $clubId)
             ->with('guests')
             ->get();
 
         return view('events', compact('events'));
     }
 
-    public function publicShow($clubId, $eventId)
+    public function publicShow($eventId)
     {
         $event = Event::with(['guests', 'club'])->findOrFail($eventId);
+        return view('event', compact('event'));
+    }
+
+    public function publicIndexForClub($clubId)
+    {
+        $events = Event::select('id', 'title', 'start_time', 'end_time', 'date', 'location')
+            ->where('club_id', $clubId)
+            ->with('guests')
+            ->get();
+
+        return view('club-events', compact('events'));
+    }
+
+    public function publicShowForClub($clubId, $eventId)
+    {
+        $event = Event::with(['guests', 'club'])
+            ->where('club_id', $clubId)
+            ->findOrFail($eventId);
         return view('event', compact('event'));
     }
 
