@@ -45,9 +45,8 @@ class SslCommerzPaymentController extends Controller
                 'reason' => $request->reason,
             ]);
 
-            // $club = Club::findOrFail($club_id);
-            // $amount = $club->membership_fee ?? 500.00;
-            $amount = 500.00;
+            $club = Club::findOrFail($club_id);
+            $amount = $club->membership_fee ?? 500.00;
 
             $membership = Membership::create([
                 'member_id' => $member->id,
@@ -104,9 +103,9 @@ class SslCommerzPaymentController extends Controller
             $post_data['value_c'] = "ref003";
             $post_data['value_d'] = "ref004";
 
-            $post_data['success_url'] = 'http://joinify.test/success';
-            $post_data['failed_url'] = 'http://joinify.test/fail';
-            $post_data['cancel_url'] = 'http://joinify.test/cancel';
+            $post_data['success_url'] = '/success';
+            $post_data['failed_url'] = '/fail';
+            $post_data['cancel_url'] = '/cancel';
 
             $sslc = new SslCommerzNotification();
             # initiate(Transaction Data , false: Redirect to SSLCOMMERZ gateway/ true: Show all the Payement gateway here )
