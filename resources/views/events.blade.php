@@ -380,20 +380,5 @@
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="py-16 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-3xl font-bold font-poppins mb-4">Join Our Photography Club</h2>
-            <p class="text-lg text-primary-100 max-w-3xl mx-auto mb-8">Connect with fellow photography enthusiasts, learn
-                new skills, and showcase your work. Membership includes access to equipment, workshops, and exclusive
-                events.</p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="/clubs/1/join"
-                    class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-primary-700 bg-white hover:bg-primary-50 shadow-lg hover:shadow-xl transition-all duration-300">
-                    Become a Member
-                </a>
-            </div>
-        </div>
-    </section>
 
 @endsection

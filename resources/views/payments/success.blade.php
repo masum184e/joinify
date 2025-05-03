@@ -1,20 +1,65 @@
 @extends('includes.layout')
 
-@section('title', 'Joinify')
+@section('title', 'Payment Successful')
 
 @section('content')
-    <div class="flex items-center justify-center bg-green-50 py-20">
-        <div class="text-center p-8 bg-white rounded-2xl shadow-xl">
-            <div class="text-green-500 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586l-3.293-3.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"
-                        clip-rule="evenodd" />
-                </svg>
+<section class="py-12 md:pt-32 md:pb-20" >
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-6 md:p-8">
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-6">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Payment Successful!</h1>
+                <p class="text-lg text-gray-600 mb-8">Thank you for joining the Photography Club!</p>
+                
+                <div class="bg-gray-50 rounded-lg p-6 text-left mb-8">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Membership Details</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Name</p>
+                            <p class="text-base text-gray-900">Masum Billah</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Email</p>
+                            <p class="text-base text-gray-900">m@gmail.com</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Student ID</p>
+                            <p class="text-base text-gray-900">1234</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Department</p>
+                            <p class="text-base text-gray-900">CSTE</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Transaction ID</p>
+                            <p class="text-base text-gray-900">1234</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Amount Paid</p>
+                            <p class="text-base text-gray-900">123.00 BDT</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="text-gray-600 mb-6">
+                    We've sent a confirmation email to your registered email address with all the details.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        Return to Home
+                    </a>
+                    <a href="#" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        View Upcoming Events
+                    </a>
+                </div>
             </div>
-            <h1 class="text-2xl font-bold text-green-700 mb-2">Payment Successful!</h1>
-            <p class="text-gray-600 mb-6">Thank you for your purchase.</p>
-            <a href="/" class="px-6 py-2 bg-green-500 text-white rounded-xl hover:bg-green-600">Go Home</a>
         </div>
     </div>
+</section>
 @endsection

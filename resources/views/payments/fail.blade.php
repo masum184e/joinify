@@ -3,7 +3,7 @@
 @section('title', 'Joinify')
 
 @section('content')
-    <div class="flex items-center justify-center bg-red-50 py-20">
+    <div class="flex items-center justify-center bg-red-50 pt-32 pb-20">
         <div class="text-center p-8 bg-white rounded-2xl shadow-xl">
             <div class="text-red-500 mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto" viewBox="0 0 20 20" fill="currentColor">
