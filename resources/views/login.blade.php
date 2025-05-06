@@ -18,15 +18,33 @@
     <div class="w-2/3 p-10">
       <h2 class="text-3xl font-extrabold text-gray-800 mb-6">🔐 Login to Your Account</h2>
 
-      <form id="login-form">
+      <form action="/login" method="POST" id="login-form">
+        @csrf
         <input type="email" placeholder="Email" name="email"
           class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           required />
+        @error('email')
+      <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+    @enderror
         <input type="password" placeholder="Password" name="password"
           class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           required />
+        @error('password')
+      <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+    @enderror
         <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg">Sign In</button>
-        <div id="login-error" class="text-red-500 mt-4"></div>
+        @if (session('error'))
+      <div class="text-red-500 mb-4">{{ session('error') }}</div>
+    @endif
+
+        @if ($errors->any())
+        <ul class="text-red-500 mb-4">
+          @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+        </ul>
+    @endif
+
       </form>
     </div>
 
@@ -44,35 +62,6 @@
 
   </div>
 
-  <script>
-    document.getElementById("login-form").addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const form = e.target;
-      const formData = new FormData(form);
-      const errorBox = document.getElementById("login-error");
-
-      fetch("/login", {
-        method: "POST",
-        headers: {
-          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-        },
-        body: formData,
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            window.location.href = data.redirect;
-          } else {
-            errorBox.textContent = data.message || "Login failed!";
-          }
-        })
-        .catch(err => {
-          errorBox.textContent = "Something went wrong!";
-          console.error(err);
-        });
-    });
-  </script>
 </body>
 
 </html>

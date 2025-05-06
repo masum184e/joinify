@@ -12,7 +12,7 @@ use App\Http\Controllers\AuthController;
 Route::get('/', [HomeController::class, 'index']);
 
 Route::get('/login', [AuthController::class, 'index']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::get('/logout', [AuthController::class, 'logout']);
 
 Route::prefix('clubs')->group(function () {
@@ -21,7 +21,7 @@ Route::prefix('clubs')->group(function () {
     Route::get('/{club}/join', [ClubController::class, 'joinClub']);
 });
 
-Route::prefix('events')->group(callback: function () {
+Route::prefix('events')->group(function () {
     Route::get('/', [EventController::class, 'publicIndex']);
     Route::get('/{club}', [EventController::class, 'publicShow']);
 });
@@ -44,6 +44,7 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
 
 Route::post('/pay/{club}', [SslCommerzPaymentController::class, 'index']);
 
-Route::post('/success', [SslCommerzPaymentController::class, 'success'])->name('payment.success');
-Route::post('/fail', [SslCommerzPaymentController::class, 'fail'])->name('payment.fail');
-Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel'])->name('payment.cancel');
+Route::match(['get', 'post'], '/success', [SslCommerzPaymentController::class, 'success'])->name('payment.success');
+Route::match(['get', 'post'], '/fail', [SslCommerzPaymentController::class, 'fail'])->name('payment.fail');
+Route::match(['get', 'post'], '/cancel', [SslCommerzPaymentController::class, 'cancel'])->name('payment.cancel');
+Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn'])->name('payment.ipn');

@@ -26,24 +26,22 @@ class AuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
+
         if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validator->errors()->first()
-            ]);
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
+
 
         if (Auth::attempt($request->only('email', 'password'))) {
-            return response()->json([
-                'success' => true,
-                'redirect' => '/dashboard'
-            ]);
+
+            return redirect('/dashboard')->with('success', 'Login successful');
         }
 
-        return response()->json([
-            'success' => false,
-            'message' => 'Invalid email or password'
-        ]);
+        return redirect()->back()
+        ->with('error', 'An error occurred')
+        ->withInput();
     }
 
     public function logout(Request $request)
