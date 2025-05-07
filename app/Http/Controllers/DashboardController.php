@@ -19,6 +19,7 @@ class DashboardController extends Controller
         $isPresident = auth()->user()->clubRoles()->where('role', 'president')->exists();
         $isSecretary = auth()->user()->clubRoles()->where('role', 'secretary')->exists();
         $isAccountant = auth()->user()->clubRoles()->where('role', 'accountant')->exists();
+        $isAdvisor = auth()->user()->globalRole()->where('role', 'advisor')->exists();
 
         if ($isPresident) {
             return $this->president();
@@ -26,8 +27,10 @@ class DashboardController extends Controller
             return $this->secretary();
         } elseif ($isAccountant) {
             return $this->accountant();
-        } else {
+        } else if ($isAdvisor) {
             return $this->advisor();
+        } else {
+            return redirect()->route(route: 'home');
         }
     }
 
