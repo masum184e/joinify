@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('name', 100); // VARCHAR(100)
             $table->text('description')->nullable(); // TEXT
             $table->decimal('fee', 8, 2)->default(123);
+            $table->string('banner');
             $table->timestamps(); // created_at, updated_at
         });
     }

@@ -12,7 +12,8 @@ class Club extends Model
     protected $fillable = [
         'name',
         'description',
-        'fee'
+        'fee',
+        'banner'
     ];
 
     public function userRoles()

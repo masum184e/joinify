@@ -16,7 +16,7 @@
         <span class="text-gray-400">•</span>
         <span class="text-gray-600">{{ $club->name }}</span>
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 font-poppins mb-4">Photography Club</h1>
+      <h1 class="text-4xl font-bold text-gray-900 font-poppins mb-4">{{ $club->name }}</h1>
 
       <div class="flex flex-wrap gap-3 mb-6">
         <span class="bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm font-medium">Arts</span>
@@ -60,7 +60,7 @@
       <div class="md:w-1/3">
       <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
         <div class="h-48 bg-gradient-to-r from-primary-500 to-primary-700 relative">
-        <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=800&q=80"
+        <img src="{{ $club->banner ? asset('storage/' . $club->banner) : 'https://placehold.co/400x200' }}"
           alt="{{ $club->name }}" class="w-full h-full object-cover mix-blend-overlay" />
         </div>
         <div class="p-6">
@@ -165,7 +165,8 @@
         </div>
 
         <div class="mt-6 text-center">
-        <a href="/clubs/{{ $club->id }}/events" class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
+        <a href="/clubs/{{ $club->id }}/events"
+          class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
           View All Events
           <i class="ri-arrow-right-line ml-1"></i>
         </a>
@@ -181,9 +182,10 @@
         <h2 class="text-xl font-bold text-gray-900 mb-6 font-poppins">Club Leadership</h2>
 
         <!-- President -->
-        <div class="flex items-center mb-6">
-        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Club President"
-          class="w-14 h-14 rounded-full mr-4 border-2 border-primary-100">
+        <div class="flex items-center gap-2 mb-6">
+        <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center">
+          <span class="text-blue-600 font-bold">{{ substr($club->president?->user?->name, 0, 1) }}</span>
+        </div>
         <div>
           <h3 class="font-semibold text-gray-900">{{ $club->president?->user?->name }}</h3>
           <p class="text-primary-600 text-sm">President</p>
@@ -191,21 +193,23 @@
         </div>
         </div>
 
-        <!-- Vice President -->
-        <div class="flex items-center mb-6">
-        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Club Vice President"
-          class="w-14 h-14 rounded-full mr-4 border-2 border-primary-100">
+        <!-- Secretary -->
+        <div class="flex items-center gap-2 mb-6">
+        <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center">
+          <span class="text-blue-600 font-bold">{{ substr($club->secretary?->user?->name, 0, 1) }}</span>
+        </div>
         <div>
-          <h3 class="font-semibold text-gray-900">{{ $club->Secretery?->user?->name }}</h3>
-          <p class="text-primary-600 text-sm">Secretery</p>
-          <p class="text-gray-500 text-sm">{{ $club->Secretery?->user?->email }}</p>
+          <h3 class="font-semibold text-gray-900">{{ $club->secretary?->user?->name }}</h3>
+          <p class="text-primary-600 text-sm">Secretary</p>
+          <p class="text-gray-500 text-sm">{{ $club->secretary?->user?->email }}</p>
         </div>
         </div>
 
-        <!-- Secretary -->
-        <div class="flex items-center">
-        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Club Secretary"
-          class="w-14 h-14 rounded-full mr-4 border-2 border-primary-100">
+        <!-- Accountant -->
+        <div class="flex items-center gap-2">
+        <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center">
+          <span class="text-blue-600 font-bold">{{ substr($club->accountant?->user?->name, 0, 1) }}</span>
+        </div>
         <div>
           <h3 class="font-semibold text-gray-900">{{ $club->accountant?->user?->name }}</h3>
           <p class="text-primary-600 text-sm">Accountant</p>
