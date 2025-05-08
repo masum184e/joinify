@@ -10,6 +10,7 @@ use App\Models\EventGuest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
@@ -54,6 +55,10 @@ class EventController extends Controller
 
         if (!$isSecretaryOrPresident) {
             abort(403, 'Unauthorized action.');
+        }
+
+        if (auth()->user()->clubRoles()->first()->club_id != $clubId) {
+            abort(404, 'Club not found');
         }
 
         $events = Event::select('id', 'title', 'start_time', 'end_time', 'date', 'location')
@@ -125,7 +130,7 @@ class EventController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string|max:2000',
+            'description' => 'required|string|max:2000',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i',
             'date' => 'required|date',
@@ -133,7 +138,10 @@ class EventController extends Controller
             'guests' => 'array',
             'guests.*.name' => 'required|string|max:255',
             'guests.*.email' => 'nullable|email|max:255',
+            'poster' => 'required|image|max:2048', // 2MB max
         ]);
+
+        $path = null;
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -155,12 +163,17 @@ class EventController extends Controller
             //     return redirect()->back()->with('error', 'You are not associated with any club.');
             // }
 
+            if ($request->hasFile('poster')) {
+                $path = $request->file('poster')->store('posters', 'public');
+            }
+
             $event = Event::create([
                 'title' => $request->title,
                 'description' => $request->description,
                 'start_time' => $request->start_time,
                 'end_time' => $request->end_time,
                 'date' => $request->date,
+                'poster' => $path,
                 'location' => $request->location,
                 'club_id' => $clubRole->club_id
 
@@ -187,10 +200,18 @@ class EventController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
+
             Log::error('Event creation failed: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
                 'request_data' => $request->all(),
             ]);
+
+            ;
+
+            if ($path && Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+
             return redirect()->back()
                 ->with('error', 'An error occurred')
                 ->withInput();
@@ -205,55 +226,81 @@ class EventController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string|max:2000',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i',
-            'date' => 'required|date',
-            'location' => 'required|string|max:255',
-            'guests' => 'array',
-            'guests.*.name' => 'required|string|max:255',
-            'guests.*.email' => 'nullable|email|max:255',
-        ]);
+        $rules = [];
+
+        if ($request->filled('title')) {
+            $rules['title'] = 'string|max:255';
+        }
+
+        if ($request->filled('description')) {
+            $rules['description'] = 'string|max:2000';
+        }
+
+        if ($request->filled('start_time')) {
+            $rules['start_time'] = 'date_format:H:i';
+        }
+
+        if ($request->filled('end_time')) {
+            $rules['end_time'] = 'date_format:H:i';
+        }
+
+        if ($request->filled('date')) {
+            $rules['date'] = 'date';
+        }
+
+        if ($request->filled('location')) {
+            $rules['location'] = 'string|max:255';
+        }
+
+        if ($request->filled('guests')) {
+            $rules['guests'] = 'array';
+            $rules['guests.*.name'] = 'required|string|max:255';
+            $rules['guests.*.email'] = 'nullable|email|max:255';
+        }
+
+        if ($request->hasFile('poster')) {
+            $rules['poster'] = 'image|max:2048';
+        }
+
+        if ($request->hasFile('banner')) {
+            $rules['banner'] = 'image|max:2048';
+        }
+
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
+
         DB::beginTransaction();
+
         try {
-            $event = Event::findOrFail($eventId);
-            $event->update([
-                'title' => $request->title,
-                'description' => $request->description,
-                'start_time' => $request->start_time,
-                'end_time' => $request->end_time,
-                'date' => $request->date,
-                'location' => $request->location,
-            ]);
 
-            // Delete existing event guests (pivot records only)
-            $event->guests()->delete();
+            $event = Event::where('club_id', $clubId)->findOrFail($eventId);
 
-            // Re-add guests
-            if ($request->has('guests')) {
+            // Handle file uploads
+            if ($request->hasFile('poster')) {
+                if ($event->poster && Storage::disk('public')->exists($event->poster)) {
+                    Storage::disk('public')->delete($event->poster);
+                }
+                $event->poster = $request->file('poster')->store('posters', 'public');
+            }
+
+            // Update fillable fields only
+            $event->fill($request->only(['title', 'description', 'start_time', 'end_time', 'date', 'location']));
+            $event->save();
+
+            // Update guests (if provided)
+            if ($request->filled('guests')) {
+                $event->guests()->delete();
+
                 foreach ($request->guests as $guestData) {
-                    // Find or create guest
-                    if (!empty($guestData['email'])) {
-                        $guest = Guest::firstOrCreate(
-                            ['email' => $guestData['email']],
-                            ['name' => $guestData['name']]
-                        );
-                    } else {
-                        $guest = Guest::create([
-                            'name' => $guestData['name'],
-                            'email' => null,
-                        ]);
-                    }
+                    $guest = !empty($guestData['email'])
+                        ? Guest::firstOrCreate(['email' => $guestData['email']], ['name' => $guestData['name']])
+                        : Guest::create(['name' => $guestData['name'], 'email' => null]);
 
-                    // Create a new EventGuest entry
                     EventGuest::create([
                         'event_id' => $event->id,
                         'guest_id' => $guest->id,
@@ -263,15 +310,17 @@ class EventController extends Controller
 
             DB::commit();
 
-            return redirect('/dashboard/clubs/' . $clubId . '/events')->with('success', 'Event updated successfully.');
+            return redirect("/dashboard/clubs/{$clubId}/events/{$event->id}")->with('success', 'Event updated successfully.');
         } catch (\Exception $e) {
-            DB::rollback();
+            DB::rollBack();
+
             Log::error('Event update failed: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
                 'request_data' => $request->all(),
             ]);
+
             return redirect()->back()
-                ->with('error', 'An error occurred')
+                ->with('error', 'An error occurred while updating the event.')
                 ->withInput();
         }
     }
