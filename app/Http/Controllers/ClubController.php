@@ -14,13 +14,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ClubController extends Controller
 {
     public function publicIndex()
     {
         $clubs = Club::withCount('userRoles', 'memberships')
-            ->select('id', 'name', 'description', 'created_at')
+            ->select('id', 'name', 'description', 'fee', 'banner', 'created_at')
             ->get()
             ->filter(function ($club) {
                 return $club->president?->verified == 1 &&
@@ -36,12 +37,7 @@ class ClubController extends Controller
     public function publicShow($clubId)
     {
         $club = Club::withCount(['userRoles', 'memberships'])
-            ->select('id', 'name', 'description', 'fee', 'created_at')
-            ->with([
-                'president.user:id,name,email',
-                'secretary.user:id,name,email',
-                'accountant.user:id,name,email'
-            ])
+            ->select('id', 'name', 'description', 'fee', 'banner','created_at')
             ->findOrFail($clubId);
 
         if (
@@ -76,12 +72,12 @@ class ClubController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $clubs = Club::withCount('userRoles')
-            ->withCount(['userRoles', 'memberships'])
-            ->with([
-                'president.user:id,name,email',
-            ])
-            ->get();
+        $clubs = Club::withCount(['userRoles', 'memberships'])
+            ->get()
+            ->map(function ($club) {
+                $club->description = Str::limit($club->description, 60);
+                return $club;
+            });
         return view('dashboard.clubs', compact('clubs'));
     }
 
@@ -92,15 +88,18 @@ class ClubController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $club = Club::select('id', 'name', 'description', 'fee', 'created_at')
-            ->withCount(['userRoles', 'memberships'])
-            ->with([
-                'president.user:id,name,email',
-                'secretary.user:id,name,email',
-                'accountant.user:id,name,email',
-                'memberships.member.user:id,name,email',
-                'memberships.payment:id,membership_id,payment_status,created_at'
-            ])
+        // $club = Club::select('id', 'name', 'description', 'fee', 'created_at')
+        //     ->withCount(['userRoles', 'memberships'])
+        //     ->with([
+        //         'president.user:id,name,email',
+        //         'secretary.user:id,name,email',
+        //         'accountant.user:id,name,email',
+        //         'memberships.member.user:id,name,email',
+        //         'memberships.payment:id,membership_id,payment_status,created_at'
+        //     ])
+        //     ->findOrFail($clubId);
+        $club = Club::withCount(['userRoles', 'memberships'])
+            ->select('id', 'name', 'description', 'fee', 'created_at')
             ->findOrFail($clubId);
 
         $clubRevenue = Payment::whereHas('membership', function ($query) use ($clubId) {
@@ -142,6 +141,11 @@ class ClubController extends Controller
         }
 
         $club = Club::findOrFail($clubId);
+
+        if ($club->banner && Storage::disk('public')->exists($club->banner)) {
+            Storage::disk('public')->delete($club->banner);
+        }
+
         $club->delete();
 
         return redirect('/dashboard/clubs')->with('success', 'Club deleted successfully.');
@@ -156,17 +160,18 @@ class ClubController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:1000',
-
-            'presidentName' => 'required|string|max:255',
-            'presidentEmail' => 'required|email|max:255',
-
-            'accountantName' => 'required|string|max:255',
-            'accountantEmail' => 'required|email|max:255',
-
-            'programSecretaryName' => 'required|string|max:255',
-            'programSecretaryEmail' => 'required|email|max:255',
+            'description' => 'required|string',
+            'fee' => 'required|numeric',
+            'president_name' => 'required|string|max:255',
+            'president_email' => 'required|email',
+            'secretary_name' => 'required|string|max:255',
+            'secretary_email' => 'required|email',
+            'accountant_name' => 'required|string|max:255',
+            'accountant_email' => 'required|email',
+            'banner' => 'required|image|max:2048', // 2MB max
         ]);
+
+        $path = null;
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -177,26 +182,31 @@ class ClubController extends Controller
         DB::beginTransaction();
 
         try {
+
+            if ($request->hasFile('banner')) {
+                $path = $request->file('banner')->store('banners', 'public');
+            }
+
             $president = User::firstOrCreate(
-                ['email' => $request->presidentEmail],
+                ['email' => $request->president_email],
                 [
-                    'name' => $request->presidentName,
+                    'name' => $request->president_name,
                     'password' => Hash::make(env('DEFAULT_USER_PASSWORD', 'defaultPassword123'))
                 ]
             );
 
             $accountant = User::firstOrCreate(
-                ['email' => $request->accountantEmail],
+                ['email' => $request->accountant_email],
                 [
-                    'name' => $request->accountantName,
+                    'name' => $request->accountant_name,
                     'password' => Hash::make(env('DEFAULT_USER_PASSWORD', 'defaultPassword123'))
                 ]
             );
 
             $programSecretary = User::firstOrCreate(
-                ['email' => $request->programSecretaryEmail],
+                ['email' => $request->secretary_email],
                 [
-                    'name' => $request->programSecretaryName,
+                    'name' => $request->secretary_name,
                     'password' => Hash::make(env('DEFAULT_USER_PASSWORD', 'defaultPassword123'))
                 ]
             );
@@ -204,6 +214,8 @@ class ClubController extends Controller
             $club = Club::create([
                 'name' => $request->name,
                 'description' => $request->description,
+                'banner' => $path,
+                'fee' => $request->fee,
             ]);
 
             ClubUserRole::create([
@@ -238,6 +250,10 @@ class ClubController extends Controller
                 'request_data' => $request->all(),
             ]);
 
+            if ($path && Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+
             return redirect()->back()
                 ->with('error', 'An error occurred')
                 ->withInput();
@@ -251,39 +267,93 @@ class ClubController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:1000',
-            'presidentName' => 'required|string|max:255',
-            'presidentEmail' => 'required|email|max:255',
-            'accountantName' => 'required|string|max:255',
-            'accountantEmail' => 'required|email|max:255',
-            'programSecretaryName' => 'required|string|max:255',
-            'programSecretaryEmail' => 'required|email|max:255',
-        ]);
+        $rules = [];
+
+        if ($request->filled('name')) {
+            $rules['name'] = 'string|max:255';
+        }
+
+        if ($request->filled('description')) {
+            $rules['description'] = 'string|max:1000';
+        }
+
+        if ($request->filled('fee')) {
+            $rules['fee'] = 'numeric';
+        }
+
+        if ($request->filled('president_name')) {
+            $rules['president_name'] = 'string|max:255';
+        }
+
+        if ($request->filled('president_email')) {
+            $rules['president_email'] = 'email|max:255';
+        }
+
+        if ($request->filled('accountant_name')) {
+            $rules['accountant_name'] = 'string|max:255';
+        }
+
+        if ($request->filled('accountant_email')) {
+            $rules['accountant_email'] = 'email|max:255';
+        }
+
+        if ($request->filled('secretary_name')) {
+            $rules['secretary_name'] = 'string|max:255';
+        }
+
+        if ($request->filled('secretary_email')) {
+            $rules['secretary_email'] = 'email|max:255';
+        }
+
+        if ($request->hasFile('banner')) {
+            $rules['banner'] = 'image|max:2048';
+        }
+
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
+
         DB::beginTransaction();
         try {
             $club = Club::findOrFail($clubId);
-            $club->update([
-                'name' => $request->name,
-                'description' => $request->description,
-                'president_name' => $request->presidentName,
-                'president_email' => $request->presidentEmail,
-                'accountant_name' => $request->accountantName,
-                'accountant_email' => $request->accountantEmail,
-                'secretary_name' => $request->programSecretaryName,
-                'secretary_email' => $request->programSecretaryEmail,
-            ]);
+
+            if ($request->hasFile('banner')) {
+                // Delete old banner if it exists
+                if ($club->banner && Storage::disk('public')->exists($club->banner)) {
+                    Storage::disk('public')->delete($club->banner);
+                }
+
+                // Upload new banner
+                $path = $request->file('banner')->store('banners', 'public');
+                $club->banner = $path;
+            }
+
+            // Only update the fields that are present in the request
+            $club->fill($request->only(['name', 'description', 'fee']));
+            $club->save();
+
+            // Update role assignments
+            if ($request->filled('president_email') && $request->filled('president_name')) {
+                $this->updateUserRole($club->id, $request->president_email, $request->president_name, 'president');
+            }
+
+            if ($request->filled('secretary_email') && $request->filled('secretary_name')) {
+                $this->updateUserRole($club->id, $request->secretary_email, $request->secretary_name, 'secretary');
+            }
+
+            if ($request->filled('accountant_email') && $request->filled('accountant_name')) {
+                $this->updateUserRole($club->id, $request->accountant_email, $request->accountant_name, 'accountant');
+            }
+
+            DB::commit();
 
             return redirect("/dashboard/clubs/{$club->id}")->with('success', 'Club updated successfully!');
         } catch (\Exception $e) {
-            DB::rollback();
+            DB::rollBack();
             Log::error('Club update failed: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
                 'request_data' => $request->all(),
@@ -293,4 +363,21 @@ class ClubController extends Controller
                 ->withInput();
         }
     }
+
+    private function updateUserRole($clubId, $email, $name, $role)
+    {
+        $user = User::firstOrCreate(
+            ['email' => $email],
+            [
+                'name' => $name,
+                'password' => Hash::make(env('DEFAULT_USER_PASSWORD', 'defaultPassword123')),
+            ]
+        );
+
+        ClubUserRole::updateOrCreate(
+            ['club_id' => $clubId, 'role' => $role],
+            ['user_id' => $user->id, 'verified' => false]
+        );
+    }
+
 }
