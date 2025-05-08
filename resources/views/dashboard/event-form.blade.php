@@ -7,181 +7,245 @@
 @section('layout-sub-title', 'Manage your club, track events, and oversee member activities.')
 
 @section('content')
-    <div
-        class="w-full max-w-3xl p-10 bg-gradient-to-br from-white via-blue-50 to-blue-100 rounded-2xl shadow-xl mx-auto mb-8">
-        <h2
-            class="text-3xl font-extrabold text-center mb-8 text-blue-800 tracking-tight flex items-center justify-center gap-2">
-            @if($page === 'create')
-                🎉 Create New Event
-            @else
-                <svg class="w-6 h-6 text-blue-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
-                </svg>
-                Update Event Details
-            @endif
-        </h2>
 
+    <div class="container">
+        <div class="mb-2">
+            <h1 class="text-3xl font-bold mb-2">
+                @if($page === 'create')
+                    Create New Event
+                @else
+                    Update Event Details
+                @endif
+            </h1>
+            <p class="text-gray-500">
+                @if($page === 'create')
+                    Fill in the details to create a new club event
+                @else
+                    Fill in the details to update event information
+                @endif
+            </p>
+            <a href="/dashboard/clubs/{{ $clubId ?? '' }}/events"
+                class="inline-flex items-center justify-center text-blue-600 rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50  h-10 py-2 mb-4">
+                <i class="ri-arrow-left-line mr-2"></i>
+                Back to Events
+            </a>
+        </div>
 
-        <!-- Event Creation Form -->
-        <form id="clubForm" method="POST"
+        <!-- Form with proper method, action, and enctype -->
+        <form method="POST"
             action="{{ $page === 'create' ? '/dashboard/clubs/' . $clubId . '/events' : '/dashboard/clubs/' . $clubId . '/events/' . $event->id }}"
-            class="space-y-6">
+            enctype="multipart/form-data">
             @csrf
             @if($page === 'edit')
                 @method('PUT')
             @endif
-            <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-            <!-- Event Title -->
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Event Title</label>
-                <input type="text" placeholder="e.g. Tech Talk 2025" name="title" value="{{ $event->title ?? '' }}"
-                    class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
-                @error('title')
-                    <div class="text-red-500 text-sm">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <!-- Description -->
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
-                <textarea rows="4" placeholder="Describe the event..." name="description"
-                    class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white">{{ $event->description ?? '' }}</textarea>
-                @error('description')
-                    <div class="text-red-500 text-sm">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <!-- Date & Time -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Start Time</label>
-                    <input type="time" name="start_time" value="{{ $event->start_time ?? '' }}"
-                        class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
-                    @error('start_time')
-                        <div class="text-red-500 text-sm">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">End Time</label>
-                    <input type="time" name="end_time" value="{{ $event->end_time ?? '' }}"
-                        class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
-                    @error('end_time')
-                        <div class="text-red-500 text-sm">{{ $message }}</div>
-                    @enderror
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Event Date</label>
-                <input type="date" name="date" value="{{ $event->date ?? '' }}"
-                    class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
-                @error('date')
-                    <div class="text-red-500 text-sm">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <!-- Location -->
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Location</label>
-                <input type="text" placeholder="e.g. Auditorium A, Main Campus" name="location"
-                    value="{{ $event->location ?? '' }}"
-                    class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white" />
-                @error('location')
-                    <div class="text-red-500 text-sm">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <!-- Guest List -->
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Guests</label>
-                <div id="guest-list" class="space-y-4">
-                    @php
-                        $guests = $event->guests ?? old('guests', [['name' => '', 'email' => '']]);
-                    @endphp
-
-                    @foreach($guests as $index => $guest)
-                        <div class="flex flex-col md:flex-row gap-3">
-                            <div class="flex-1">
-                                <input type="text" name="guests[{{ $index }}][name]" placeholder="Guest Name"
-                                    value="{{ $guest->guest['name'] ?? '' }}"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
-                                @if ($errors->has("guests.$index.name"))
-                                    <div class="text-red-500 text-sm mt-1">{{ $errors->first("guests.$index.name") }}</div>
-                                @endif
-                            </div>
-                            <div class="flex-1">
-                                <input type="text" name="guests[{{ $index }}][email]" placeholder="Email"
-                                    value="{{ $guest->guest['email'] ?? '' }}"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
-                                @if ($errors->has("guests.$index.email"))
-                                    <div class="text-red-500 text-sm mt-1">{{ $errors->first("guests.$index.email") }}</div>
-                                @endif
-                            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Basic Information -->
+                <div class="bg-card rounded-lg border border-border shadow-sm">
+                    <div class="p-6">
+                        <h2 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h2>
+                        <div class="space-y-2">
+                            <label for="title"
+                                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Event
+                                Title</label>
+                            <input id="title" name="title" placeholder="Enter event title"
+                                value="{{ $event->title ?? old('title') }}"
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 @error('title') border-red-500 @enderror">
+                            @error('title')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
-                    @endforeach
-
+                        <div class="space-y-2 mt-4">
+                            <label for="description"
+                                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Description</label>
+                            <textarea id="description" name="description" placeholder="Describe events activities" rows="5"
+                                class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 @error('description') border-red-500 @enderror">{{ $event->description ?? old('description') }}</textarea>
+                            @error('description')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                <!-- Date and Time -->
+                <div class="bg-card rounded-lg border border-border shadow-sm">
+                    <div class="p-6">
+                        <h2 class="text-lg font-medium text-gray-900 mb-4">Date and Time</h2>
+                        <div class="space-y-2">
+                            <label for="date"
+                                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Event
+                                Date</label>
+                            <input type="date" id="date" name="date" value="{{ $event->date ?? old('date') }}"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white @error('date') border-red-500 @enderror" />
+                            @error('date')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="space-y-2 mt-4">
+                            <label for="start_time"
+                                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Start
+                                Time</label>
+                            <input type="time" id="start_time" name="start_time"
+                                value="{{ $event->start_time ?? old('start_time') }}"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white @error('start_time') border-red-500 @enderror" />
+                            @error('start_time')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="space-y-2 mt-4">
+                            <label for="end_time"
+                                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">End
+                                Time</label>
+                            <input type="time" id="end_time" name="end_time"
+                                value="{{ $event->end_time ?? old('end_time') }}"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 bg-white @error('end_time') border-red-500 @enderror" />
+                            @error('end_time')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Add Guest Button -->
-                <button type="button" id="add-guest"
-                    class="mt-4 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-100 hover:bg-blue-200 rounded-lg transition duration-200">
-                    + Add Another Guest
-                </button>
-                @error('guests')
-                    <div class="text-red-500 text-sm">{{ $message }}</div>
-                @enderror
+                <div class="bg-card rounded-lg border border-border shadow-sm h-min">
+                    <div class="p-6">
+                        <h2 class="text-lg font-medium text-gray-900 mb-4">Location</h2>
+                        <div class="space-y-2">
+                            <label for="location"
+                                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Event
+                                Location</label>
+                            <input id="location" name="location" placeholder="Enter event location"
+                                value="{{ $event->location ?? old('location') }}"
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 @error('location') border-red-500 @enderror">
+                            @error('location')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="space-y-2 mt-4">
+                            <label for="poster" class="block text-sm font-medium text-gray-700">Event Image</label>
+                            <div
+                                class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md @error('poster') border-red-500 @enderror">
+                                <div class="space-y-1 text-center">
+                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
+                                        viewBox="0 0 48 48" aria-hidden="true">
+                                        <path
+                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                    <div class="flex text-sm text-gray-600">
+                                        <label for="poster"
+                                            class="relative cursor-pointer bg-white rounded-md font-medium text-primary-600">
+                                            <span>Upload a file</span>
+                                            <input id="poster" name="poster" type="file" class="sr-only">
+                                        </label>
+                                        <p class="pl-1">or drag and drop</p>
+                                    </div>
+                                    <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                                </div>
+                            </div>
+                            @error('poster')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+
+                            @if(isset($event) && $event->poster)
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-500">Current image:</p>
+                                    <div class="mt-1">
+                                        <img src="{{ asset('storage/' . $event->poster) }}" alt="{{ $event->title }}"
+                                            class="h-32 w-auto object-cover rounded-md">
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-lg border border-border shadow-sm h-min">
+                    <div class="p-6">
+                        <h2 class="text-lg font-medium text-gray-900 mb-4">Guests</h2>
+
+                        <!-- Display any guest-related errors at the top -->
+                        @if ($errors->has('guests') || $errors->has('guests.*'))
+                            <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                                <p class="text-red-600 text-sm font-medium">Please check the guest information for errors</p>
+                            </div>
+                        @endif
+
+                        <div id="guest-list" class="space-y-4">
+                            @php
+                                $guests = $event->guests ?? old('guests', [['name' => '', 'email' => '']]);
+                                // if (!is_array($guests) && is_object($guests)) {
+                                //     $guests = $guests->toArray();
+                                // }
+                            @endphp
+                            @foreach($guests as $index => $guest)
+                                <div class="flex flex-col md:flex-row gap-3 guest-item">
+                                    <div class="flex-1">
+                                        <input type="text" name="guests[{{ $index }}][name]" placeholder="Guest Name"
+                                            value="{{ $guest->guest['name'] ?? '' }}"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white @error('guests.' . $index . '.name') border-red-500 @enderror" />
+                                        @error('guests.' . $index . '.name')
+                                            <div class="text-red-500 text-sm mt-1">Guest name is required</div>
+                                        @enderror
+                                    </div>
+                                    <div class="flex-1">
+                                        <input type="text" name="guests[{{ $index }}][email]" placeholder="Email"
+                                            value="{{ $guest->guest['email'] ?? '' }}"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white @error('guests.' . $index . '.email') border-red-500 @enderror" />
+                                        @error('guests.' . $index . '.email')
+                                            <div class="text-red-500 text-sm mt-1">Valid email is required</div>
+                                        @enderror
+                                    </div>
+                                    <div class="flex items-center">
+                                        <button type="button"
+                                            class="remove-guest p-2 text-red-500 hover:text-red-700 focus:outline-none"
+                                            title="Remove guest">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                                fill="currentColor">
+                                                <path fill-rule="evenodd"
+                                                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <!-- Add Guest Button -->
+                        <button type="button" id="add-guest"
+                            class="mt-4 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-100 hover:bg-blue-200 rounded-lg transition duration-200">
+                            + Add Another Guest
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <!-- Submit Button -->
-            <div class="pt-6">
-                <button type="submit"
-                    class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold px-6 py-3 rounded-xl shadow-lg transform hover:scale-[1.02] transition duration-300 ease-in-out flex items-center justify-center gap-2">
-                    @if($page === 'create')
-                        🚀 Create Event
-                    @else
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 407.096 407.096"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M402.115,84.008L323.088,4.981C319.899,1.792,315.574,0,311.063,0H17.005C7.613,0,0,7.614,0,17.005v373.086c0,9.392,7.613,17.005,17.005,17.005h373.086c9.392,0,17.005-7.613,17.005-17.005V96.032C407.096,91.523,405.305,87.197,402.115,84.008z M300.664,163.567H67.129V38.862h233.535V163.567z" />
-                            <path
-                                d="M214.051,148.16h43.08c3.131,0,5.668-2.538,5.668-5.669V59.584c0-3.13-2.537-5.668-5.668-5.668h-43.08c-3.131,0-5.668,2.538-5.668,5.668v82.907C208.383,145.622,210.92,148.16,214.051,148.16z" />
-                        </svg>
-                        <span>Save Changes</span>
-                    @endif
+            <!-- Form Actions -->
+            <div class="mt-6 px-6 py-4 flex items-center justify-end space-x-3">
+                <button type="button" id="save-draft-btn"
+                    class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                    Save as Draft
                 </button>
-
-                @if(session('error'))
-                    <div class="text-red-500 text-sm">
-                        {{ session('error') }}
-                    </div>
-                @endif
-
-                @if(session('success'))
-                    <div class="text-green-500 text-sm">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
+                <button type="submit"
+                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                    {{ $page === 'create' ? 'Create Event' : 'Update Event' }}
+                </button>
             </div>
         </form>
     </div>
-
 @endsection
-
 
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             let guestIndex = document.querySelectorAll('#guest-list > div').length;
 
+            // Add guest functionality
             document.getElementById('add-guest').addEventListener('click', function () {
                 const guestList = document.getElementById('guest-list');
 
                 const newGuest = document.createElement('div');
-                newGuest.classList.add('flex', 'flex-col', 'md:flex-row', 'gap-3');
+                newGuest.classList.add('flex', 'flex-col', 'md:flex-row', 'gap-3', 'guest-item');
 
                 newGuest.innerHTML = `
                                     <div class="flex-1">
@@ -192,10 +256,65 @@
                                         <input type="text" name="guests[${guestIndex}][email]" placeholder="Email"
                                             class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
                                     </div>
+                                    <div class="flex items-center">
+                                        <button type="button" class="remove-guest p-2 text-red-500 hover:text-red-700 focus:outline-none" title="Remove guest">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 `;
 
                 guestList.appendChild(newGuest);
                 guestIndex++;
+
+                // Add event listener to the new remove button
+                attachRemoveListeners(newGuest.querySelector('.remove-guest'));
+            });
+
+            // Remove guest functionality
+            function attachRemoveListeners(button) {
+                button.addEventListener('click', function () {
+                    this.closest('.guest-item').remove();
+                    // Reindex the remaining guests
+                    reindexGuests();
+                });
+            }
+
+            // Attach remove listeners to existing buttons
+            document.querySelectorAll('.remove-guest').forEach(button => {
+                attachRemoveListeners(button);
+            });
+
+            // Reindex guest inputs after removal
+            function reindexGuests() {
+                const guestItems = document.querySelectorAll('.guest-item');
+                guestItems.forEach((item, index) => {
+                    const nameInput = item.querySelector('input[name^="guests"][name$="[name]"]');
+                    const emailInput = item.querySelector('input[name^="guests"][name$="[email]"]');
+
+                    if (nameInput) {
+                        nameInput.name = `guests[${index}][name]`;
+                    }
+
+                    if (emailInput) {
+                        emailInput.name = `guests[${index}][email]`;
+                    }
+                });
+
+                // Update the guest index for adding new guests
+                guestIndex = guestItems.length;
+            }
+
+            // Handle "Save as Draft" button
+            document.getElementById('save-draft-btn').addEventListener('click', function (e) {
+                e.preventDefault();
+                // const hiddenInput = document.createElement('input');
+                // hiddenInput.type = 'hidden';
+                // hiddenInput.name = 'is_draft';
+                // hiddenInput.value = '1';
+                // this.closest('form').appendChild(hiddenInput);
+                // this.closest('form').submit();
             });
         });
     </script>
