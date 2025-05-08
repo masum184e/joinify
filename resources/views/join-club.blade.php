@@ -68,7 +68,7 @@
         <div class="sm:col-span-3">
         <label for="phone" class="block text-sm font-medium text-gray-700">Phone number</label>
         <div class="mt-1">
-          <input type="tel" name="phone" id="phone" value="{{ old('phone') }}"
+          <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" max="15"
           class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm @error('phone') border-red-500 @enderror"
           placeholder="(555) 123-4567">
           @error('phone')

@@ -11,7 +11,7 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'membership_id', 'payment_status', 'paid_at', 'amount'
+        'membership_id', 'payment_status', 'paid_at', 'transaction_id', 'amount'
     ];
 
     public function membership()

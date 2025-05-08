@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->unique()->constrained('users')->onDelete('cascade');
             $table->string('student_id', 50);
             $table->string('department', 100);
+            $table->string('phone', 15)->unique();
             $table->text('reason')->nullable();
             $table->timestamps();
         });

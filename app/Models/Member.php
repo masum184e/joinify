@@ -11,7 +11,7 @@ class Member extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'student_id', 'department', 'reason'
+        'user_id', 'student_id', 'phone', 'department', 'reason'
     ];
 
     public function user()

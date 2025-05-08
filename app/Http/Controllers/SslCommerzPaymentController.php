@@ -21,6 +21,7 @@ class SslCommerzPaymentController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
+            'phone' => 'required|string|max:15',
             'student_id' => 'required|string|max:50',
             'department' => 'required|string|max:100',
             'reason' => 'required|string|max:2000',
@@ -41,22 +42,25 @@ class SslCommerzPaymentController extends Controller
             $member = Member::create([
                 'user_id' => $user->id,
                 'student_id' => $request->student_id,
+                // 'phone' => $request->phone,
                 'department' => $request->department,
                 'reason' => $request->reason,
             ]);
 
             $club = Club::findOrFail($club_id);
-            $amount = $club->membership_fee ?? 500.00;
+            $amount = $club->fee;
 
             $membership = Membership::create([
                 'member_id' => $member->id,
                 'club_id' => $club_id,
             ]);
 
+            $tran_id = uniqid();
             $payment = Payment::create([
                 'membership_id' => $membership->id,
                 'payment_status' => 'pending',
                 'amount' => $amount,
+                'transaction_id' => $tran_id,
             ]);
 
             DB::commit();
@@ -67,13 +71,13 @@ class SslCommerzPaymentController extends Controller
             $post_data = array();
             $post_data['total_amount'] = $payment->amount; # You cant not pay less than 10
             $post_data['currency'] = "BDT";
-            $post_data['tran_id'] = uniqid();
+            $post_data['tran_id'] = $tran_id;
 
             # CUSTOMER INFORMATION
             $post_data['cus_name'] = $request->name;
             $post_data['cus_email'] = $request->email;
             $post_data['cus_add1'] = 'Customer Address';
-            $post_data['cus_phone'] = '8801XXXXXXXXX';
+            $post_data['cus_phone'] = $request->phone;
 
             $post_data['cus_add2'] = "";
             $post_data['cus_city'] = "";
@@ -98,10 +102,10 @@ class SslCommerzPaymentController extends Controller
             $post_data['product_profile'] = "physical-goods";
 
             # OPTIONAL PARAMETERS
-            $post_data['value_a'] = "ref001";
-            $post_data['value_b'] = "ref002";
-            $post_data['value_c'] = "ref003";
-            $post_data['value_d'] = "ref004";
+            $post_data['value_a'] = $user->id;
+            $post_data['value_b'] = $membership->id;
+            $post_data['value_c'] = $payment->id;
+            $post_data['value_d'] = $club_id;
 
             $post_data['success_url'] = '/success';
             $post_data['failed_url'] = '/fail';
@@ -111,15 +115,13 @@ class SslCommerzPaymentController extends Controller
             # initiate(Transaction Data , false: Redirect to SSLCOMMERZ gateway/ true: Show all the Payement gateway here )
             $payment_options = $sslc->makePayment($post_data, 'hosted');
 
-            \Log::info('Form input:', $payment_options);
-
 
             if (!is_array($payment_options)) {
                 print_r($payment_options);
-                $payment_options = array();
             }
         } catch (\Exception $e) {
             DB::rollBack();
+
             \Log::error('Membership payment flow failed: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
                 'request_data' => $request->all(),
@@ -132,21 +134,78 @@ class SslCommerzPaymentController extends Controller
 
     public function success(Request $request)
     {
-        \Log::info("Transaction is Successful");
-        return view('payments.success');
+        $tran_id = $request->input('tran_id');
+        $sslc = new SslCommerzNotification();
 
+        $payment = Payment::with('membership.member.user')->where('transaction_id', $tran_id)->first();
+
+        if (!$payment) {
+            return view('payments.fail')->with('message', 'Payment record not found.');
+        }
+
+        $is_valid = $sslc->orderValidate(
+            $request->all(),
+            $tran_id,
+            $payment->amount,
+            $request->input('currency')
+        );
+
+        if ($is_valid) {
+            $payment->payment_status = 'paid';
+            $payment->save();
+
+            $member = $payment->membership->member;
+            $user = $member->user;
+
+            return view('payments.success', [
+                'name' => $user->name,
+                'email' => $user->email,
+                'student_id' => $member->student_id,
+                'department' => $member->department,
+                'transaction_id' => $payment->transaction_id,
+                'amount' => $payment->amount,
+                'club' => $payment->membership->club->name ?? 'Club',
+                'club_id' => $payment->membership->club->id ?? '/'
+            ]);
+        } else {
+            return view('payments.fail')->with('message', 'Payment validation failed.');
+        }
     }
+
 
     public function fail(Request $request)
     {
-        \Log::info("Transaction is Failed");
-        return view('payments.fail');
+        // Log the failed transaction
+        \Log::info('Transaction Failed', ['transaction_data' => $request->all()]);
+
+        // Retrieve the transaction details
+        $transaction_id = $request->tran_id;
+        $payment = Payment::where('transaction_id', $transaction_id)->first();
+
+        if ($payment) {
+            // Update payment status to 'failed'
+            $payment->payment_status = 'failed';
+            $payment->save();
+        }
+
+        return view('payments.fail', compact('payment'));
     }
 
     public function cancel(Request $request)
     {
-        \Log::info("Transaction is Cancelled");
-        return view('payments.cancel');
+        \Log::info('Transaction Cancelled', ['transaction_data' => $request->all()]);
+
+        // Retrieve the transaction details
+        $transaction_id = $request->tran_id;
+        $payment = Payment::where('transaction_id', $transaction_id)->first();
+
+        if ($payment) {
+            // Update payment status to 'cancelled'
+            $payment->payment_status = 'cancelled';
+            $payment->save();
+        }
+
+        return view('payments.cancel', compact('payment'));
     }
 
 }
