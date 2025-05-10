@@ -101,15 +101,7 @@
           @if (session('error'))
             <div class="text-red-500 mb-4">{{ session('error') }}</div>
           @endif
-
-          @if ($errors->any())
-            <ul class="text-red-500 mb-4">
-              @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-              @endforeach
-            </ul>
-          @endif
-
+          
           <div>
             <button type="submit"
               class="w-full bg-[#4f46e5] hover:bg-[#4338ca] text-white font-medium py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
