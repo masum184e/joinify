@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" href="/logo.png" />
-  <title>@yield('title') | @yield('sub-title')</title>
+  <title>@yield('title') - @yield('sub-title')</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
   <script>
@@ -171,7 +171,7 @@
           <a href="#" class="flex items-center space-x-2 mb-6">
             <div class="h-10 w-10 rounded-lg bg-white flex items-center justify-center text-white">
               <!-- <i class="ri-community-line text-xl"></i> -->
-              <img src="./logo.png" alt="Joinify Logo" class="h-8 w-8 object-contain">
+              <img src="/logo.png" alt="Joinify Logo" class="h-8 w-8 object-contain">
 
             </div>
             <span class="text-2xl font-bold text-white">Joinify</span>
@@ -228,7 +228,7 @@
       </div>
 
       <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-        <p class="text-sm">© 2023 Joinify. All rights reserved.</p>
+        <p class="text-sm">© {{ date('Y') }} Joinify. All rights reserved.</p>
         <div class="mt-4 md:mt-0 flex space-x-6">
           <a href="#" class="text-sm hover:text-white transition">Privacy Policy</a>
           <a href="#" class="text-sm hover:text-white transition">Terms of Service</a>
