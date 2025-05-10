@@ -249,8 +249,8 @@
       @foreach($popularClubs as $club)
       <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 card-hover">
       <div class="h-48 bg-gradient-to-r from-primary-500 to-primary-700 relative">
-      <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=800&q=80"
-      alt="Photography Club" class="w-full h-full object-cover mix-blend-overlay" />
+      <img src="{{ $club->banner ? asset('storage/' . $club->banner) : 'https://placehold.co/400x200' }}"
+      alt="{{ $club->name }}" class="w-full h-full object-cover mix-blend-overlay" />
       <div
       class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-primary-600 font-bold px-3 py-1 rounded-full text-sm">
       {{ $club->memberships_count }} Members
@@ -258,17 +258,14 @@
       </div>
       <div class="p-6">
       <div class="flex items-center mb-4">
-      <div class="p-2 bg-primary-100 rounded-full">
-        <i class="ri-camera-line text-xl text-primary-600"></i>
-      </div>
-      <h3 class="text-xl font-bold ml-3 text-gray-900">
+      <!-- <div class="p-2 bg-primary-100 rounded-full">
+      <i class="ri-camera-line text-xl text-primary-600"></i>
+      </div> -->
+      <h3 class="text-xl font-bold text-gray-900">
         {{ $club->name }}
       </h3>
       </div>
-      <p class="text-gray-600 mb-6">
-      Explore the art of photography through workshops, photo walks, and exhibitions. Perfect for beginners and
-      experts alike.
-      </p>
+      <p class="text-gray-600 mb-6">{{ $club->description }}</p>
       <div class="flex justify-between items-center">
       <div class="flex -space-x-2">
         @if ($club->memberships_count > 3)
@@ -293,88 +290,6 @@
       </div>
     @endforeach
 
-      <!-- Club 2 -->
-      <!-- <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 card-hover">
-      <div class="h-48 bg-gradient-to-r from-secondary-500 to-secondary-700 relative">
-      <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80"
-      alt="Robotics Club" class="w-full h-full object-cover mix-blend-overlay" />
-      <div
-      class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-secondary-600 font-bold px-3 py-1 rounded-full text-sm">
-      96 Members
-      </div>
-      </div>
-      <div class="p-6">
-      <div class="flex items-center mb-4">
-      <div class="p-2 bg-secondary-100 rounded-full">
-      <i class="ri-robot-line text-xl text-secondary-600"></i>
-      </div>
-      <h3 class="text-xl font-bold ml-3 text-gray-900">
-      Robotics Club
-      </h3>
-      </div>
-      <p class="text-gray-600 mb-6">
-      Design, build, and program robots for competitions and exhibitions. Learn about electronics, mechanics, and
-      AI.
-      </p>
-      <div class="flex justify-between items-center">
-      <div class="flex -space-x-2">
-      <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Member"
-      class="w-8 h-8 rounded-full border-2 border-white" />
-      <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Member"
-      class="w-8 h-8 rounded-full border-2 border-white" />
-      <img src="https://randomuser.me/api/portraits/men/48.jpg" alt="Member"
-      class="w-8 h-8 rounded-full border-2 border-white" />
-      <div
-      class="w-8 h-8 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-xs font-medium text-gray-500">
-      +93
-      </div>
-      </div>
-      <a href="/clubs/2" class="text-secondary-600 font-semibold hover:text-secondary-700 transition">View Club
-      →</a>
-      </div>
-      </div>
-      </div> -->
-
-      <!-- Club 3 -->
-      <!-- <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 card-hover">
-      <div class="h-48 bg-gradient-to-r from-accent-500 to-accent-700 relative">
-      <img src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=800&q=80"
-      alt="Debate Club" class="w-full h-full object-cover mix-blend-overlay" />
-      <div
-      class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-accent-600 font-bold px-3 py-1 rounded-full text-sm">
-      84 Members
-      </div>
-      </div>
-      <div class="p-6">
-      <div class="flex items-center mb-4">
-      <div class="p-2 bg-accent-100 rounded-full">
-      <i class="ri-discuss-line text-xl text-accent-600"></i>
-      </div>
-      <h3 class="text-xl font-bold ml-3 text-gray-900">
-      Debate Club
-      </h3>
-      </div>
-      <p class="text-gray-600 mb-6">
-      Sharpen your critical thinking and public speaking skills through competitive debates on current events and
-      timeless topics.
-      </p>
-      <div class="flex justify-between items-center">
-      <div class="flex -space-x-2">
-      <img src="https://randomuser.me/api/portraits/women/22.jpg" alt="Member"
-      class="w-8 h-8 rounded-full border-2 border-white" />
-      <img src="https://randomuser.me/api/portraits/men/35.jpg" alt="Member"
-      class="w-8 h-8 rounded-full border-2 border-white" />
-      <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="Member"
-      class="w-8 h-8 rounded-full border-2 border-white" />
-      <div
-      class="w-8 h-8 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-xs font-medium text-gray-500">
-      +81
-      </div>
-      </div>
-      <a href="/club/3" class="text-accent-600 font-semibold hover:text-accent-700 transition">View Club →</a>
-      </div>
-      </div>
-      </div> -->
     </div>
 
     <div class="mt-12 text-center">

@@ -41,46 +41,49 @@
   </section>
 
   <!-- Clubs Grid -->
-  <section class="py-12">
+  <section class="py-12 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       <!-- Club Card 1 -->
       @foreach($clubs as $club)
-      <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden card-hover">
-      <div class="h-40 bg-gradient-to-r from-primary-500 to-primary-700 relative">
-      <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=800&q=80"
+      <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 card-hover">
+      <div class="h-48 bg-gradient-to-r from-primary-500 to-primary-700 relative">
+      <img src="{{ $club->banner ? asset('storage/' . $club->banner) : 'https://placehold.co/400x200' }}"
       alt="{{ $club->name }}" class="w-full h-full object-cover mix-blend-overlay" />
       <div
       class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-primary-600 font-bold px-3 py-1 rounded-full text-sm">
-      {{ $club->memberships->count() }} Members
+      {{ $club->memberships_count }} Members
       </div>
       </div>
       <div class="p-6">
-      <div class="flex items-center mb-3">
-      <div class="p-2 bg-primary-100 rounded-full">
-        <i class="ri-camera-line text-lg text-primary-600"></i>
-      </div>
-      <h3 class="text-lg font-bold ml-3 text-gray-900">
+      <div class="flex items-center mb-4">
+      <!-- <div class="p-2 bg-primary-100 rounded-full">
+      <i class="ri-camera-line text-xl text-primary-600"></i>
+      </div> -->
+      <h3 class="text-xl font-bold text-gray-900">
         {{ $club->name }}
       </h3>
       </div>
-      <p class="text-gray-600 mb-4 text-sm line-clamp-2">
-      Explore the art of photography through workshops, photo walks, and exhibitions. Perfect for beginners and
-      experts alike.
-      </p>
+      <p class="text-gray-600 mb-6">{{ $club->description }}</p>
       <div class="flex justify-between items-center">
       <div class="flex -space-x-2">
-        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Member"
-        class="w-7 h-7 rounded-full border-2 border-white" />
-        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Member"
-        class="w-7 h-7 rounded-full border-2 border-white" />
-        <img src="https://randomuser.me/api/portraits/women/48.jpg" alt="Member"
-        class="w-7 h-7 rounded-full border-2 border-white" />
+        @if ($club->memberships_count > 3)
+      <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Member"
+      class="w-8 h-8 rounded-full border-2 border-white" />
+      <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Member"
+      class="w-8 h-8 rounded-full border-2 border-white" />
+      <img src="https://randomuser.me/api/portraits/women/48.jpg" alt="Member"
+      class="w-8 h-8 rounded-full border-2 border-white" />
+      <div
+      class="w-8 h-8 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-xs font-medium text-gray-500">
+      +{{ $club->memberships_count - 3 }}
       </div>
+      @endif
+      </div>
+
       <a href="/clubs/{{ $club->id }}"
-        class="bg-primary-50 hover:bg-primary-100 text-primary-600 font-medium px-4 py-2 rounded-lg text-sm transition-colors">
-        View Club
-      </a>
+        class="text-primary-600 font-semibold hover:text-primary-700 transition">View Club
+        →</a>
       </div>
       </div>
       </div>
