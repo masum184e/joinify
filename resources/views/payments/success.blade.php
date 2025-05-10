@@ -1,6 +1,7 @@
 @extends('includes.layout')
 
 @section('title', 'Payment Successful')
+@section('sub-title', 'Joinify')
 
 @section('content')
     <section class="py-12 md:pt-32 md:pb-20">
@@ -52,7 +53,7 @@
                     </p>
 
                     <div class="flex flex-col sm:flex-row justify-center gap-4">
-                        <a href="#"
+                        <a href="/clubs/{{$club_id}}"
                             class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
                             Return to Home
                         </a>

@@ -1,6 +1,7 @@
 @extends('includes.layout')
 
-@section('title', 'Joinify')
+@section('title', 'Payment Failed')
+@section('sub-title', 'Joinify')
 
 @section('content')
     <div class="flex items-center justify-center bg-red-50 pt-32 pb-20">
@@ -14,7 +15,8 @@
             </div>
             <h1 class="text-2xl font-bold text-red-700 mb-2">Payment Failed!</h1>
             <p class="text-gray-600 mb-6">Something went wrong. Please try again.</p>
-            <a href="/" class="px-6 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600">Go Home</a>
+            <a href="/clubs/{{ $payment->membership->club->id }}"
+                class="px-6 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600">Go Home</a>
         </div>
     </div>
 @endsection
