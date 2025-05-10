@@ -1,14 +1,15 @@
 @extends('includes.layout')
 
-@section('title', 'Join Photography Club')
+@section('title', $club->name)
+@section('sub-title', 'Joinify')
 
 @section('content')
 
   <!-- Join Form -->
-  <section class="pb-12 pt-28 bg-gradient-to-b from-primary-50 to-white">
+  <section class="pb-12 pt-28 bg-gradient-to-b from-primary-50 to-gray-50">
     <h1 class="text-4xl font-bold text-gray-900 text-center font-poppins mb-8">Join {{ $club->name }}</h1>
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="bg-gray-50 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
       <h3 class="text-lg font-medium text-gray-900">Membership Application</h3>
       <p class="mt-1 text-sm text-gray-500">Please provide your information to join the {{ $club->name }}.</p>

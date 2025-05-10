@@ -6,7 +6,7 @@
 @section('content')
 
   <!-- Page Header -->
-  <section class="pt-32 pb-10 bg-gradient-to-b from-primary-50 to-white">
+  <section class="pt-32 pb-10 bg-gradient-to-b from-primary-50 to-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
       <div>
@@ -41,7 +41,7 @@
   </section>
 
   <!-- Clubs Grid -->
-  <section class="py-12 bg-white">
+  <section class="py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       <!-- Club Card 1 -->

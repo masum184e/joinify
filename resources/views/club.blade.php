@@ -1,10 +1,11 @@
 @extends('includes.layout')
 
-@section('title', 'Environment Club')
+@section('title', $club->name)
+@section('sub-title', 'Joinify')
 
 @section('content')
   <!-- Club Header -->
-  <section class="pt-32 pb-10 bg-gradient-to-b from-primary-50 to-white">
+  <section class="pt-32 pb-10 bg-gradient-to-b from-primary-50 to-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex flex-col md:flex-row gap-8">
       <div class="md:w-2/3">
