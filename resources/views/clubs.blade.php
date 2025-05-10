@@ -52,7 +52,7 @@
       alt="{{ $club->name }}" class="w-full h-full object-cover mix-blend-overlay" />
       <div
       class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-primary-600 font-bold px-3 py-1 rounded-full text-sm">
-      {{ $club->memberships_count }} Members
+      {{ $club->memberships->count() }} Members
       </div>
       </div>
       <div class="p-6">
@@ -67,7 +67,7 @@
       <p class="text-gray-600 mb-6">{{ $club->description }}</p>
       <div class="flex justify-between items-center">
       <div class="flex -space-x-2">
-        @if ($club->memberships_count > 3)
+        @if ($club->memberships->count() > 3)
       <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Member"
       class="w-8 h-8 rounded-full border-2 border-white" />
       <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Member"
@@ -76,7 +76,7 @@
       class="w-8 h-8 rounded-full border-2 border-white" />
       <div
       class="w-8 h-8 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-xs font-medium text-gray-500">
-      +{{ $club->memberships_count - 3 }}
+      +{{ $club->memberships->count() - 3 }}
       </div>
       @endif
       </div>
