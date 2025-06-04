@@ -42,7 +42,7 @@ class SslCommerzPaymentController extends Controller
             $member = Member::create([
                 'user_id' => $user->id,
                 'student_id' => $request->student_id,
-                // 'phone' => $request->phone,
+                'phone' => $request->phone,
                 'department' => $request->department,
                 'reason' => $request->reason,
             ]);
