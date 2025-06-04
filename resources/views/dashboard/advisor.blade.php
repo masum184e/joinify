@@ -97,7 +97,7 @@
       @foreach($popularClubs as $club)
       <div class="relative {{ $loop->first ? '' : 'border-l' }} p-4">
       <div class="flex items-center justify-between mb-4 ">
-      <h3 class="text-lg font-bold text-gray-800">{{ $club->name }}</h3>
+      <h3 class="text-lg font-bold text-gray-800"><a href="/dashboard/clubs/{{ $club->id }}">{{ $club->name }}</a></h3>
       @if ($loop->first)
       <span
       class="absolute top-4 right-2 animate-pulse text-xs bg-green-600 text-white px-2 py-1 rounded-full z-10">Top
@@ -171,7 +171,7 @@
       },
       {
         label: 'Revenue ($)',
-        data: [3200, 1440, 1680, 1080, 1360],
+        data: @json(array_values($clubsRevenueData)),
         backgroundColor: '#82ca9d',
         yAxisID: 'y1',
       }

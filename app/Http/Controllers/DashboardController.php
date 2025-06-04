@@ -262,6 +262,11 @@ class DashboardController extends Controller
         $totalExpenses = 0;
         $netBalance = $totalRevenue - $totalExpenses;
 
-        return view('dashboard.advisor', compact('clubCount', 'memberCount', 'popularClubs', 'clubsMemberCount', 'totalRevenue', 'totalExpenses', 'netBalance', 'clubRevenue'));
+        $clubsRevenueData = [];
+        foreach ($clubLabels as $label) {
+            $clubsRevenueData[] = $clubRevenue[$label] ?? 0;
+        }
+
+        return view('dashboard.advisor', compact('clubCount', 'memberCount', 'popularClubs', 'clubsMemberCount', 'totalRevenue', 'totalExpenses', 'netBalance', 'clubRevenue', 'clubsRevenueData'));
     }
 }
