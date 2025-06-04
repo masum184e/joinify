@@ -31,88 +31,84 @@
             </div>
 
         </div>
-        <!-- Event Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-            @foreach($events as $event)
-                <div
-                    class="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 space-y-3">
-                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        {{ $event->title }}
-                    </h2>
-                    <div class="flex items-center text-sm text-gray-600 gap-2">
-                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2v-5H3v5a2 2 0 002 2z" />
-                        </svg>
-                        {{ \Carbon\Carbon::parse($event->date)->format('M d, Y') }}
-                    </div>
-                    <div class="text-sm text-gray-700">🕙 {{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }} –
-                        {{ \Carbon\Carbon::parse($event->end_time)->format('g:i A') }}
-                    </div>
-                    <div class="text-sm text-gray-700">📍 Location: {{ $event->location }}</div>
-                    <div class="text-sm text-gray-700">👥 Guests: {{ $event->guests->count() }}</div>
+        <!-- Events List -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div class="flex items-center justify-between p-4 border-b border-gray-200">
+                <h2 class="text-lg font-medium text-gray-900">Upcoming Events</h2>
+                <div class="flex space-x-2">
+                    <button type="button"
+                        class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        <i class="ri-calendar-line mr-1"></i>
+                        Calendar View
+                    </button>
+                    <button type="button"
+                        class="inline-flex items-center px-3 py-1.5 border border-transparent rounded-md text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        <i class="ri-list-check mr-1"></i>
+                        List View
+                    </button>
+                </div>
+            </div>
 
-                    <div class="flex justify-between items-center pt-4">
-                        <a href="/dashboard/clubs/{{ $clubId }}/events/{{ $event->id }}" title="View Details"
-                            class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 hover:bg-blue-200 transition">
-                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <g id="SVGRepo_bgCarrier" stroke-width="0" />
-                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
-                                <g id="SVGRepo_iconCarrier">
-                                    <path
-                                        d="M2 8C2 7.44772 2.44772 7 3 7H21C21.5523 7 22 7.44772 22 8C22 8.55228 21.5523 9 21 9H3C2.44772 9 2 8.55228 2 8Z"
-                                        fill="#2563eb" />
-                                    <path
-                                        d="M2 12C2 11.4477 2.44772 11 3 11H21C21.5523 11 22 11.4477 22 12C22 12.5523 21.5523 13 21 13H3C2.44772 13 2 12.5523 2 12Z"
-                                        fill="#2563eb" />
-                                    <path
-                                        d="M3 15C2.44772 15 2 15.4477 2 16C2 16.5523 2.44772 17 3 17H15C15.5523 17 16 16.5523 16 16C16 15.4477 15.5523 15 15 15H3Z"
-                                        fill="#2563eb" />
-                                </g>
-                            </svg>
-                        </a>
-                        <div class="flex gap-3">
-                            @if(auth()->user() && auth()->user()->clubRoles->contains('role', 'secretary'))
-
+            <ul class="divide-y divide-gray-200">
+                @foreach($events as $event)
+                    <li class="hover:bg-gray-50">
+                        <div class="flex items-center justify-between px-4 py-4 sm:px-6">
+                            <a href="/dashboard/clubs/{{ $clubId }}/events/{{ $event->id }}" class="flex-1 flex items-center">
+                                <div
+                                    class="flex-shrink-0 h-20 w-20 bg-accent-100 text-blue-600 rounded-lg flex items-center justify-center">
+                                    <div class="text-center">
+                                        <div class="text-sm font-medium">
+                                            {{ \Carbon\Carbon::parse($event->date)->format('M') }}
+                                        </div>
+                                        <div class="text-xl font-bold">
+                                            {{ \Carbon\Carbon::parse($event->date)->format('d') }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="min-w-0 flex-1 px-4">
+                                    <p class="text-sm font-medium text-blue-600 truncate">{{ $event->title }}</p>
+                                    <p class="mt-1 flex items-center text-sm text-gray-500">
+                                        <i class="ri-time-line flex-shrink-0 mr-1.5 text-gray-400"></i>
+                                        <span class="truncate">
+                                            {{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }} -
+                                            {{ \Carbon\Carbon::parse($event->end_time)->format('g:i A') }}
+                                        </span>
+                                    </p>
+                                    <p class="mt-1 flex items-center text-sm text-gray-500">
+                                        <i class="ri-map-pin-line flex-shrink-0 mr-1.5 text-gray-400"></i>
+                                        <span class="truncate">{{ $event->location }}</span>
+                                    </p>
+                                    <p class="mt-1 flex items-center text-sm text-gray-500">
+                                        <i class="ri-megaphone-line flex-shrink-0 mr-1.5 text-gray-400"></i>
+                                        <span class="truncate">Total Guest: {{ $event->guests->count() }}</span>
+                                    </p>
+                                </div>
+                            </a>
+                            <div class="ml-5 flex-shrink-0 flex flex-col items-end space-y-2">
                                 <a href="/dashboard/clubs/{{ $clubId }}/events/{{ $event->id }}/edit"
                                     class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-indigo-100 hover:bg-indigo-200 transition"
-                                    title="Edit Club">
-                                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15.232 5.232l3.536 3.536M9 11l-1 4 4-1 7.071-7.071a2 2 0 00-2.828-2.828L9 11z" />
-                                    </svg>
+                                    title="Edit Event">
+                                    <i class="ri-pencil-line"></i>
                                 </a>
-
-                                <!-- Remove Icon -->
-                                <form method="POST" action="{{ url('/dashboard/clubs/' . $clubId . '/events/' . $event->id) }}"
-                                    class="inline">
+                                <form method="POST" action="{{ url('/dashboard/clubs/' . $clubId . '/events/' . $event->id) }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button title="Remove Club" type="submit"
+                                    <button title="Delete Event" type="submit"
                                         onclick="return confirm('Are you sure you want to delete this event?')"
                                         class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-red-100 hover:bg-red-200 transition">
-                                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m-4 0h14" />
-                                        </svg>
+                                        <i class="ri-delete-bin-line"></i>
                                     </button>
                                 </form>
-                            @endif
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </li>
+                @endforeach
 
-            @endforeach
+            </ul>
         </div>
+
+
     </div>
 
 @endsection
