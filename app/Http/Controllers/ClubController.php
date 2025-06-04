@@ -37,7 +37,7 @@ class ClubController extends Controller
     public function publicShow($clubId)
     {
         $club = Club::withCount(['userRoles', 'memberships'])
-            ->select('id', 'name', 'description', 'fee', 'banner','created_at')
+            ->select('id', 'name', 'description', 'fee', 'banner', 'created_at')
             ->findOrFail($clubId);
 
         if (
@@ -99,7 +99,7 @@ class ClubController extends Controller
         //     ])
         //     ->findOrFail($clubId);
         $club = Club::withCount(['userRoles', 'memberships'])
-            ->select('id', 'name', 'description', 'fee', 'created_at')
+            ->select('id', 'name', 'description', 'banner', 'fee', 'created_at')
             ->findOrFail($clubId);
 
         $clubRevenue = Payment::whereHas('membership', function ($query) use ($clubId) {
