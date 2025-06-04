@@ -146,15 +146,18 @@
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
 
-                            @if(isset($event) && $event->poster)
-                                <div class="mt-2">
-                                    <p class="text-sm text-gray-500">Current image:</p>
-                                    <div class="mt-1">
-                                        <img src="{{ asset('storage/' . $event->poster) }}" alt="{{ $event->title }}"
-                                            class="h-32 w-auto object-cover rounded-md">
-                                    </div>
+                            <div class="mt-2">
+                                @if (isset($event->poster))
+                                    <p class="text-sm text-gray-500">Image Preview:</p>
+                                @endif
+                                <div class="mt-1">
+                                    <img id="poster-preview"
+                                        src="{{ isset($event) && $event->poster ? asset('storage/' . $event->poster) : '#' }}"
+                                        alt="Image Preview"
+                                        class="h-32 w-auto object-cover rounded-md {{ isset($event) && $event->poster ? '' : 'hidden' }}">
                                 </div>
-                            @endif
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -172,16 +175,18 @@
 
                         <div id="guest-list" class="space-y-4">
                             @php
+                                $event->guests ?? old('guests', [['name' => '', 'email' => '']]);
+
                                 $guests = $event->guests ?? old('guests', [['name' => '', 'email' => '']]);
-                                // if (!is_array($guests) && is_object($guests)) {
-                                //     $guests = $guests->toArray();
-                                // }
+                                if (!is_array($guests) && is_object($guests)) {
+                                    $guests = $guests->toArray();
+                                }
                             @endphp
                             @foreach($guests as $index => $guest)
                                 <div class="flex flex-col md:flex-row gap-3 guest-item">
                                     <div class="flex-1">
                                         <input type="text" name="guests[{{ $index }}][name]" placeholder="Guest Name"
-                                            value="{{ $guest->guest['name'] ?? '' }}"
+                                            value="{{ old('guests.' . $index . '.name', $guest['name'] ?? '') }}"
                                             class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white @error('guests.' . $index . '.name') border-red-500 @enderror" />
                                         @error('guests.' . $index . '.name')
                                             <div class="text-red-500 text-sm mt-1">Guest name is required</div>
@@ -189,7 +194,7 @@
                                     </div>
                                     <div class="flex-1">
                                         <input type="text" name="guests[{{ $index }}][email]" placeholder="Email"
-                                            value="{{ $guest->guest['email'] ?? '' }}"
+                                            value="{{ old('guests.' . $index . '.email', $guest['email'] ?? '') }}"
                                             class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white @error('guests.' . $index . '.email') border-red-500 @enderror" />
                                         @error('guests.' . $index . '.email')
                                             <div class="text-red-500 text-sm mt-1">Valid email is required</div>
@@ -222,9 +227,9 @@
 
             <!-- Form Actions -->
             <div class="mt-6 px-6 py-4 flex items-center justify-end space-x-3">
-                <button type="button" id="save-draft-btn"
+                <button type="rest" id="reset-btn"
                     class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                    Save as Draft
+                    Reset
                 </button>
                 <button type="submit"
                     class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
@@ -248,22 +253,22 @@
                 newGuest.classList.add('flex', 'flex-col', 'md:flex-row', 'gap-3', 'guest-item');
 
                 newGuest.innerHTML = `
-                                    <div class="flex-1">
-                                        <input type="text" name="guests[${guestIndex}][name]" placeholder="Guest Name"
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
-                                    </div>
-                                    <div class="flex-1">
-                                        <input type="text" name="guests[${guestIndex}][email]" placeholder="Email"
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
-                                    </div>
-                                    <div class="flex items-center">
-                                        <button type="button" class="remove-guest p-2 text-red-500 hover:text-red-700 focus:outline-none" title="Remove guest">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                `;
+                                                                <div class="flex-1">
+                                                                    <input type="text" name="guests[${guestIndex}][name]" placeholder="Guest Name"
+                                                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
+                                                                </div>
+                                                                <div class="flex-1">
+                                                                    <input type="text" name="guests[${guestIndex}][email]" placeholder="Email"
+                                                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
+                                                                </div>
+                                                                <div class="flex items-center">
+                                                                    <button type="button" class="remove-guest p-2 text-red-500 hover:text-red-700 focus:outline-none" title="Remove guest">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
+                                                            `;
 
                 guestList.appendChild(newGuest);
                 guestIndex++;
@@ -306,16 +311,25 @@
                 guestIndex = guestItems.length;
             }
 
-            // Handle "Save as Draft" button
-            document.getElementById('save-draft-btn').addEventListener('click', function (e) {
-                e.preventDefault();
-                // const hiddenInput = document.createElement('input');
-                // hiddenInput.type = 'hidden';
-                // hiddenInput.name = 'is_draft';
-                // hiddenInput.value = '1';
-                // this.closest('form').appendChild(hiddenInput);
-                // this.closest('form').submit();
+            // Preview uploaded poster image
+            const posterInput = document.getElementById('poster');
+            const posterPreview = document.getElementById('poster-preview');
+
+            posterInput.addEventListener('change', function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        posterPreview.src = e.target.result;
+                        posterPreview.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    posterPreview.src = '#';
+                    posterPreview.classList.add('hidden');
+                }
             });
+
         });
     </script>
 @endpush
