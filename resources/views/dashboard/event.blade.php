@@ -35,76 +35,172 @@
             @endif
         </div>
 
-        <!-- Event Meta Info -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-gray-800">
-            <div class="flex items-start gap-3">
-                <div class="text-blue-500">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                </div>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-8">
+            <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex justify-between items-center">
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-500 uppercase">Date</h3>
-                    <p class="text-lg">{{ \Carbon\Carbon::parse($event->date)->format('M d, Y') }} </p>
+                    <h3 class="text-lg font-medium text-gray-900">Event Overview</h3>
+                    <p class="mt-1 text-sm text-gray-500">Basic information about the event</p>
+                </div>
+            </div>
+            <div class="px-4 py-5 sm:p-6">
+                <img src="https://images.unsplash.com/photo-1552083375-1447ce886485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
+                    alt="Spring Photo Walk" class="w-full h-64 object-cover rounded-lg">
+            </div>
+
+            <div class="px-5 pb-5 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
+
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Date</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ \Carbon\Carbon::parse($event->date)->format('M d, Y') }}</dd>
+                </div>
+
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Time</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }} -
+                        {{ \Carbon\Carbon::parse($event->end_time)->format('g:i A') }}</dd>
+                </div>
+
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Total Guest</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ $event->guests->count() }}</dd>
+                </div>
+
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Location</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ $event->location }}</dd>
+                </div>
+
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Price</dt>
+                    <dd class="mt-1 text-sm text-gray-900">Free</dd>
+                </div>
+
+                <div class="md:col-span-2">
+                    <dt class="text-sm font-medium text-gray-500">Description</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ $event->description }}</dd>
                 </div>
             </div>
 
-            <div class="flex items-start gap-3">
-                <div class="text-blue-500">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="text-sm font-semibold text-gray-500 uppercase">Time</h3>
-                    <p class="text-lg">{{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }} -
-                        {{ \Carbon\Carbon::parse($event->end_time)->format('g:i A') }}
-                    </p>
-                </div>
-            </div>
-
-            <div class="flex items-start gap-3">
-                <div class="text-blue-500">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M17.657 16.657L13.414 12l4.243-4.243m0 0L12 13.414m5.657-5.657L12 2m0 0L6.343 6.343M12 2v20" />
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="text-sm font-semibold text-gray-500 uppercase">Location</h3>
-                    <p class="text-lg">{{ $event->location }}</p>
-                </div>
-            </div>
         </div>
 
-
-        <div>
-            <h2 class="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">💡 Guests</h2>
-
-            <!-- Guests -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                @foreach($event->guests as $guest)
-                    <!-- Guest Card 1 -->
-                    <div class="bg-gradient-to-br from-purple-100 to-purple-200 p-6 rounded-2xl shadow-md">
-                        <h3 class="text-lg font-bold text-purple-800 mb-1">{{ $guest->guest->name }}</h3>
-                        <p class="text-sm text-purple-700">{{ $guest->guest->email }}</p>
-                    </div>
-                @endforeach
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-8 pb-4">
+            <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Event Schedule</h3>
+                <p class="mt-1 text-sm text-gray-500">Timeline and activities for the event</p>
+            </div>
+            <div class="px-4 py-5 sm:p-6">
+                <div class="flow-root">
+                    <ul role="list" class="-mb-8">
+                        <li>
+                            <div class="relative pb-8">
+                                <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"
+                                    aria-hidden="true"></span>
+                                <div class="relative flex space-x-3">
+                                    <div>
+                                        <span
+                                            class="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center ring-8 ring-white">
+                                            <i class="ri-calendar-check-line text-primary-600"></i>
+                                        </span>
+                                    </div>
+                                    <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                        <div>
+                                            <p class="text-sm text-gray-900">10:00 AM - <span class="font-medium">Meet at
+                                                    the main entrance</span></p>
+                                            <p class="text-sm text-gray-500">Welcome and introduction</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="relative pb-8">
+                                <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"
+                                    aria-hidden="true"></span>
+                                <div class="relative flex space-x-3">
+                                    <div>
+                                        <span
+                                            class="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center ring-8 ring-white">
+                                            <i class="ri-camera-line text-primary-600"></i>
+                                        </span>
+                                    </div>
+                                    <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                        <div>
+                                            <p class="text-sm text-gray-900">10:15 AM - <span
+                                                    class="font-medium">Photography tips</span></p>
+                                            <p class="text-sm text-gray-500">Brief introduction and photography tips for the
+                                                day</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="relative pb-8">
+                                <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"
+                                    aria-hidden="true"></span>
+                                <div class="relative flex space-x-3">
+                                    <div>
+                                        <span
+                                            class="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center ring-8 ring-white">
+                                            <i class="ri-footprint-line text-primary-600"></i>
+                                        </span>
+                                    </div>
+                                    <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                        <div>
+                                            <p class="text-sm text-gray-900">10:30 AM - <span class="font-medium">Begin
+                                                    photo walk</span></p>
+                                            <p class="text-sm text-gray-500">Explore the botanical gardens and capture
+                                                photos</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="relative pb-8">
+                                <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"
+                                    aria-hidden="true"></span>
+                                <div class="relative flex space-x-3">
+                                    <div>
+                                        <span
+                                            class="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center ring-8 ring-white">
+                                            <i class="ri-group-line text-primary-600"></i>
+                                        </span>
+                                    </div>
+                                    <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                        <div>
+                                            <p class="text-sm text-gray-900">11:45 AM - <span class="font-medium">Gather for
+                                                    sharing</span></p>
+                                            <p class="text-sm text-gray-500">Meet to share photos and get feedback</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="relative">
+                                <div class="relative flex space-x-3">
+                                    <div>
+                                        <span
+                                            class="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center ring-8 ring-white">
+                                            <i class="ri-flag-line text-primary-600"></i>
+                                        </span>
+                                    </div>
+                                    <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                        <div>
+                                            <p class="text-sm text-gray-900">12:00 PM - <span class="font-medium">Event
+                                                    concludes</span></p>
+                                            <p class="text-sm text-gray-500">Wrap-up and final announcements</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
 
             </div>
         </div>
-
-
-        <!-- Description -->
-        <div>
-            <h2 class="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">📢 Description</h2>
-            <p class="text-gray-700 leading-relaxed">
-                {{ $event->description }}
-            </p>
-        </div>
-
     </div>
 
 @endsection
