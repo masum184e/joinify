@@ -147,9 +147,9 @@
                             @enderror
 
                             <div class="mt-2">
-                                @if (isset($event->poster))
-                                    <p class="text-sm text-gray-500">Image Preview:</p>
-                                @endif
+                                <p id="preview-title"
+                                    class="text-sm text-gray-500 {{ isset($event) && $event->poster ? '' : 'hidden' }}">
+                                    Image Preview:</p>
                                 <div class="mt-1">
                                     <img id="poster-preview"
                                         src="{{ isset($event) && $event->poster ? asset('storage/' . $event->poster) : '#' }}"
@@ -181,8 +181,10 @@
                                 if (!is_array($guests) && is_object($guests)) {
                                     $guests = $guests->toArray();
                                 }
+
                             @endphp
                             @foreach($guests as $index => $guest)
+
                                 <div class="flex flex-col md:flex-row gap-3 guest-item">
                                     <div class="flex-1">
                                         <input type="text" name="guests[{{ $index }}][name]" placeholder="Guest Name"
@@ -227,7 +229,7 @@
 
             <!-- Form Actions -->
             <div class="mt-6 px-6 py-4 flex items-center justify-end space-x-3">
-                <button type="rest" id="reset-btn"
+                <button type="reset" id="reset-btn"
                     class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
                     Reset
                 </button>
@@ -253,22 +255,22 @@
                 newGuest.classList.add('flex', 'flex-col', 'md:flex-row', 'gap-3', 'guest-item');
 
                 newGuest.innerHTML = `
-                                                                <div class="flex-1">
-                                                                    <input type="text" name="guests[${guestIndex}][name]" placeholder="Guest Name"
-                                                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
-                                                                </div>
-                                                                <div class="flex-1">
-                                                                    <input type="text" name="guests[${guestIndex}][email]" placeholder="Email"
-                                                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
-                                                                </div>
-                                                                <div class="flex items-center">
-                                                                    <button type="button" class="remove-guest p-2 text-red-500 hover:text-red-700 focus:outline-none" title="Remove guest">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                                                        </svg>
-                                                                    </button>
-                                                                </div>
-                                                            `;
+                                                                                    <div class="flex-1">
+                                                                                        <input type="text" name="guests[${guestIndex}][name]" placeholder="Guest Name"
+                                                                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
+                                                                                    </div>
+                                                                                    <div class="flex-1">
+                                                                                        <input type="text" name="guests[${guestIndex}][email]" placeholder="Email"
+                                                                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
+                                                                                    </div>
+                                                                                    <div class="flex items-center">
+                                                                                        <button type="button" class="remove-guest p-2 text-red-500 hover:text-red-700 focus:outline-none" title="Remove guest">
+                                                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                                                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                                                                            </svg>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                `;
 
                 guestList.appendChild(newGuest);
                 guestIndex++;
@@ -314,6 +316,7 @@
             // Preview uploaded poster image
             const posterInput = document.getElementById('poster');
             const posterPreview = document.getElementById('poster-preview');
+            const previewTitle = document.getElementById('preview-title');
 
             posterInput.addEventListener('change', function (event) {
                 const file = event.target.files[0];
@@ -322,11 +325,13 @@
                     reader.onload = function (e) {
                         posterPreview.src = e.target.result;
                         posterPreview.classList.remove('hidden');
+                        previewTitle.classList.remove('hidden');
                     };
                     reader.readAsDataURL(file);
                 } else {
                     posterPreview.src = '#';
                     posterPreview.classList.add('hidden');
+                    previewTitle.classList.add('hidden');
                 }
             });
 
