@@ -88,17 +88,7 @@ class ClubController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        // $club = Club::select('id', 'name', 'description', 'fee', 'created_at')
-        //     ->withCount(['userRoles', 'memberships'])
-        //     ->with([
-        //         'president.user:id,name,email',
-        //         'secretary.user:id,name,email',
-        //         'accountant.user:id,name,email',
-        //         'memberships.member.user:id,name,email',
-        //         'memberships.payment:id,membership_id,payment_status,created_at'
-        //     ])
-        //     ->findOrFail($clubId);
-        $club = Club::withCount(['userRoles', 'memberships'])
+        $club = Club::withCount(['memberships'])
             ->select('id', 'name', 'description', 'banner', 'fee', 'created_at')
             ->findOrFail($clubId);
 
