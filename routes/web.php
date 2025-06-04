@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::redirect('/home', '/');
 
 Route::get('/login', [AuthController::class, 'index']);
+Route::redirect('/signin', '/login');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::get('/logout', [AuthController::class, 'logout']);
 
@@ -44,7 +46,7 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
 
 Route::post('/pay/{club}', [SslCommerzPaymentController::class, 'index']);
 
-Route::match(['get', 'post'], '/success', [SslCommerzPaymentController::class, 'success'])->name('payment.success');
-Route::match(['get', 'post'], '/fail', [SslCommerzPaymentController::class, 'fail'])->name('payment.fail');
-Route::match(['get', 'post'], '/cancel', [SslCommerzPaymentController::class, 'cancel'])->name('payment.cancel');
+Route::post('/success', [SslCommerzPaymentController::class, 'success'])->name('payment.success');
+Route::post('/fail', [SslCommerzPaymentController::class, 'fail'])->name('payment.fail');
+Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel'])->name('payment.cancel');
 Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn'])->name('payment.ipn');
