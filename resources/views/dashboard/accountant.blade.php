@@ -1,7 +1,7 @@
 @extends('dashboard.includes.layout')
 
-@section('title', 'Dashboard')
-@section('sub-title', 'Accountant')
+@section('title', 'President Dashboard')
+@section('sub-title', $club->name)
 
 @section('layout-title', 'Accountant Dashboard')
 @section('layout-sub-title', 'Financial overview and transaction management')
@@ -46,7 +46,7 @@
             <div class="bg-white rounded-lg border border-border shadow-sm">
                 <div class="p-4 border-b border-border">
                     <div class="flex items-center">
-                        <i class="ri-bar-chart-line mr-2 h-4 w-4"></i>
+                        <i class="ri-bar-chart-line mr-2 "></i>
                         <h3 class="font-medium">Monthly Revenue</h3>
                     </div>
                     <p class="text-sm text-gray-500">Revenue trends over the past 12 months</p>
@@ -74,7 +74,7 @@
                 <div class="p-4 border-b border-border">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
-                            <i class="ri-bank-card-line mr-2 h-4 w-4"></i>
+                            <i class="ri-bank-card-line mr-2 "></i>
                             <h3 class="font-medium">Recent Transactions</h3>
                         </div>
                         <span class="text-sm text-gray-500">{{ $recentTransactions->count() }} transactions</span>
