@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Models\Guest;
+use App\Models\Club;
 use App\Models\EventGuest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class EventController extends Controller
 {
@@ -47,28 +49,93 @@ class EventController extends Controller
         return view('event', compact('event'));
     }
 
-    public function index($clubId)
+    public function index(Request $request, $clubId)
     {
         $isSecretaryOrPresident = auth()->user()->clubRoles()
             ->whereIn('role', ['secretary', 'president'])
+            ->where('club_id', $clubId)
             ->exists();
 
         if (!$isSecretaryOrPresident) {
             abort(403, 'Unauthorized action.');
         }
 
-        if (auth()->user()->clubRoles()->first()->club_id != $clubId) {
-            abort(404, 'Club not found');
+        // Get the club information
+        $club = Club::findOrFail($clubId);
+
+        // Get filter parameters
+        $filter = $request->get('filter', 'all'); // all, upcoming, past
+        $search = $request->get('search');
+
+        // Build the query
+        $eventsQuery = Event::where('club_id', $club->id)
+            ->with(['guests'])
+            ->select('id', 'title', 'description', 'poster', 'start_time', 'end_time', 'date', 'location', 'created_at');
+
+        // Apply filters
+        $today = Carbon::today();
+
+        switch ($filter) {
+            case 'upcoming':
+                $eventsQuery->where('date', '>=', $today);
+                break;
+            case 'past':
+                $eventsQuery->where('date', '<', $today);
+                break;
+            case 'today':
+                $eventsQuery->whereDate('date', $today);
+                break;
         }
 
-        $events = Event::select('id', 'title', 'start_time', 'end_time', 'date', 'location')
-            ->where('club_id', $clubId)
-            ->with('guests')
-            ->get();
+        // Apply search
+        if ($search) {
+            $eventsQuery->where(function ($query) use ($search) {
+                $query->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
 
-        return view('dashboard.events', compact('events', 'clubId'));
+        // Order by date
+        $events = $eventsQuery->orderBy('date', 'desc')->paginate(12)->appends($request->query());
+
+        // Get statistics
+        $stats = $this->getEventStats($club->id);
+
+        return view('dashboard.events', compact('events', 'club', 'filter', 'search', 'stats'));
     }
 
+    private function getEventStats($clubId)
+    {
+        $today = Carbon::today();
+
+        $totalEvents = Event::where('club_id', $clubId)->count();
+
+        $upcomingEvents = Event::where('club_id', $clubId)
+            ->where('date', '>=', $today)
+            ->count();
+
+        $pastEvents = Event::where('club_id', $clubId)
+            ->where('date', '<', $today)
+            ->count();
+
+        $todayEvents = Event::where('club_id', $clubId)
+            ->whereDate('date', $today)
+            ->count();
+
+        $totalGuests = Event::where('club_id', $clubId)
+            ->withCount('guests')
+            ->get()
+            ->sum('guests_count');
+
+        return [
+            'total' => $totalEvents,
+            'upcoming' => $upcomingEvents,
+            'past' => $pastEvents,
+            'today' => $todayEvents,
+            'total_guests' => $totalGuests
+        ];
+    }
     public function show($clubId, $eventId)
     {
         $isSecretaryOrPresident = auth()->user()->clubRoles()
