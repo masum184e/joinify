@@ -43,8 +43,8 @@
                 </div>
             </div>
             <div class="px-4 py-5 sm:p-6">
-                <img src="https://images.unsplash.com/photo-1552083375-1447ce886485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
-                    alt="Spring Photo Walk" class="w-full h-64 object-cover rounded-lg">
+        <img src="{{ $event->poster ? asset('storage/' . $event->poster) : 'https://placehold.co/400x200' }}"
+            alt="{{ $event->title }}" class="w-full h-64 object-cover rounded-lg">
             </div>
 
             <div class="px-5 pb-5 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
