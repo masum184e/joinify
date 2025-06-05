@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class MemberController extends Controller
 {
     //
-  public function index(Request $request, $clubId)
+    public function index(Request $request, $clubId)
     {
         // Check authorization
         $isAccountantOrPresident = auth()->user()->clubRoles()
@@ -18,6 +18,11 @@ class MemberController extends Controller
 
         if (!$isAccountantOrPresident) {
             abort(403, 'Unauthorized action.');
+        }
+
+        // Validate club ID
+        if (auth()->user()->clubRoles()->first()->club_id != $clubId) {
+            abort(404, 'Club not found');
         }
 
         // Get search query
@@ -32,7 +37,7 @@ class MemberController extends Controller
         if ($search) {
             $membersQuery->whereHas('user', function ($query) use ($search) {
                 $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
@@ -53,22 +58,22 @@ class MemberController extends Controller
 
         $activeMembers = Member::whereHas('memberships', function ($query) use ($clubId) {
             $query->where('club_id', $clubId)
-                  ->whereHas('payment', function ($paymentQuery) {
-                      $paymentQuery->where('payment_status', 'paid');
-                  });
+                ->whereHas('payment', function ($paymentQuery) {
+                    $paymentQuery->where('payment_status', 'paid');
+                });
         })->count();
 
         $newThisMonth = Member::whereHas('memberships', function ($query) use ($clubId) {
             $query->where('club_id', $clubId);
         })->whereMonth('created_at', now()->month)
-          ->whereYear('created_at', now()->year)
-          ->count();
+            ->whereYear('created_at', now()->year)
+            ->count();
 
         $pendingApprovals = Member::whereHas('memberships', function ($query) use ($clubId) {
             $query->where('club_id', $clubId)
-                  ->whereHas('payment', function ($paymentQuery) {
-                      $paymentQuery->where('payment_status', 'pending');
-                  });
+                ->whereHas('payment', function ($paymentQuery) {
+                    $paymentQuery->where('payment_status', 'pending');
+                });
         })->count();
 
         return [
@@ -90,18 +95,23 @@ class MemberController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        // Validate club ID
+        if (auth()->user()->clubRoles()->first()->club_id != $clubId) {
+            abort(404, 'Club not found');
+        }
+
         $members = Member::whereHas('memberships', function ($query) use ($clubId) {
             $query->where('club_id', $clubId);
         })->with(['user', 'memberships.payment'])->get();
 
         $filename = 'members_' . date('Y-m-d') . '.csv';
-        
+
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ];
 
-        $callback = function() use ($members) {
+        $callback = function () use ($members) {
             $file = fopen('php://output', 'w');
             fputcsv($file, ['Name', 'Email', 'Status', 'Member Since', 'Membership Fee']);
 
