@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Member;
+use App\Models\Club;
 use Illuminate\Http\Request;
 
 class MemberController extends Controller
@@ -21,7 +22,8 @@ class MemberController extends Controller
         }
 
         // Validate club ID
-        if (auth()->user()->clubRoles()->first()->club_id != $clubId) {
+        $club = Club::with(['events.guests', 'memberships.payment', 'memberships.member.user'])->find($clubId);
+        if (!$club) {
             abort(404, 'Club not found');
         }
 
@@ -29,8 +31,8 @@ class MemberController extends Controller
         $search = $request->get('search');
 
         // Build the query
-        $membersQuery = Member::whereHas('memberships', function ($query) use ($clubId) {
-            $query->where('club_id', $clubId);
+        $membersQuery = Member::whereHas('memberships', function ($query) use ($club) {
+            $query->where('club_id', $club->id);
         })->with(['user', 'memberships.payment']);
 
         // Apply search filter
@@ -45,9 +47,9 @@ class MemberController extends Controller
         $members = $membersQuery->paginate(10)->appends($request->query());
 
         // Calculate statistics
-        $stats = $this->getMemberStats($clubId);
+        $stats = $this->getMemberStats($club->id);
 
-        return view('dashboard.members', compact('members', 'clubId', 'stats', 'search'));
+        return view('dashboard.members', compact('members', 'club', 'stats', 'search'));
     }
 
     private function getMemberStats($clubId)
