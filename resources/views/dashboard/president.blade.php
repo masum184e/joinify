@@ -1,160 +1,138 @@
 @extends('dashboard.includes.layout')
 
-@section('title', 'Dashboard')
-@section('sub-title', 'President')
+@section('title', 'President Dashboard')
+@section('sub-title', $club->name)
 
-@section('layout-title', 'Club President')
-@section('layout-sub-title', 'Manage your club, track events, and oversee member activities.')
+@section('layout-title', 'President Dashboard')
+@section('layout-sub-title', 'Overview of club members, events, and activities')
 
 @section('content')
 
-  <div class="max-w-7xl mx-auto mb-8">
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-lg border border-border p-4 shadow-sm">
+    <div class="flex items-center justify-between pb-2">
+      <h3 class="text-sm font-medium">Total Members</h3>
+      <i class="ri-user-line text-gray-500"></i>
+    </div>
+    <div class="text-2xl font-bold">{{ $totalMembers }}</div>
+    <div class="text-xs text-gray-500">
+      <span class="text-green-600">{{ $activeMembers }}</span> active members
+    </div>
+    </div>
 
-    <!-- Total Members -->
-    <div class="bg-gradient-to-br from-purple-100 to-purple-200 p-6 rounded-2xl shadow-lg border-l-4 border-purple-600">
+    <div class="bg-white rounded-lg border border-border p-4 shadow-sm">
+    <div class="flex items-center justify-between pb-2">
+      <h3 class="text-sm font-medium">Total Events</h3>
+      <i class="ri-calendar-line text-gray-500"></i>
+    </div>
+    <div class="text-2xl font-bold">{{ $totalEvents }}</div>
+    <div class="text-xs text-gray-500">Organized all time</div>
+    </div>
+
+    <div class="bg-white rounded-lg border border-border p-4 shadow-sm">
+    <div class="flex items-center justify-between pb-2">
+      <h3 class="text-sm font-medium">Upcoming Events</h3>
+      <i class="ri-time-line text-gray-500"></i>
+    </div>
+    <div class="text-2xl font-bold">{{ $upcomingEvents }}</div>
+    <div class="text-xs text-gray-500">Next 30 days</div>
+    </div>
+
+    <div class="bg-white rounded-lg border border-border p-4 shadow-sm">
+    <div class="flex items-center justify-between pb-2">
+      <h3 class="text-sm font-medium">Total Guests</h3>
+      <i class="ri-user-line text-gray-500"></i>
+    </div>
+    <div class="text-2xl font-bold">{{ $totalGuests }}</div>
+    <div class="text-xs text-gray-500">Event attendees</div>
+    </div>
+  </div>
+
+  <!-- Activity and Events -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="bg-white rounded-lg border border-border shadow-sm">
+    <div class="p-4 border-b border-border">
       <div class="flex items-center justify-between">
-      <div>
-        <h2 class="text-sm font-medium text-purple-700 uppercase">Total Members</h2>
-        <p class="text-3xl font-extrabold text-purple-900 mt-1">{{ $totalMembers }}</p>
+      <div class="flex items-center">
+        <i class="ri-shake-hands-line mr-2 "></i>
+        <h3 class="font-medium">Recent Activities</h3>
       </div>
-      <div class="bg-purple-500 text-white rounded-full p-2">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87M16 7a4 4 0 110 8 4 4 0 010-8zM8 7a4 4 0 100 8 4 4 0 000-8z" />
-        </svg>
       </div>
+      <p class="text-sm text-gray-500">Latest club activities and updates</p>
+    </div>
+    <div class="p-4">
+      <div class="space-y-4">
+      @forelse ($activities as $activity)
+      <div class="border-b pb-3 last:border-0">
+      <div class="flex justify-between items-start mb-2">
+      <p class="text-sm font-medium leading-none">{{ $activity['type'] }}</p>
+      <p class="text-xs text-gray-500 mt-1">{{ \Carbon\Carbon::parse($activity['date'])->diffForHumans() }}</p>
+      </div>
+      <p class="text-xs text-gray-500 mt-1">{{ $activity['description'] }}</p>
+      </div>
+    @empty
+      <div class="text-center py-6 text-gray-500">
+      <i class="ri-information-line text-4xl mb-2"></i>
+      <p>No recent activities found</p>
+      </div>
+    @endforelse
       </div>
     </div>
+    </div>
 
-    <!-- Upcoming Events -->
-    <div class="bg-gradient-to-br from-green-100 to-green-200 p-6 rounded-2xl shadow-lg border-l-4 border-green-600">
+    <div class="bg-white rounded-lg border border-border shadow-sm">
+    <div class="p-4 border-b border-border">
       <div class="flex items-center justify-between">
-      <div>
-        <h2 class="text-sm font-medium text-green-700 uppercase">Upcoming Events</h2>
-        <p class="text-3xl font-extrabold text-green-900 mt-1">{{ $upcomingEvents }}</p>
+      <div class="flex items-center">
+        <i class="ri-calendar-line mr-2 "></i>
+        <h3 class="font-medium">Upcoming Events</h3>
       </div>
-      <div class="bg-green-500 text-white rounded-full p-2">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-        </svg>
+      <a href="/dashboard/clubs/{{ $club->id }}/events" class="text-sm text-blue-600 hover:text-blue-800">View all</a>
       </div>
-      </div>
+      <p class="text-sm text-gray-500">Events scheduled in the next 30 days</p>
     </div>
-
-    <!-- Total Events -->
-    <div class="bg-gradient-to-br from-blue-100 to-blue-200 p-6 rounded-2xl shadow-lg border-l-4 border-blue-600">
-      <div class="flex items-center justify-between">
-      <div>
-        <h2 class="text-sm font-medium text-blue-700 uppercase">Total Events</h2>
-        <p class="text-3xl font-extrabold text-blue-900 mt-1">{{ $totalEvents }}</p>
+    <div class="p-4">
+      <div class="space-y-6">
+      @forelse ($upcomingEventsList as $event)
+      <div class="border-b pb-4 last:border-0">
+      <a href="/dashboard/clubs/{{ $club->id }}/events/{{ $event->id }}"
+      class="block hover:bg-gray-50 -mx-2 px-2 py-1 rounded-md transition-colors">
+      <div class="flex justify-between items-start mb-2">
+        <h3 class="font-medium">{{ $event->title }}</h3>
+        <span class="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
+        {{ Carbon\Carbon::parse($event->date)->diffForHumans() }}
+        </span>
       </div>
-      <div class="bg-blue-500 text-white rounded-full p-2">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M9.75 17L9 21l3.75-1.5L16.5 21l-.75-4m3.25-7a3.5 3.5 0 11-7 0 3.5 3.5 0 017 0zM4.75 5a3.5 3.5 0 117 0 3.5 3.5 0 01-7 0zM3 21v-2a4 4 0 014-4h3.5" />
-        </svg>
+      <div class="flex items-center text-sm text-gray-500 mb-1">
+        <i class="ri-time-line mr-2 h-4 w-4"></i>
+        {{ \Carbon\Carbon::parse($event->date)->format('M d, Y') }} •
+        {{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }}
       </div>
+      <div class="flex items-center text-sm text-gray-500">
+        <i class="ri-map-pin-line mr-2 h-4 w-4"></i>
+        {{ $event->location }}
       </div>
-    </div>
-
-    <!-- Total Guests -->
-    <div class="bg-gradient-to-br from-indigo-100 to-indigo-200 p-6 rounded-2xl shadow-lg border-l-4 border-indigo-600">
-      <div class="flex items-center justify-between">
-      <div>
-        <h2 class="text-sm font-medium text-indigo-700 uppercase">Total Guests</h2>
-        <p class="text-3xl font-extrabold text-indigo-900 mt-1">{{ $totalEvents }}</p>
+      <div class="flex items-center text-sm text-gray-500 mt-1">
+        <i class="ri-user-line mr-2 h-4 w-4"></i>
+        {{ $event->guests->count() }} guests
       </div>
-      <div class="bg-indigo-500 text-white rounded-full p-2">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4s-4 1.79-4 4 1.79 4 4 4zM4 20c0-2.21 3.58-4 8-4s8 1.79 8 4v1H4v-1z" />
-        </svg>
-      </div>
-      </div>
-    </div>
-
-    </div>
-
-    <!-- Recent Club Activities -->
-    <div class="bg-white shadow-xl rounded-2xl overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-      <h2 class="text-lg font-bold text-gray-800">📝 Recent Club Activities</h2>
-      <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-      </svg>
-    </div>
-    <ul class="divide-y divide-gray-100">
-
-      <!-- Activity 1 -->
-      @foreach ($activities as $activity)
-
-      <li class="px-6 py-4 hover:bg-gray-50 transition">
-      <div class="flex items-start justify-between">
-      <div class="flex items-start gap-3">
-      <div class="bg-green-100 text-green-600 p-2 rounded-full">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-        </svg>
-      </div>
-      <div>
-        <h3 class="font-semibold text-gray-800">{{ $activity['type'] }}</h3>
-        <p class="text-sm text-gray-500">{{ $activity['description'] }}</p>
-      </div>
-      </div>
-      <p class="text-sm text-gray-400 mt-1">{{ \Carbon\Carbon::parse($activity['date'])->diffForHumans() }}</p>
-      </div>
-      </li>
-    @endforeach
-
-    </ul>
-    </div>
-
-
-    <!-- Upcoming Events -->
-    <div class="bg-white shadow-xl rounded-2xl overflow-hidden mt-8">
-    <div
-      class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-blue-100 flex items-center justify-between">
-      <h2 class="text-lg font-semibold text-blue-800 flex items-center gap-2">📅 Upcoming Events </h2>
-      <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round"
-        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-      </svg>
-    </div>
-    <ul class="divide-y divide-gray-100">
-      <!-- Event 1 -->
-      @foreach ($upcomingEventsList as $event)
-
-      <li class="px-6 py-4 hover:bg-gray-50 transition">
-      <div class="flex items-center justify-between">
-      <div class="flex items-start gap-3">
-      <div class="bg-green-100 text-green-600 p-2 rounded-full">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round"
-        d="M16 7a4 4 0 01-8 0m8 0V3a1 1 0 00-1-1h-6a1 1 0 00-1 1v4m8 0H8m8 0a4 4 0 010 8m0 0v4m0-4H8" />
-        </svg>
-      </div>
-      <div>
-        <h3 class="font-semibold text-gray-800">{{ $event->title }}</h3>
-        <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($event->date)->format('M d, Y') }}</p>
-      </div>
-      </div>
-      <a href="/dashboard/clubs/{{ $clubId }}/events/{{ $event->id }}"
-      class="text-blue-600 text-sm font-medium hover:underline flex items-center gap-1">
-      View
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-      </svg>
       </a>
       </div>
-      </li>
-    @endforeach
-
-    </ul>
+    @empty
+      <div class="text-center py-6 text-gray-500">
+      <i class="ri-calendar-line text-4xl mb-2"></i>
+      <p>No upcoming events in the next 30 days</p>
+      <a href="/dashboard/clubs/{{ $club->id }}/events/create"
+      class="mt-2 inline-block text-sm text-blue-600 hover:text-blue-800">
+      Create an event
+      </a>
+      </div>
+    @endforelse
+      </div>
     </div>
-
+    </div>
   </div>
+
 
 @endsection

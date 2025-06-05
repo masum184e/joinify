@@ -36,42 +36,45 @@ class DashboardController extends Controller
 
     public function president()
     {
-        $presidentRole = auth()
-            ->user()
-            ->clubRoles()
-            ->where('role', 'president')
-            ->first();
+        $presidentRole = auth()->user()->clubRoles()->where('role', 'president')->first();
+        if (!$presidentRole) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $clubId = $presidentRole->club_id;
-
-        $club = Club::with('events.guests')->find($clubId);
-
+        $club = Club::with(['events.guests', 'memberships.payment', 'memberships.member.user'])->find($clubId);
         if (!$club) {
             abort(404, 'Club not found');
         }
 
-        $totalEvents = $club->events->count();
-
         $today = Carbon::today();
+        $totalEvents = $club->events->count();
 
         $upcomingEventsList = $club->events
             ->where('date', '>=', $today)
             ->sortBy('date')
+            ->take(5)
             ->values();
 
-        $upcomingEvents = $upcomingEventsList->count();
+        $upcomingEvents = $club->events
+            ->where('date', '>=', $today)
+            ->where('date', '<=', $today->copy()->addDays(30))
+            ->count();
 
         $totalGuests = $club->events->flatMap(function ($event) {
             return $event->guests;
         })->pluck('guest_id')->unique()->count();
 
-        $members = Member::whereHas('memberships', function ($query) use ($clubId) {
-            $query->where('club_id', $clubId);
-        })->with('user')->get();
+        $totalMembers = $club->memberships->count();
+        $activeMembers = $club->memberships->filter(function ($membership) {
+            return $membership->payment && $membership->payment->payment_status === 'paid';
+        })->count();
 
-        $totalMembers = $members->count();
-
-        $recentEvents = Event::where('club_id', $clubId)
+        // Combine recent events and members for activity feed
+        $recentEvents = Event::where('club_id', $club->id)
             ->select('id', 'title', 'created_at')
+            ->orderBy('created_at', 'desc')
+            ->take(10)
             ->get()
             ->map(function ($event) {
                 return [
@@ -80,8 +83,11 @@ class DashboardController extends Controller
                     'date' => $event->created_at,
                 ];
             });
-        $recentMembers = Membership::where('club_id', $clubId)
+
+        $recentMembers = Membership::where('club_id', $club->id)
             ->with('member.user')
+            ->orderBy('created_at', 'desc')
+            ->take(10)
             ->get()
             ->map(function ($membership) {
                 return [
@@ -97,25 +103,28 @@ class DashboardController extends Controller
             ->sortByDesc('date')
             ->take(5);
 
-
-        return view('dashboard.president', compact('totalEvents', 'upcomingEventsList', 'totalGuests', 'clubId', 'upcomingEvents', 'totalMembers', 'activities'));
+        return view('dashboard.president', compact(
+            'totalEvents',
+            'upcomingEventsList',
+            'totalGuests',
+            'club',
+            'upcomingEvents',
+            'totalMembers',
+            'activeMembers',
+            'activities'
+        ));
     }
 
     public function secretary()
     {
-        $secretaryRole = auth()
-            ->user()
-            ->clubRoles()
-            ->where('role', 'secretary')
-            ->first();
+        $secretaryRole = auth()->user()->clubRoles()->where('role', 'secretary')->first();
 
         if (!$secretaryRole) {
-            abort(403, 'Unauthorized or role not found');
+            abort(403, 'Unauthorized action.');
         }
 
         $clubId = $secretaryRole->club_id;
-
-        $club = Club::with('events.guests')->find($clubId);
+        $club = Club::with(['events.guests'])->find($clubId);
 
         if (!$club) {
             abort(404, 'Club not found');
@@ -125,15 +134,59 @@ class DashboardController extends Controller
         $events = $club->events;
 
         $totalEvents = $events->count();
-        $upcomingEvents = $events->filter(fn($event) => $event->date >= $today);
+        
+        $upcomingEvents = $events
+            ->where('date', '>=', $today)
+            ->where('date', '<=', $today->copy()->addDays(30))
+            ->sortBy('date')
+            ->values();
+            
         $totalGuests = $events->flatMap(fn($event) => $event->guests)->pluck('guest_id')->unique()->count();
-        $recentEvents = $events->filter(fn($event) => $event->date < $today);
+        
+        $recentEvents = $events
+            ->where('date', '<', $today)
+            ->sortByDesc('date')
+            ->take(5)
+            ->values();
+            
+        // Get calendar data for the current month
+        $currentMonth = Carbon::now();
+        $firstDayOfMonth = $currentMonth->copy()->startOfMonth();
+        $lastDayOfMonth = $currentMonth->copy()->endOfMonth();
+        
+        // Get events for the calendar
+        $calendarEvents = $events
+            ->where('date', '>=', $firstDayOfMonth)
+            ->where('date', '<=', $lastDayOfMonth)
+            ->groupBy(function($event) {
+                return Carbon::parse($event->date)->format('Y-m-d');
+            })
+            ->map(function($dayEvents) {
+                return $dayEvents->count();
+            });
+            
+        // Calendar navigation data
+        $monthName = $currentMonth->format('F Y');
+        $prevMonth = $currentMonth->copy()->subMonth()->format('Y-m');
+        $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
+        
+        // Get days for calendar grid
+        $daysInMonth = $lastDayOfMonth->day;
+        $startDayOfWeek = $firstDayOfMonth->dayOfWeek; // 0 (Sunday) to 6 (Saturday)
+        
         return view('dashboard.secretary', compact(
             'totalEvents',
             'upcomingEvents',
             'totalGuests',
             'recentEvents',
-            'clubId'
+            'club',
+            'calendarEvents',
+            'monthName',
+            'prevMonth',
+            'nextMonth',
+            'daysInMonth',
+            'startDayOfWeek',
+            'firstDayOfMonth'
         ));
     }
 
@@ -150,10 +203,15 @@ class DashboardController extends Controller
         }
 
         $clubId = $accountantRole->club_id;
+        $club = Club::with(['events.guests'])->find($clubId);
+
+        if (!$club) {
+            abort(404, 'Club not found');
+        }
 
         // Calculate total revenue
-        $totalRevenue = Payment::whereHas('membership', function ($query) use ($clubId) {
-            $query->where('club_id', $clubId);
+        $totalRevenue = Payment::whereHas('membership', function ($query) use ($club) {
+            $query->where('club_id', $club->id);
         })->where('payment_status', 'paid')
             ->sum('amount');
 
@@ -162,8 +220,8 @@ class DashboardController extends Controller
         $remainingBalance = $totalRevenue - $totalExpenses;
 
         // Recent transactions
-        $recentTransactions = Payment::whereHas('membership', function ($query) use ($clubId) {
-            $query->where('club_id', $clubId);
+        $recentTransactions = Payment::whereHas('membership', function ($query) use ($club) {
+            $query->where('club_id', $club->id);
         })
             ->where('payment_status', 'paid')
             ->orderBy('paid_at', 'desc')
@@ -172,8 +230,8 @@ class DashboardController extends Controller
             ->get();
 
         // Monthly revenue for chart
-        $payments = Payment::whereHas('membership', function ($query) use ($clubId) {
-            $query->where('club_id', $clubId);
+        $payments = Payment::whereHas('membership', function ($query) use ($club) {
+            $query->where('club_id', $club->id);
         })
             ->where('payment_status', 'paid')
             ->where('paid_at', '>=', now()->subMonths(11))
@@ -201,7 +259,6 @@ class DashboardController extends Controller
             }
         }
 
-
         // Prepare chart data
         $chartLabels = $monthlyRevenue->pluck('label')->toArray();
         $chartData = $monthlyRevenue->pluck('amount')->toArray();
@@ -213,7 +270,7 @@ class DashboardController extends Controller
             'recentTransactions',
             'chartLabels',
             'chartData',
-            'clubId'
+            'club'
         ));
     }
 
