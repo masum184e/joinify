@@ -1,39 +1,22 @@
 @extends('dashboard.includes.layout')
 
-@section('title', 'Dashboard')
-@section('sub-title', 'Secretary')
+@section('title',  ($page === 'create')?'Create New Event':'Update Event Details')
+@section('sub-title', $club->name)
 
-@section('layout-title', 'Club Secretary')
-@section('layout-sub-title', 'Manage your club, track events, and oversee member activities.')
+@section('layout-title', ($page === 'create')?'Create New Event':'Update Event Details')
+@section('layout-sub-title', ($page === 'create')?'Fill in the details to create a new club event':'Fill in the details to update event information')
 
 @section('content')
 
     <div class="container">
-        <div class="mb-2">
-            <h1 class="text-3xl font-bold mb-2">
-                @if($page === 'create')
-                    Create New Event
-                @else
-                    Update Event Details
-                @endif
-            </h1>
-            <p class="text-gray-500">
-                @if($page === 'create')
-                    Fill in the details to create a new club event
-                @else
-                    Fill in the details to update event information
-                @endif
-            </p>
-            <a href="/dashboard/clubs/{{ $clubId ?? '' }}/events"
-                class="inline-flex items-center justify-center text-blue-600 rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50  h-10 py-2 mb-4">
-                <i class="ri-arrow-left-line mr-2"></i>
-                Back to Events
-            </a>
-        </div>
-
+        <a href="/dashboard/clubs/{{ $club->id ?? '' }}/events"
+            class="inline-flex items-center justify-center text-blue-600 rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50  h-10 py-2 mb-4">
+            <i class="ri-arrow-left-line mr-2"></i>
+            Back to Events
+        </a>
         <!-- Form with proper method, action, and enctype -->
         <form method="POST"
-            action="{{ $page === 'create' ? '/dashboard/clubs/' . $clubId . '/events' : '/dashboard/clubs/' . $clubId . '/events/' . $event->id }}"
+            action="{{ $page === 'create' ? '/dashboard/clubs/' . $club->id . '/events' : '/dashboard/clubs/' . $club->id . '/events/' . $event->id }}"
             enctype="multipart/form-data">
             @csrf
             @if($page === 'edit')
@@ -42,7 +25,7 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Basic Information -->
-                <div class="bg-card rounded-lg border border-border shadow-sm">
+                <div class="bg-white rounded-lg border border-border shadow-sm">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h2>
                         <div class="space-y-2">
@@ -51,7 +34,7 @@
                                 Title</label>
                             <input id="title" name="title" placeholder="Enter event title"
                                 value="{{ $event->title ?? old('title') }}"
-                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 @error('title') border-red-500 @enderror">
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 @error('title') border-red-500 @enderror">
                             @error('title')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
@@ -60,7 +43,7 @@
                             <label for="description"
                                 class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Description</label>
                             <textarea id="description" name="description" placeholder="Describe events activities" rows="5"
-                                class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 @error('description') border-red-500 @enderror">{{ $event->description ?? old('description') }}</textarea>
+                                class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 @error('description') border-red-500 @enderror">{{ $event->description ?? old('description') }}</textarea>
                             @error('description')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
@@ -68,7 +51,7 @@
                     </div>
                 </div>
                 <!-- Date and Time -->
-                <div class="bg-card rounded-lg border border-border shadow-sm">
+                <div class="bg-white rounded-lg border border-border shadow-sm">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900 mb-4">Date and Time</h2>
                         <div class="space-y-2">
@@ -106,7 +89,7 @@
                     </div>
                 </div>
 
-                <div class="bg-card rounded-lg border border-border shadow-sm h-min">
+                <div class="bg-white rounded-lg border border-border shadow-sm h-min">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900 mb-4">Location</h2>
                         <div class="space-y-2">
@@ -115,7 +98,7 @@
                                 Location</label>
                             <input id="location" name="location" placeholder="Enter event location"
                                 value="{{ $event->location ?? old('location') }}"
-                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 @error('location') border-red-500 @enderror">
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 @error('location') border-red-500 @enderror">
                             @error('location')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
@@ -162,7 +145,7 @@
                     </div>
                 </div>
 
-                <div class="bg-card rounded-lg border border-border shadow-sm h-min">
+                <div class="bg-white rounded-lg border border-border shadow-sm h-min">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900 mb-4">Guests</h2>
 
@@ -177,7 +160,7 @@
                             @php
                                 $event->guests ?? old('guests', [['name' => '', 'email' => '']]);
 
-                                $guests = $event->guests ?? old('guests', [['name' => '', 'email' => '']]);
+                                $guests = $event->guests ?? old('guests', [['name' => '', 'email' => ''], ['name' => '', 'email' => ''], ['name' => '', 'email' => ''], ['name' => '', 'email' => '']]);
                                 if (!is_array($guests) && is_object($guests)) {
                                     $guests = $guests->toArray();
                                 }
@@ -255,22 +238,22 @@
                 newGuest.classList.add('flex', 'flex-col', 'md:flex-row', 'gap-3', 'guest-item');
 
                 newGuest.innerHTML = `
-                                                                                    <div class="flex-1">
-                                                                                        <input type="text" name="guests[${guestIndex}][name]" placeholder="Guest Name"
-                                                                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
-                                                                                    </div>
-                                                                                    <div class="flex-1">
-                                                                                        <input type="text" name="guests[${guestIndex}][email]" placeholder="Email"
-                                                                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
-                                                                                    </div>
-                                                                                    <div class="flex items-center">
-                                                                                        <button type="button" class="remove-guest p-2 text-red-500 hover:text-red-700 focus:outline-none" title="Remove guest">
-                                                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                                                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                                                                            </svg>
-                                                                                        </button>
-                                                                                    </div>
-                                                                                `;
+                                                                                        <div class="flex-1">
+                                                                                            <input type="text" name="guests[${guestIndex}][name]" placeholder="Guest Name"
+                                                                                                class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
+                                                                                        </div>
+                                                                                        <div class="flex-1">
+                                                                                            <input type="text" name="guests[${guestIndex}][email]" placeholder="Email"
+                                                                                                class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" />
+                                                                                        </div>
+                                                                                        <div class="flex items-center">
+                                                                                            <button type="button" class="remove-guest p-2 text-red-500 hover:text-red-700 focus:outline-none" title="Remove guest">
+                                                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                                                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                                                                                </svg>
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    `;
 
                 guestList.appendChild(newGuest);
                 guestIndex++;

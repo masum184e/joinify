@@ -203,12 +203,10 @@ class EventController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        if (auth()->user()->clubRoles()->first()->club_id != $clubId) {
-            abort(404, 'Club not found');
-        }
-
+        $club = Club::findOrFail($clubId);
         $page = 'create';
-        return view('dashboard.event-form', compact('page', 'clubId'));
+        
+        return view('dashboard.event-form', compact('page', 'club'));
     }
 
     public function edit($clubId, $eventId)
@@ -224,8 +222,10 @@ class EventController extends Controller
         }
 
         $event = Event::with('guests')->findOrFail($eventId);
+        $club = Club::findOrFail($clubId);
+
         $page = 'edit';
-        return view('dashboard.event-form', compact('page', 'event', 'clubId'));
+        return view('dashboard.event-form', compact('page', 'event', 'club'));
     }
     public function destroy($clubId, $eventId)
     {
