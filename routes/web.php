@@ -39,6 +39,7 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
     Route::resource('/clubs/{club}/events', EventController::class);
 
     Route::get('/clubs/{club}/members', [MemberController::class, 'index']);
+    Route::get('/clubs/{club}/members/export', [MemberController::class, 'export']);
     Route::get('/clubs/{club}/members/{member}', [MemberController::class, 'show']);
 
     Route::get('/settings', fn() => view('dashboard.settings'));
