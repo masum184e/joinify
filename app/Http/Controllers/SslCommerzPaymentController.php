@@ -61,6 +61,7 @@ class SslCommerzPaymentController extends Controller
                 'payment_status' => 'pending',
                 'amount' => $amount,
                 'transaction_id' => $tran_id,
+                'paid_at' => now(),
             ]);
 
             DB::commit();
@@ -152,6 +153,7 @@ class SslCommerzPaymentController extends Controller
 
         if ($is_valid) {
             $payment->payment_status = 'paid';
+            $payment->paid_at = now();
             $payment->save();
 
             $member = $payment->membership->member;
