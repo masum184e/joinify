@@ -144,31 +144,24 @@ class DashboardController extends Controller
             ->clubRoles()
             ->where('role', 'accountant')
             ->first();
-        $clubId = $accountantRole->club_id;
-        //         public function up()
-        // {
-        //     Schema::create('expenses', function (Blueprint $table) {
-        //         $table->id();
-        //         $table->foreignId('club_id')->constrained()->onDelete('cascade');
-        //         $table->string('title');
-        //         $table->decimal('amount', 10, 2);
-        //         $table->date('expense_date');
-        //         $table->timestamps();
-        //     });
-        // }
 
+        if (!$accountantRole) {
+            abort(403, 'Accountant role not found');
+        }
+
+        $clubId = $accountantRole->club_id;
+
+        // Calculate total revenue
         $totalRevenue = Payment::whereHas('membership', function ($query) use ($clubId) {
             $query->where('club_id', $clubId);
         })->where('payment_status', 'paid')
             ->sum('amount');
 
-        //   $totalExpenses = Expense::where('club_id', $clubId)->sum('amount');
-        $totalExpenses = 00;
-
-        // Remaining balance
+        // For now, expenses are 0
+        $totalExpenses = 0;
         $remainingBalance = $totalRevenue - $totalExpenses;
 
-
+        // Recent transactions
         $recentTransactions = Payment::whereHas('membership', function ($query) use ($clubId) {
             $query->where('club_id', $clubId);
         })
@@ -178,34 +171,52 @@ class DashboardController extends Controller
             ->with(['membership.member.user'])
             ->get();
 
+        // Monthly revenue for chart
         $payments = Payment::whereHas('membership', function ($query) use ($clubId) {
             $query->where('club_id', $clubId);
         })
             ->where('payment_status', 'paid')
-            ->where('paid_at', '>=', now()->subMonths(12))
+            ->where('paid_at', '>=', now()->subMonths(11))
             ->get();
 
         $monthlyRevenue = collect([]);
 
-        // Initialize all 12 months with 0
+        // Initialize last 12 months with 0
         for ($i = 11; $i >= 0; $i--) {
-            $month = Carbon::now()->subMonths($i)->format('Y-m');
-            $monthlyRevenue[$month] = 0;
+            $month = Carbon::now()->subMonths($i);
+            $monthKey = $month->format('Y-m');
+            $monthLabel = $month->format('M Y');
+            $monthlyRevenue[$monthKey] = [
+                'label' => $monthLabel,
+                'amount' => 0
+            ];
         }
 
-        // Sum revenue per month
         foreach ($payments as $payment) {
-            $month = Carbon::parse($payment->paid_at)->format('Y-m');
-            if (isset($monthlyRevenue[$month])) {
-                $monthlyRevenue[$month] += $payment->amount;
+            $monthKey = Carbon::parse($payment->paid_at)->format('Y-m');
+            if ($monthlyRevenue->has($monthKey)) {
+                $current = $monthlyRevenue->get($monthKey);
+                $current['amount'] += $payment->amount;
+                $monthlyRevenue->put($monthKey, $current);
             }
         }
 
 
-        // $revenueOverview = array_combine($monthlyRevenue->keys()->toArray(), $monthlyRevenue->values()->toArray());
-        $revenueOverview = $monthlyRevenue->toArray();
-        return view('dashboard.accountant', compact('totalRevenue', 'totalExpenses', 'remainingBalance', 'recentTransactions', 'revenueOverview', 'clubId'));
+        // Prepare chart data
+        $chartLabels = $monthlyRevenue->pluck('label')->toArray();
+        $chartData = $monthlyRevenue->pluck('amount')->toArray();
+
+        return view('dashboard.accountant', compact(
+            'totalRevenue',
+            'totalExpenses',
+            'remainingBalance',
+            'recentTransactions',
+            'chartLabels',
+            'chartData',
+            'clubId'
+        ));
     }
+
 
     public function advisor()
     {
