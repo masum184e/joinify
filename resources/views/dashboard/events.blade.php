@@ -64,11 +64,13 @@
                     <h3 class="text-lg font-medium text-gray-900">{{ $club->name }} Events</h3>
                     <p class="text-sm text-gray-500">Manage your club events and track attendance</p>
                 </div>
+                @if(auth()->user() && auth()->user()->clubRoles->contains('role', 'secretary'))
                 <a href="{{ route('events.create', $club->id) }}" 
                    class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     <i class="ri-add-circle-line mr-2"></i>
                     Create Event
                 </a>
+                @endif
             </div>
         </div>
 
