@@ -140,18 +140,59 @@ class EventController extends Controller
     {
         $isSecretaryOrPresident = auth()->user()->clubRoles()
             ->whereIn('role', ['secretary', 'president'])
+            ->where('club_id', $clubId)
             ->exists();
 
         if (!$isSecretaryOrPresident) {
             abort(403, 'Unauthorized action.');
         }
 
+        // Get the club information
+        $club = Club::findOrFail($clubId);
         if (auth()->user()->clubRoles()->first()->club_id != $clubId) {
             abort(404, 'Club not found');
         }
+        $event = Event::where('club_id', $club->id)
+            ->with(['guests', 'club'])
+            ->findOrFail($eventId);
 
-        $event = Event::with(['guests', 'club'])->findOrFail($eventId);
-        return view('dashboard.event', compact('event'));
+        // Get event statistics
+        $stats = $this->getEventStatistics($event);
+
+        // Get similar/related events from the same club
+        $relatedEvents = Event::where('club_id', $club->id)
+            ->where('id', '!=', $eventId)
+            ->orderBy('date', 'desc')
+            ->take(3)
+            ->get();
+
+        // Check if event is editable (future events only)
+        $isEditable = Carbon::parse($event->date)->isFuture();
+
+        return view('dashboard.event', compact(
+            'event', 
+            'club', 
+            'stats', 
+            'relatedEvents', 
+            'isEditable'
+        ));
+    }
+
+      private function getEventStatistics($event)
+    {
+        $eventDate = Carbon::parse($event->date);
+        $today = Carbon::today();
+        
+        return [
+            'total_guests' => $event->guests->count(),
+            'confirmed_guests' => $event->guests->where('status', 'confirmed')->count(),
+            'pending_guests' => $event->guests->where('status', 'pending')->count(),
+            'is_past' => $eventDate->isPast(),
+            'is_today' => $eventDate->isToday(),
+            'is_upcoming' => $eventDate->isFuture(),
+            'days_until' => $eventDate->diffInDays($today, false),
+            'duration_hours' => Carbon::parse($event->start_time)->diffInHours(Carbon::parse($event->end_time))
+        ];
     }
 
     public function create($clubId)
