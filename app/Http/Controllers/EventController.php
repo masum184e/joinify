@@ -79,6 +79,10 @@ class EventController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        if (auth()->user()->clubRoles()->first()->club_id != $clubId) {
+            abort(404, 'Club not found');
+        }
+
         $event = Event::with(['guests', 'club'])->findOrFail($eventId);
         return view('dashboard.event', compact('event'));
     }
@@ -89,6 +93,10 @@ class EventController extends Controller
 
         if (!$isSecretary) {
             abort(403, 'Unauthorized action.');
+        }
+
+        if (auth()->user()->clubRoles()->first()->club_id != $clubId) {
+            abort(404, 'Club not found');
         }
 
         $page = 'create';
@@ -103,6 +111,10 @@ class EventController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        if (auth()->user()->clubRoles()->first()->club_id != $clubId) {
+            abort(404, 'Club not found');
+        }
+
         $event = Event::with('guests')->findOrFail($eventId);
         $page = 'edit';
         return view('dashboard.event-form', compact('page', 'event', 'clubId'));
@@ -115,17 +127,25 @@ class EventController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        if (auth()->user()->clubRoles()->first()->club_id != $clubId) {
+            abort(404, 'Club not found');
+        }
+
         $event = Event::findOrFail($eventId);
         $event->delete();
 
         return redirect('/dashboard/clubs/' . $clubId . '/events')->with('success', 'Event deleted successfully.');
     }
-    public function store(Request $request)
+    public function store(Request $request, $clubId)
     {
         $isSecretary = auth()->user()->clubRoles()->where('role', 'secretary')->exists();
 
         if (!$isSecretary) {
             abort(403, 'Unauthorized action.');
+        }
+
+        if (auth()->user()->clubRoles()->first()->club_id != $clubId) {
+            abort(404, 'Club not found');
         }
 
         $validator = Validator::make($request->all(), [
@@ -157,11 +177,6 @@ class EventController extends Controller
             if (!$clubRole) {
                 return redirect()->back()->with('error', 'You are not associated with any club.');
             }
-            // fetch it from isSecretary
-            // $clubRole = auth()->user()->clubRoles()->first();
-            // if (!$clubRole) {
-            //     return redirect()->back()->with('error', 'You are not associated with any club.');
-            // }
 
             if ($request->hasFile('poster')) {
                 $path = $request->file('poster')->store('posters', 'public');
@@ -224,6 +239,10 @@ class EventController extends Controller
 
         if (!$isSecretary) {
             abort(403, 'Unauthorized action.');
+        }
+
+        if (auth()->user()->clubRoles()->first()->club_id != $clubId) {
+            abort(404, 'Club not found');
         }
 
         $rules = [];
