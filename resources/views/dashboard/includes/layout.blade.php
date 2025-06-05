@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>@yield('title') | @yield('sub-title')</title>
+  <title>@yield('title') - @yield('sub-title')</title>
   <link rel="icon" href="/logo.png" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -171,12 +171,12 @@
 
 
     {{-- Main Content Area --}}
-    <main class="flex flex-col flex-1 md:ml-64 flex-1 px-8 pt-6  overflow-hidden">
+    <main class="flex flex-col flex-1 md:ml-64 flex-1 px-8 pt-6 bg-gray-50 overflow-hidden">
       {{-- Header --}}
       <div class="flex justify-between items-center mb-6">
         <div>
-          <h1 class="text-3xl font-extrabold text-blue-600">@yield('layout-title')</h1>
-          <p class="text-gray-500 mt-1 text-sm">@yield('layout-sub-title')</p>
+          <h1 class="text-2xl font-bold text-gray-900 font-poppins">@yield('layout-title')</h1>
+          <p class="mt-1 text-sm text-gray-500">@yield('layout-sub-title')</p>
         </div>
         <div class="flex items-center space-x-4">
           <div class="text-sm text-right">
