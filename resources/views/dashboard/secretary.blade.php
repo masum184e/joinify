@@ -25,7 +25,7 @@
                     <h3 class="text-sm font-medium">Upcoming Events</h3>
                     <i class="ri-time-line text-muted-foreground"></i>
                 </div>
-                <div class="text-2xl font-bold">{{ $upcomingEvents }}</div>
+                <div class="text-2xl font-bold">{{ $upcomingEvents->count() }}</div>
                 <div class="text-xs text-muted-foreground">Next 30 days</div>
             </div>
 
@@ -51,47 +51,26 @@
                 </div>
                 <div class="p-4">
                     <div class="space-y-6">
-                        <div class="border-b pb-4 last:border-0">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="font-medium">Tech Conference</h3>
+                        @foreach ($upcomingEvents as $event)
+                            <div class="border-b pb-4 last:border-0">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-medium">{{ $event->title }}</h3>
+                                </div>
+                                <div class="flex items-center text-sm text-muted-foreground mb-1">
+                                    <i class="ri-time-line mr-2 h-4 w-4"></i>
+                                    {{ \Carbon\Carbon::parse($event->date)->format('M d, Y') }} • {{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }}
+                                </div>
+                                <div class="flex items-center text-sm text-muted-foreground">
+                                    <i class="ri-map-pin-line mr-2 h-4 w-4"></i>
+                                    {{ $event->location }}
+                                </div>
+                                                                    <div class="flex items-center text-sm text-muted-foreground">
+                                        <i class="ri-user-line mr-2 h-4 w-4"></i>
+                                        {{ $event->guests->count() }} guests
+                                    </div>
                             </div>
-                            <div class="flex items-center text-sm text-muted-foreground mb-1">
-                                <i class="ri-time-line mr-2 h-4 w-4"></i>
-                                May 15, 2023 • 2:00 PM
-                            </div>
-                            <div class="flex items-center text-sm text-muted-foreground">
-                                <i class="ri-map-pin-line mr-2 h-4 w-4"></i>
-                                Main Auditorium
-                            </div>
-                        </div>
+                        @endforeach
 
-                        <div class="border-b pb-4 last:border-0">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="font-medium">Photography Exhibition</h3>
-                            </div>
-                            <div class="flex items-center text-sm text-muted-foreground mb-1">
-                                <i class="ri-time-line mr-2 h-4 w-4"></i>
-                                May 20, 2023 • 10:00 AM
-                            </div>
-                            <div class="flex items-center text-sm text-muted-foreground">
-                                <i class="ri-map-pin-line mr-2 h-4 w-4"></i>
-                                Art Gallery
-                            </div>
-                        </div>
-
-                        <div class="border-b pb-4 last:border-0">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="font-medium">Debate Competition</h3>
-                            </div>
-                            <div class="flex items-center text-sm text-muted-foreground mb-1">
-                                <i class="ri-time-line mr-2 h-4 w-4"></i>
-                                May 25, 2023 • 3:00 PM
-                            </div>
-                            <div class="flex items-center text-sm text-muted-foreground">
-                                <i class="ri-map-pin-line mr-2 h-4 w-4"></i>
-                                Conference Room B
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

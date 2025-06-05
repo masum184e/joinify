@@ -108,6 +108,11 @@ class DashboardController extends Controller
             ->clubRoles()
             ->where('role', 'secretary')
             ->first();
+
+        if (!$secretaryRole) {
+            abort(403, 'Unauthorized or role not found');
+        }
+
         $clubId = $secretaryRole->club_id;
 
         $club = Club::with('events.guests')->find($clubId);
@@ -116,18 +121,20 @@ class DashboardController extends Controller
             abort(404, 'Club not found');
         }
 
-        $totalEvents = $club->events->count();
-
         $today = Carbon::today();
-        $upcomingEvents = $club->events->where('date', '>=', $today)->count();
+        $events = $club->events;
 
-        $totalGuests = $club->events->flatMap(function ($event) {
-            return $event->guests;
-        })->pluck('guest_id')->unique()->count();
-
-        $recentEvents = $club->events->sortByDesc('date')->take(5);
-
-        return view('dashboard.secretary', compact('totalEvents', 'upcomingEvents', 'totalGuests', 'recentEvents', 'clubId'));
+        $totalEvents = $events->count();
+        $upcomingEvents = $events->filter(fn($event) => $event->date >= $today);
+        $totalGuests = $events->flatMap(fn($event) => $event->guests)->pluck('guest_id')->unique()->count();
+        $recentEvents = $events->filter(fn($event) => $event->date < $today);
+        return view('dashboard.secretary', compact(
+            'totalEvents',
+            'upcomingEvents',
+            'totalGuests',
+            'recentEvents',
+            'clubId'
+        ));
     }
 
     public function accountant()
