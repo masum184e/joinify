@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\Models\Member;
+use App\Models\Membership;
 use App\Models\Payment;
 use App\Models\User;
 use App\Models\Club;
@@ -66,20 +68,96 @@ class ClubController extends Controller
         return view('join-club', compact('club'));
     }
 
-    public function index()
+  public function index(Request $request)
     {
         $user = auth()->user();
         if (!$user->globalRole || $user->globalRole->role !== 'advisor') {
             abort(403, 'Unauthorized action.');
         }
 
-        $clubs = Club::withCount(['userRoles', 'memberships'])
-            ->get()
-            ->map(function ($club) {
-                $club->description = Str::limit($club->description, 60);
-                return $club;
+        // Build query with filters
+        $query = Club::with(['president.user', 'secretary.user', 'accountant.user'])
+            ->withCount(['memberships', 'events']);
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'like', "%{$searchTerm}%")
+                  ->orWhere('description', 'like', "%{$searchTerm}%");
             });
-        return view('dashboard.clubs', compact('clubs'));
+        }
+
+        // Status filter
+        if ($request->filled('status')) {
+            if ($request->status === 'active') {
+                $query->whereHas('president', function($q) {
+                    $q->where('verified', true);
+                })->whereHas('secretary', function($q) {
+                    $q->where('verified', true);
+                })->whereHas('accountant', function($q) {
+                    $q->where('verified', true);
+                });
+            } elseif ($request->status === 'inactive') {
+                $query->where(function($q) {
+                    $q->whereDoesntHave('president', function($subQ) {
+                        $subQ->where('verified', true);
+                    })->orWhereDoesntHave('secretary', function($subQ) {
+                        $subQ->where('verified', true);
+                    })->orWhereDoesntHave('accountant', function($subQ) {
+                        $subQ->where('verified', true);
+                    });
+                });
+            }
+        }
+
+        // Sorting
+        $sortBy = $request->get('sort', 'created_at');
+        $sortOrder = $request->get('order', 'desc');
+        
+        switch ($sortBy) {
+            case 'name':
+                $query->orderBy('name', $sortOrder);
+                break;
+            case 'members':
+                $query->orderBy('memberships_count', $sortOrder);
+                break;
+            case 'events':
+                $query->orderBy('events_count', $sortOrder);
+                break;
+            case 'fee':
+                $query->orderBy('fee', $sortOrder);
+                break;
+            default:
+                $query->orderBy('created_at', $sortOrder);
+        }
+
+        $clubs = $query->paginate(12)->appends($request->query());
+
+        // Process clubs data
+        $clubs->getCollection()->transform(function ($club) {
+            $club->description_short = Str::limit($club->description, 100);
+            $club->is_active = $club->president?->verified && 
+                              $club->secretary?->verified && 
+                              $club->accountant?->verified;
+            return $club;
+        });
+
+        // Get statistics
+        $stats = [
+            'total_clubs' => Club::count(),
+            'active_clubs' => Club::whereHas('president', function($q) {
+                $q->where('verified', true);
+            })->whereHas('secretary', function($q) {
+                $q->where('verified', true);
+            })->whereHas('accountant', function($q) {
+                $q->where('verified', true);
+            })->count(),
+            'total_members' => Membership::count(),
+            'total_events' => Event::count(),
+        ];
+
+        return view('dashboard.clubs', compact('clubs', 'stats'));
     }
 
     public function show($clubId)
