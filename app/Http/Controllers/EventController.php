@@ -18,11 +18,19 @@ class EventController extends Controller
 {
     public function publicIndex()
     {
-        $events = Event::select('id', 'title', 'start_time', 'end_time', 'date', 'location')
-            ->with('guests')
+        $today = Carbon::today();
+
+        $upcomingEvents = Event::with('club')
+            ->where('date', '>=', $today)
             ->get();
 
-        return view('events', compact('events'));
+        $pastEvents = Event::with('club')
+            ->where('date', '<', $today)
+            ->get();
+        $club = "";
+
+        return view('events', compact('upcomingEvents', 'pastEvents', 'club'));
+
     }
 
     public function publicShow($eventId)
@@ -33,12 +41,12 @@ class EventController extends Controller
 
     public function publicIndexForClub($clubId)
     {
-        $events = Event::select('id', 'title', 'start_time', 'end_time', 'date', 'location')
-            ->where('club_id', $clubId)
-            ->with('guests')
-            ->get();
+        $club = Club::findOrFail($clubId);
+        $today = Carbon::today();
+        $upcomingEvents = $club->events->where('date', '>=', $today);
+        $pastEvents = $club->events->where('date', '<', $today);
 
-        return view('club-events', compact('events'));
+        return view('events', compact('upcomingEvents', 'pastEvents', 'club'));
     }
 
     public function publicShowForClub($clubId, $eventId)
@@ -170,19 +178,19 @@ class EventController extends Controller
         $isEditable = Carbon::parse($event->date)->isFuture();
 
         return view('dashboard.event', compact(
-            'event', 
-            'club', 
-            'stats', 
-            'relatedEvents', 
+            'event',
+            'club',
+            'stats',
+            'relatedEvents',
             'isEditable'
         ));
     }
 
-      private function getEventStatistics($event)
+    private function getEventStatistics($event)
     {
         $eventDate = Carbon::parse($event->date);
         $today = Carbon::today();
-        
+
         return [
             'total_guests' => $event->guests->count(),
             'confirmed_guests' => $event->guests->where('status', 'confirmed')->count(),
@@ -205,7 +213,7 @@ class EventController extends Controller
 
         $club = Club::findOrFail($clubId);
         $page = 'create';
-        
+
         return view('dashboard.event-form', compact('page', 'club'));
     }
 
