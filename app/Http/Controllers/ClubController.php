@@ -51,7 +51,21 @@ class ClubController extends Controller
             abort(404);
         }
 
-        return view('club', compact('club'));
+        $upcomingEvents = $club->events->where('date', '>=', Carbon::now());
+        // Get similar clubs (same category, excluding current club)
+        $similarClubs = Club::with(['president.user', 'secretary.user', 'accountant.user'])
+            ->withCount('memberships')
+            ->where('id', '!=', $clubId)
+            ->whereHas('president', function ($q) {
+                $q->where('verified', true);
+            })->whereHas('secretary', function ($q) {
+                $q->where('verified', true);
+            })->whereHas('accountant', function ($q) {
+                $q->where('verified', true);
+            })
+            ->take(3)
+            ->get();
+        return view('club', compact('club', 'upcomingEvents', 'similarClubs'));
     }
     public function joinClub($clubId)
     {
@@ -68,7 +82,7 @@ class ClubController extends Controller
         return view('join-club', compact('club'));
     }
 
-  public function index(Request $request)
+    public function index(Request $request)
     {
         $user = auth()->user();
         if (!$user->globalRole || $user->globalRole->role !== 'advisor') {
@@ -82,29 +96,29 @@ class ClubController extends Controller
         // Search functionality
         if ($request->filled('search')) {
             $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm) {
                 $q->where('name', 'like', "%{$searchTerm}%")
-                  ->orWhere('description', 'like', "%{$searchTerm}%");
+                    ->orWhere('description', 'like', "%{$searchTerm}%");
             });
         }
 
         // Status filter
         if ($request->filled('status')) {
             if ($request->status === 'active') {
-                $query->whereHas('president', function($q) {
+                $query->whereHas('president', function ($q) {
                     $q->where('verified', true);
-                })->whereHas('secretary', function($q) {
+                })->whereHas('secretary', function ($q) {
                     $q->where('verified', true);
-                })->whereHas('accountant', function($q) {
+                })->whereHas('accountant', function ($q) {
                     $q->where('verified', true);
                 });
             } elseif ($request->status === 'inactive') {
-                $query->where(function($q) {
-                    $q->whereDoesntHave('president', function($subQ) {
+                $query->where(function ($q) {
+                    $q->whereDoesntHave('president', function ($subQ) {
                         $subQ->where('verified', true);
-                    })->orWhereDoesntHave('secretary', function($subQ) {
+                    })->orWhereDoesntHave('secretary', function ($subQ) {
                         $subQ->where('verified', true);
-                    })->orWhereDoesntHave('accountant', function($subQ) {
+                    })->orWhereDoesntHave('accountant', function ($subQ) {
                         $subQ->where('verified', true);
                     });
                 });
@@ -114,7 +128,7 @@ class ClubController extends Controller
         // Sorting
         $sortBy = $request->get('sort', 'created_at');
         $sortOrder = $request->get('order', 'desc');
-        
+
         switch ($sortBy) {
             case 'name':
                 $query->orderBy('name', $sortOrder);
@@ -137,20 +151,20 @@ class ClubController extends Controller
         // Process clubs data
         $clubs->getCollection()->transform(function ($club) {
             $club->description_short = Str::limit($club->description, 100);
-            $club->is_active = $club->president?->verified && 
-                              $club->secretary?->verified && 
-                              $club->accountant?->verified;
+            $club->is_active = $club->president?->verified &&
+                $club->secretary?->verified &&
+                $club->accountant?->verified;
             return $club;
         });
 
         // Get statistics
         $stats = [
             'total_clubs' => Club::count(),
-            'active_clubs' => Club::whereHas('president', function($q) {
+            'active_clubs' => Club::whereHas('president', function ($q) {
                 $q->where('verified', true);
-            })->whereHas('secretary', function($q) {
+            })->whereHas('secretary', function ($q) {
                 $q->where('verified', true);
-            })->whereHas('accountant', function($q) {
+            })->whereHas('accountant', function ($q) {
                 $q->where('verified', true);
             })->count(),
             'total_members' => Membership::count(),
