@@ -6,14 +6,15 @@
 @section('content')
 <section class="py-12 md:pt-32 md:pb-20 bg-gradient-to-br from-gray-50 to-blue-50">
     <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden p-8 md:p-12">
+        <div class="overflow-hidden p-8 md:p-12">
+        <!-- <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden p-8 md:p-12"> -->
             <!-- 404 Illustration -->
             <div class="mb-8">
-                <div class="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 mb-6">
+                <!-- <div class="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 mb-6">
                     <svg class="w-16 h-16 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.47-.881-6.08-2.33"></path>
                     </svg>
-                </div>
+                </div> -->
                 <h1 class="text-8xl md:text-9xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-4">
                     404
                 </h1>
