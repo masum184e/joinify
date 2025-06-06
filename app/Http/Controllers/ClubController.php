@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Models\User;
 use App\Models\Club;
 use App\Models\ClubUserRole;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
@@ -88,16 +89,105 @@ class ClubController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $club = Club::withCount(['memberships'])
-            ->select('id', 'name', 'description', 'banner', 'fee', 'created_at')
-            ->findOrFail($clubId);
+        $club = Club::with([
+            'president.user',
+            'secretary.user',
+            'accountant.user',
+            'memberships',
+            'events' => function ($query) {
+                $query->orderBy('date', 'desc')->take(5);
+            }
+        ])->findOrFail($clubId);
 
-        $clubRevenue = Payment::whereHas('membership', function ($query) use ($clubId) {
-            $query->where('club_id', $clubId);
-        })->where('payment_status', 'paid')
-            ->sum('amount');
+        // Get club statistics
+        $stats = $this->getClubStatistics($club);
 
-        return view('dashboard.club', compact('club', 'clubRevenue'));
+        // Get recent transactions (you'll need to implement this based on your Transaction model)
+        $recentTransactions = $this->getRecentTransactions($club);
+
+        // Get monthly transaction data for chart
+        $monthlyData = $this->getMonthlyTransactionData($club);
+
+        return view('dashboard.club', compact('club', 'stats', 'recentTransactions', 'monthlyData'));
+    }
+
+    private function getClubStatistics($club)
+    {
+        $now = Carbon::now();
+        $thisMonth = $now->startOfMonth();
+        $lastMonth = $now->copy()->subMonth()->startOfMonth();
+
+        return [
+            'total_members' => $club->memberships->count(),
+            'active_members' => $club->memberships->filter(function ($membership) {
+                return $membership->payment && $membership->payment->payment_status === 'paid';
+            })->count(),
+            'pending_members' => $club->memberships->filter(function ($membership) {
+                return $membership->payment && $membership->payment->payment_status === 'pending';
+            })->count(),
+            'total_events' => $club->events->count(),
+            'upcoming_events' => $club->events->where('date', '>=', $now)->count(),
+            'past_events' => $club->events->where('date', '<', $now)->count(),
+            'is_active' => $club->president?->verified &&
+                $club->secretary?->verified &&
+                $club->accountant?->verified,
+            'created_at' => $club->created_at,
+        ];
+    }
+
+    private function getRecentTransactions($club)
+    {
+        // This is a placeholder - implement based on your Transaction model
+        return collect([
+            [
+                'id' => 1,
+                'description' => 'Membership Fees',
+                'amount' => 1200,
+                'type' => 'income',
+                'date' => Carbon::now()->subDays(2),
+            ],
+            [
+                'id' => 2,
+                'description' => 'Event Supplies',
+                'amount' => -350,
+                'type' => 'expense',
+                'date' => Carbon::now()->subDays(4),
+            ],
+            [
+                'id' => 3,
+                'description' => 'Workshop Registration',
+                'amount' => 800,
+                'type' => 'income',
+                'date' => Carbon::now()->subDays(6),
+            ],
+            [
+                'id' => 4,
+                'description' => 'Venue Rental',
+                'amount' => -500,
+                'type' => 'expense',
+                'date' => Carbon::now()->subDays(8),
+            ],
+            [
+                'id' => 5,
+                'description' => 'Sponsorship',
+                'amount' => 2000,
+                'type' => 'income',
+                'date' => Carbon::now()->subDays(10),
+            ],
+        ]);
+    }
+
+    private function getMonthlyTransactionData($club)
+    {
+        // This is a placeholder - implement based on your Transaction model
+        return [
+            'labels' => ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            'income' => [3000, 4500, 6000, 7500],
+            'expenses' => [1500, 2000, 2500, 3000],
+            'total_income' => 21000,
+            'total_expenses' => 9000,
+            'net_income' => 12000,
+        ];
     }
 
     public function create()
