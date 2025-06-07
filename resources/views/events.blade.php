@@ -1,7 +1,7 @@
 @extends('includes.layout')
 
 @section('title', 'Events')
-@section('sub-title', $club ? $club->name : 'Joinify')
+@section('sub-title', $club ? $club->name : 'Browse Events')
 
 @section('content')
 

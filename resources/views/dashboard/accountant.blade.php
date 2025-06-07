@@ -1,6 +1,6 @@
 @extends('dashboard.includes.layout')
 
-@section('title', 'President Dashboard')
+@section('title', 'Accountant Dashboard')
 @section('sub-title', $club->name)
 
 @section('layout-title', 'Accountant Dashboard')

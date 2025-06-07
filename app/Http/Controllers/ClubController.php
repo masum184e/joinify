@@ -45,11 +45,6 @@ class ClubController extends Controller
             });
         }
 
-        // // Category filter
-        // if ($request->filled('category') && $request->category !== 'all') {
-        //     $query->where('category', $request->category);
-        // }
-
         // Sort options
         $sortBy = $request->get('sort', 'created_at');
         $sortOrder = $request->get('order', 'desc');
@@ -113,6 +108,7 @@ class ClubController extends Controller
             ->get();
         return view('club', compact('club', 'upcomingEvents', 'similarClubs'));
     }
+    
     public function joinClub($clubId)
     {
         $club = Club::select('id', 'name')->findOrFail($clubId);
@@ -223,7 +219,15 @@ class ClubController extends Controller
     public function show($clubId)
     {
         $user = auth()->user();
-        if (!$user->globalRole || $user->globalRole->role !== 'advisor') {
+        $isExecutives = auth()->user()->clubRoles()
+            ->whereIn('role', ['accountant', 'secretary', 'president'])
+            ->where('club_id', $clubId)
+            ->exists();
+        
+        if($user->globalRole && $user->globalRole->role === 'advisor') {
+            $isExecutives = true; // Advisors can view any club
+        }
+        if (!$isExecutives) {
             abort(403, 'Unauthorized action.');
         }
 

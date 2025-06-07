@@ -1,6 +1,6 @@
 @extends('includes.layout')
 
-@section('title', $club->name)
+@section('title', 'Join '.$club->name)
 @section('sub-title', 'Joinify')
 
 @section('content')
