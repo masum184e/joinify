@@ -139,6 +139,7 @@
                                 <div class="flex justify-between items-end">
                                     <h4 class="font-semibold text-lg text-blue-600">{{ $event->title }}</h4>
                                     <div class="flex flex-col items-end space-y-2">
+                                        @if(auth()->user() && auth()->user()->clubRoles->contains('role', 'secretary'))
                                         <a href="/dashboard/clubs/{{ $club->id }}/events/{{ $event->id }}/edit"
                                             class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-indigo-600 hover:bg-indigo-200 hover:text-indigo-600 transition"
                                             title="Edit Event">
@@ -153,6 +154,7 @@
                                                 <i class="ri-delete-bin-line"></i>
                                             </button>
                                         </form>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
