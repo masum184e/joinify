@@ -1,10 +1,10 @@
 @extends('dashboard.includes.layout')
 
-@section('title', 'Dashboard')
-@section('sub-title', 'Secretary')
+@section('title',  ($page === 'create')?'Create New Club':'Update Club Details')
+@section('sub-title', 'Joinify')
 
-@section('layout-title', 'Club Secretary')
-@section('layout-sub-title', 'Manage your club, track events, and oversee member activities.')
+@section('layout-title', ($page === 'create')?'Create New Club':'Update Club Details')
+@section('layout-sub-title', ($page === 'create')?'Fill in the details to create a new club':'Fill in the details to update club information')
 
 
 @section('content')
