@@ -21,22 +21,68 @@ use Illuminate\Support\Facades\Storage;
 
 class ClubController extends Controller
 {
-    public function publicIndex()
+    public function publicIndex(Request $request)
     {
-        $clubs = Club::withCount('userRoles', 'memberships')
+        $query = Club::withCount(['userRoles', 'memberships'])
+            ->with(['president', 'secretary', 'accountant', 'memberships'])
             ->select('id', 'name', 'description', 'fee', 'banner', 'created_at')
-            ->get()
-            ->filter(function ($club) {
-                return $club->president?->verified == 1 &&
-                    $club->secretary?->verified == 1 &&
-                    $club->accountant?->verified == 1;
+            ->whereHas('president', function($q) {
+                $q->where('verified', 1);
             })
-            ->map(function ($club) {
-                $club->description = Str::limit($club->description, 60);
-                return $club;
+            ->whereHas('secretary', function($q) {
+                $q->where('verified', 1);
+            })
+            ->whereHas('accountant', function($q) {
+                $q->where('verified', 1);
             });
-        return view('clubs', compact('clubs'));
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('description', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+
+        // // Category filter
+        // if ($request->filled('category') && $request->category !== 'all') {
+        //     $query->where('category', $request->category);
+        // }
+
+        // Sort options
+        $sortBy = $request->get('sort', 'created_at');
+        $sortOrder = $request->get('order', 'desc');
+        
+        switch ($sortBy) {
+            case 'members':
+                $query->orderBy('memberships_count', $sortOrder);
+                break;
+            case 'name':
+                $query->orderBy('name', $sortOrder);
+                break;
+            default:
+                $query->orderBy('created_at', $sortOrder);
+        }
+
+        $clubs = $query->paginate(9)->through(function ($club) {
+            $club->description = Str::limit($club->description, 60);
+            return $club;
+        });
+
+        $categories = [
+            'all' => 'All Clubs',
+            'academic' => 'Academic',
+            'arts' => 'Arts',
+            'cultural' => 'Cultural',
+            'sports' => 'Sports',
+            'technology' => 'Technology',
+            'social' => 'Social'
+        ];
+
+        return view('clubs', compact('clubs', 'categories'));
     }
+
     public function publicShow($clubId)
     {
         $club = Club::withCount(['userRoles', 'memberships'])
