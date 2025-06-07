@@ -49,12 +49,30 @@ class EventController extends Controller
         return view('events', compact('upcomingEvents', 'pastEvents', 'club'));
     }
 
-    public function publicShowForClub($clubId, $eventId)
+  public function publicShowForClub($clubId, $eventId)
     {
-        $event = Event::with(['guests', 'club'])
-            ->where('club_id', $clubId)
-            ->findOrFail($eventId);
-        return view('event', compact('event'));
+        $event = Event::with([
+            'guests', 
+            'club.president', 
+            'club.secretary',
+            'club.accountant'
+        ])
+        ->where('club_id', $clubId)
+        ->findOrFail($eventId);
+
+        // Get similar events from the same club
+        $similarEvents = Event::where('club_id', $clubId)
+            ->where('id', '!=', $eventId)
+            ->where('date', '>=', now())
+            ->orderBy('date', 'asc')
+            ->limit(3)
+            ->get();
+
+
+        return view('event', compact(
+            'event', 
+            'similarEvents', 
+        ));
     }
 
     public function index(Request $request, $clubId)
