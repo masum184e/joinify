@@ -116,6 +116,11 @@
     .shadow-glow-secondary {
       box-shadow: 0 0 25px rgba(217, 70, 239, 0.3);
     }
+
+    /* Dropdown styles */
+    .dropdown:hover .dropdown-menu {
+      display: block;
+    }
   </style>
 </head>
 
@@ -134,25 +139,123 @@
         </div>
 
         <div class="hidden md:flex items-center space-x-8">
-          <a href="#features" class="text-gray-700 hover:text-primary-600 font-medium transition-colors">Features</a>
-          <a href="#clubs" class="text-gray-700 {{ request()->is('clubs*') ? 'text-primary-600 font-semibold' : 'hover:text-primary-600' }} font-medium transition-colors">Clubs</a>
-          <a href="#testimonials"
+          <a href="/#features" class="text-gray-700 hover:text-primary-600 font-medium transition-colors">Features</a>
+          <a href="/#clubs"
+            class="text-gray-700 {{ request()->is('clubs*') ? 'text-primary-600 font-semibold' : 'hover:text-primary-600' }} font-medium transition-colors">Clubs</a>
+          <a href="/#testimonials"
             class="text-gray-700 hover:text-primary-600 font-medium transition-colors">Testimonials</a>
-          <a href="#about" class="text-gray-700 hover:text-primary-600 font-medium transition-colors">About</a>
+          <a href="/#about" class="text-gray-700 hover:text-primary-600 font-medium transition-colors">About</a>
         </div>
 
         <div class="hidden md:flex items-center space-x-4">
-          <a href="/login" class="text-gray-700 hover:text-primary-600 font-medium transition-colors">Sign In</a>
-          <a href="/clubs"
-            class="bg-primary-600 hover:bg-primary-700 text-white font-medium px-5 py-2.5 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
-            Get Started
+          @guest
+        <!-- Show for non-authenticated users -->
+        <a href="/login" class="text-gray-700 hover:text-primary-600 font-medium transition-colors">Sign In</a>
+        <a href="/clubs"
+        class="bg-primary-600 hover:bg-primary-700 text-white font-medium px-5 py-2.5 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+        Get Started
+        </a>
+      @else
+        <!-- Show for authenticated users -->
+        <div class="flex items-center space-x-4">
+
+        <!-- User Dropdown -->
+        <div class="relative dropdown">
+          <button class="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors">
+          <img
+            src="{{ Auth::user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=6366f1&color=fff' }}"
+            alt="{{ Auth::user()->name }}" class="h-8 w-8 rounded-full border-2 border-gray-200">
+          <span class="font-medium">{{ Str::limit(Auth::user()->name, 15) }}</span>
+          <i class="ri-arrow-down-s-line text-sm"></i>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div
+          class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+          <div class="px-4 py-2 border-b border-gray-100">
+            <p class="text-sm font-medium text-gray-900">{{ Auth::user()->name }}</p>
+            <p class="text-xs text-gray-500">{{ Auth::user()->email }}</p>
+          </div>
+
+          <a href="/dashboard" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+            <i class="ri-dashboard-line mr-3"></i>
+            Dashboard
           </a>
+
+          <div class="border-t border-gray-100 mt-2 pt-2">
+            <a href="/dashboard/settings"
+            class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+            <i class="ri-settings-line mr-3"></i>
+            Settings
+            </a>
+
+            <form method="GET" action="/logout" class="block">
+            @csrf
+            <button type="submit"
+              class="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+              <i class="ri-logout-box-line mr-3"></i>
+              Sign Out
+            </button>
+            </form>
+          </div>
+          </div>
+        </div>
+        </div>
+      @endguest
         </div>
 
+        <!-- Mobile Menu Button -->
         <div class="md:hidden">
-          <button type="button" class="text-gray-700 hover:text-primary-600">
+          <button type="button" id="mobile-menu-button" class="text-gray-700 hover:text-primary-600">
             <i class="ri-menu-line text-2xl"></i>
           </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 bg-white/95 backdrop-blur-md">
+        <div class="px-4 py-4 space-y-4">
+          <a href="/#features"
+            class="block text-gray-700 hover:text-primary-600 font-medium transition-colors">Features</a>
+          <a href="/#clubs" class="block text-gray-700 hover:text-primary-600 font-medium transition-colors">Clubs</a>
+          <a href="/#testimonials"
+            class="block text-gray-700 hover:text-primary-600 font-medium transition-colors">Testimonials</a>
+          <a href="/#about" class="block text-gray-700 hover:text-primary-600 font-medium transition-colors">About</a>
+
+          @guest
+        <div class="border-t border-gray-200 pt-4 space-y-3">
+        <a href="/login" class="block text-gray-700 hover:text-primary-600 font-medium transition-colors">Sign
+          In</a>
+        <a href="/clubs"
+          class="block bg-primary-600 hover:bg-primary-700 text-white font-medium px-4 py-2 rounded-lg text-center transition-all duration-300">
+          Get Started
+        </a>
+        </div>
+      @else
+          <div class="border-t border-gray-200 pt-4 space-y-3">
+            <div class="flex items-center space-x-3 pb-3">
+              <img
+                src="{{ Auth::user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=6366f1&color=fff' }}"
+                alt="{{ Auth::user()->name }}" class="h-10 w-10 rounded-full border-2 border-gray-200">
+              <div>
+                <p class="font-medium text-gray-900">{{ Auth::user()->name }}</p>
+                <p class="text-sm text-gray-500">{{ Auth::user()->email }}</p>
+              </div>
+            </div>
+
+            <a href="/dashboard"
+              class="block text-gray-700 hover:text-primary-600 font-medium transition-colors">Dashboard</a>
+            <a href="" class="block text-gray-700 hover:text-primary-600 font-medium transition-colors">Settings</a>
+
+            <form method="GET" action="/logout" class="pt-2">
+              @csrf
+              <button type="submit"
+                class="block w-full text-left text-red-600 hover:text-red-700 font-medium transition-colors">
+                Sign Out
+              </button>
+            </form>
+          </div>
+          @endauth
         </div>
       </div>
     </div>
@@ -168,11 +271,9 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
         <!-- Logo and Description -->
         <div class="lg:col-span-2">
-          <a href="#" class="flex items-center space-x-2 mb-6">
+          <a href="/" class="flex items-center space-x-2 mb-6">
             <div class="h-10 w-10 rounded-lg bg-white flex items-center justify-center text-white">
-              <!-- <i class="ri-community-line text-xl"></i> -->
               <img src="/logo.png" alt="Joinify Logo" class="h-8 w-8 object-contain">
-
             </div>
             <span class="text-2xl font-bold text-white">Joinify</span>
           </a>
@@ -237,7 +338,26 @@
       </div>
     </div>
   </footer>
+
   @stack('scripts')
+
+  <!-- Mobile Menu Toggle Script -->
+  <script>
+    document.getElementById('mobile-menu-button').addEventListener('click', function () {
+      const mobileMenu = document.getElementById('mobile-menu');
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function (event) {
+      const mobileMenu = document.getElementById('mobile-menu');
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+
+      if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+        mobileMenu.classList.add('hidden');
+      }
+    });
+  </script>
 </body>
 
 </html>
