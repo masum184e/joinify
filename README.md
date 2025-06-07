@@ -4,7 +4,39 @@ Joinify facilitates the management of clubs, members, payments, and events withi
 
 # 🚀 Preview
 
-<img src="./preview.png" />
+[<img src="./preview.png" width="100%">](https://drive.google.com/uc?export=view&id=13aj-ym2m4Xeva-bEZwalX4xYYu2-em2C)
+
+<a href="https://joinify.up.railway.app/">Live</a>
+
+## Credentials
+
+### Admin
+
+```
+email: admin@gmail.com
+password: admin@gmail.com
+```
+
+### President
+
+```
+email: president@gmail.com
+password: president@gmail.com
+```
+
+### Secretary
+
+```
+email: secretary@gmail.com
+password: secretary@gmail.com
+```
+
+### Accountant
+
+```
+email: accountant@gmail.com
+password: accountant@gmail.com
+```
 
 # 🧰 Requirements
 
@@ -230,16 +262,176 @@ Basic user details (name, email, password, profile_picture)
 
 -   Default payment amount is 123 BDT.
 
+# Routes
+
+## `/home`
+
+-   Controlled by `HomeController.index`.
+-   It shows verified popular clubs dynamically.
+-   Allow only `GET` method.
+
+### Popular Clubs
+
+1. `$popularClubs = Club::withCount('memberships','userRoles')`
+    - `withCount('memberships', 'userRoles')` will add two extra columns to the result `memberships_count`, `user_roles_count`
+2. `->orderBy('memberships_count', 'desc')` - sorts the clubs in descending order of their membership count.
+3. `->take(3)` - Limits the result to the top 3 clubs
+4. `->get()` - Executes the query
+
+## `/clubs`
+
+-   Controller by `ClubController.publicIndex`.
+-   It shows all verified clubs(ID, Name, Description, Fee, Banner, Created At).
+-   Allow only `GET` method.
+-   `select` will be fetched only the specific fields.
+
+## `/clubs/{{ clubId }}`
+
+-   Controlled by `ClubController.show`.
+-   It shows a specific verified club (ID, Name, Description, Fee, Banner, Created At) details.
+-   Allow only `GET` method.
+-   `findOrFail($clubId)` - Looks for a club with the given ID. If not found, automatically throws a 404 error.
+-   `abort(404)` - sends a **Not Found** response.
+
+## `/clubs/{{ clubId }}/join`
+
+-   Controlled by `ClubController.joinClub`.
+-   It shows joining form of a verified club(shows).
+-   Allow only `GET` method.
+
+## `/pay/{{ clubId }}`
+
+-   Controlled by `SslCommerzPaymentController.index`.
+-   Allow only `POST` method.
+-   It redirect to `SslCommerz` and show payment UI.
+-   It store member details and set payment status `pending` and redirect to `/success` or `/fail` or `/cancel`.
+
+## `/success`
+
+-   Controlled by `SslCommerzPaymentController.success`.
+-   Allow only `POST` method.
+-   It shows the succeded payment details with transaction id.
+-   It ignore the csrf token verification.
+
+## `/fail`
+
+-   Controlled by `SslCommerzPaymentController.fail`.
+-   Allow only `POST` method.
+-   It shows the failed status.
+-   It ignore the csrf token verification.
+
+## `/cancel`
+
+-   Controlled by `SslCommerzPaymentController.cancel`.
+-   Allow only `POST` method.
+-   It shows the cancelled status.
+-   It ignore the csrf token verification.
+
+## `/login` and `/signin`
+
+-   Controlled by `AuthController.index`(`GET`) and `AuthController.login`(`POST`).
+-   It shows and handle login form.
+-   Allow both `GET` and `POST` method.
+-   `$request->only` method passes only the email and password to the `attempt()` method.
+-   `Auth::attempt()` checks if the email and password match a user in the database.
+
+## `/logout`
+
+-   Controlled by `AuthController.logout`
+-   It show nothing just remove the authentication session.
+-   Allow only `GET` method.
+-   `Auth::logout();` logs the user out by removing their authentication data from the session.
+-   `invalidate()` clears all session data, making sure any old session information is discarded.
+-   `regenerateToken()` generates a new CSRF token to help prevent session fixation attacks.
+
+<!--
+## dashboard
+
+### advisor
+
+### president
+
+### secretary
+
+### accountant
+-->
+
+## `/dashboard/clubs`
+
+-   Controlled by `ClubController.index`
+-   It shows all the club(both verified and non-verified) list to authorized `advisor`.
+-   Allow only `GET` method.
+
+## `/dashboard/clubs/create`
+
+-   Controlled by `ClubController.create`
+-   It shows club creation form only to authorized `advisor`
+-   Allow only `GET` method.
+
+## `/dashboard/clubs/{{ clubId }}/edit`
+
+-   Controlled by `ClubController.edit`
+-   It shows club updation form as well as existing club details only to authorized `advisor`
+-   Allow only `GET` method.
+
+## `/dashboard/clubs/{{ clubId }}`
+
+-   Allow `GET`, `POST`, `DELETE`, `PUT` method
+
+### `GET`
+
+-   Controlled by `ClubController.show`
+-   It only allow for `Authorized` `Advisor`
+-   It shows club details icluding membership count and club revenue
+
+### `POST`
+
+-   Controlled by `ClubController.store`
+-   It only allow for `Authorized` `Advisor`
+-   Store executives credentials first, then club details and assign executives role. If error occured, it remove the uploaded club banner
+
+### `PUT`
+
+-   Controlled by `ClubController.update`
+-   It only allow for `Authorized` `Advisor`
+-   It just update the modifed value, keep everything as it is
+
+### `DELETE`
+
+-   Controlled by `ClubController.destroy`
+-   It only allow for `Authorized` `Advisor`
+-   Before removing club details, it remove the club banner first
+
+<!--
+## `/dashboard/clubs/{{ clubId }}/events`
+
+## `/dashboard/clubs/{{ clubId }}/events/create`
+
+## `/dashboard/clubs/{{ clubId }}/events/{{ eventId }}/edit`
+
+## `/dashboard/clubs/{{ clubId }}/events/{{ eventId }`
+
+-   Allow `GET`, `POST`, `DELETE`, `PUT` method
+
+### `GET`
+
+### `POST`
+
+### `DELETE`
+
+### `PUT`
+-->
+
 # Contribution
 
--   Forget password
--   Upload club banner by President
--   Update club fee by Accountant
+-   Forget password, remember me.
+-   Upload club banner by president.
+-   Update club fee by accountant.
 -   Send club creation invitation to president, secretary, accountant email and verify them.
--   Update payment details after successfull payment
--   User settings
--   Remove guest during update guest
--   Prevent unverified executives(president, secretary, accountant) login
-- Searching
-- Pagination
-- when advisor update executives member, it's email should changed as well as verified status
+-   User settings.
+-   Remove guest during update guest.
+-   when advisor update executives member, it's email should changed as well as verified status.
+-   Implement event schedule handling feature.
+- Show events sorted order.
+- Show event guests list.
+- Show guest name during editing event information.
